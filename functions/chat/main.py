@@ -30,6 +30,8 @@ RESPONSE FORMAT:
 Return a JSON object with these fields:
 {
   "subject_response": "What the subject says (in quotes, realistic dialogue)",
+  "subject_mood": "calm" | "nervous" | "agitated" | "hostile" | "defeated",
+  "subject_action": "Brief description of body language/actions (e.g., 'fidgeting with steering wheel', 'avoiding eye contact', 'hands gripping wheel tightly')",
   "hint": "Training hint for the officer based on their last action (or null if no hint needed)",
   "evaluation": {
     "action_taken": "Brief description of what the officer did",
@@ -40,6 +42,13 @@ Return a JSON object with these fields:
   "scenario_complete": false,
   "end_scenario_reason": null
 }
+
+MOOD GUIDELINES:
+- "calm": Cooperative, relaxed (rare for DUI suspect)
+- "nervous": Fidgety, sweating, avoiding eye contact (default start)
+- "agitated": Argumentative, raised voice, defensive
+- "hostile": Aggressive, threatening, non-compliant
+- "defeated": Resigned, knows they're caught, compliant
 
 Set scenario_complete to true if:
 - Officer places subject under arrest
@@ -168,6 +177,8 @@ def handle_chat(data, headers):
 
     result = {
         'subject_response': parsed.get('subject_response', ''),
+        'subject_mood': parsed.get('subject_mood', 'nervous'),
+        'subject_action': parsed.get('subject_action', ''),
         'hint': parsed.get('hint'),
         'evaluation': parsed.get('evaluation'),
         'scenario_complete': parsed.get('scenario_complete', False),

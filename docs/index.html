@@ -952,6 +952,101 @@
             color: var(--warning);
         }
 
+        /* Subject Portrait */
+        .subject-panel {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--navy-deep);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .subject-portrait {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: var(--navy-light);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .subject-portrait.mood-calm { border-color: var(--success); }
+        .subject-portrait.mood-nervous { border-color: var(--warning); }
+        .subject-portrait.mood-agitated { border-color: #F97316; }
+        .subject-portrait.mood-hostile { border-color: var(--error); }
+        .subject-portrait.mood-defeated { border-color: var(--text-muted); }
+
+        .portrait-face {
+            font-size: 2.5rem;
+            transition: all 0.3s;
+        }
+
+        .subject-info {
+            flex: 1;
+        }
+
+        .subject-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .subject-mood {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.25rem 0.6rem;
+            border-radius: 100px;
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--warning);
+        }
+
+        .subject-mood.mood-calm {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--success);
+        }
+        .subject-mood.mood-nervous {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--warning);
+        }
+        .subject-mood.mood-agitated {
+            background: rgba(249, 115, 22, 0.15);
+            color: #F97316;
+        }
+        .subject-mood.mood-hostile {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--error);
+        }
+        .subject-mood.mood-defeated {
+            background: rgba(107, 123, 139, 0.15);
+            color: var(--text-muted);
+        }
+
+        .mood-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 1.5s infinite;
+        }
+
+        .subject-action {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.35rem;
+            font-style: italic;
+        }
+
         @media (max-width: 900px) {
             .hero-content {
                 grid-template-columns: 1fr;
@@ -1282,6 +1377,19 @@
                     </div>
                     <span class="mode-badge">Training Mode</span>
                 </div>
+                <div class="subject-panel" id="subject-panel">
+                    <div class="subject-portrait mood-nervous" id="subject-portrait">
+                        <span class="portrait-face" id="portrait-face">😰</span>
+                    </div>
+                    <div class="subject-info">
+                        <div class="subject-name">Unknown Male</div>
+                        <div class="subject-mood mood-nervous" id="subject-mood-badge">
+                            <span class="mood-dot"></span>
+                            <span id="mood-text">Nervous</span>
+                        </div>
+                        <div class="subject-action" id="subject-action">Gripping steering wheel tightly</div>
+                    </div>
+                </div>
                 <div class="chat-messages" id="demo-messages"></div>
                 <div class="chat-input">
                     <input type="text" id="demo-input" placeholder="Type your response...">
@@ -1358,8 +1466,39 @@
             var messages = [];
             var isLoading = false;
             var demoStarted = false;
+            var currentMood = 'nervous';
 
             var SCENARIO_INTRO = 'Vehicle pulled over for weaving between lanes. Driver shows signs of intoxication: bloodshot eyes, strong odor of alcohol, slurred speech.';
+
+            var MOOD_CONFIG = {
+                calm: { emoji: '😐', label: 'Calm' },
+                nervous: { emoji: '😰', label: 'Nervous' },
+                agitated: { emoji: '😠', label: 'Agitated' },
+                hostile: { emoji: '😡', label: 'Hostile' },
+                defeated: { emoji: '😔', label: 'Defeated' }
+            };
+
+            function updateSubjectMood(mood, action) {
+                if (!mood) mood = 'nervous';
+                currentMood = mood;
+
+                var config = MOOD_CONFIG[mood] || MOOD_CONFIG.nervous;
+
+                var portrait = document.getElementById('subject-portrait');
+                var face = document.getElementById('portrait-face');
+                var badge = document.getElementById('subject-mood-badge');
+                var moodText = document.getElementById('mood-text');
+                var actionEl = document.getElementById('subject-action');
+
+                portrait.className = 'subject-portrait mood-' + mood;
+                face.textContent = config.emoji;
+                badge.className = 'subject-mood mood-' + mood;
+                moodText.textContent = config.label;
+
+                if (action) {
+                    actionEl.textContent = action;
+                }
+            }
 
             function createElement(tag, className, textContent) {
                 var el = document.createElement(tag);
@@ -1456,6 +1595,8 @@
                 messages = [];
                 messagesContainer.textContent = '';
 
+                updateSubjectMood('nervous', 'Gripping steering wheel tightly');
+
                 messages.push({ role: 'system', content: SCENARIO_INTRO });
                 addMessage('system', SCENARIO_INTRO);
 
@@ -1491,6 +1632,7 @@
                         evaluation: data.evaluation
                     });
 
+                    updateSubjectMood(data.subject_mood, data.subject_action);
                     addMessage('subject', subjectResponse, data.hint);
 
                     if (data.scenario_complete) {
