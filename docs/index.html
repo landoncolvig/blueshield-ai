@@ -1346,29 +1346,21 @@
         (function() {
             'use strict';
 
-            // DOM Elements
+            var API_URL = 'https://us-central1-dayta-analytics-sandbox.cloudfunctions.net/blueshield-chat';
+
             var modal = document.getElementById('demo-modal');
             var chatSection = document.getElementById('demo-chat-section');
             var debriefSection = document.getElementById('demo-debrief-section');
             var messagesContainer = document.getElementById('demo-messages');
             var demoInput = document.getElementById('demo-input');
+            var sendBtn = document.getElementById('demo-send-btn');
 
-            // Demo state
-            var demoStep = 0;
+            var messages = [];
+            var isLoading = false;
             var demoStarted = false;
 
-            // Demo script data
-            var demoScript = [
-                { type: 'system', text: 'Vehicle pulled over for weaving between lanes. Driver shows signs of intoxication: bloodshot eyes, strong odor of alcohol, slurred speech.' },
-                { type: 'subject', text: '"What\'s the problem, officer? I wasn\'t doing anything wrong. I only had a couple beers with dinner."' }
-            ];
+            var SCENARIO_INTRO = 'Vehicle pulled over for weaving between lanes. Driver shows signs of intoxication: bloodshot eyes, strong odor of alcohol, slurred speech.';
 
-            var demoResponses = [
-                { type: 'subject', text: '"Look, I\'m fine to drive. I live just down the road. Can\'t you just let me go with a warning?"' },
-                { type: 'hint', text: 'The subject is attempting to avoid further investigation. Consider whether you have sufficient RS to request field sobriety tests. Document this refusal in your report.' }
-            ];
-
-            // Helper function to create elements safely
             function createElement(tag, className, textContent) {
                 var el = document.createElement(tag);
                 if (className) el.className = className;
@@ -1376,8 +1368,7 @@
                 return el;
             }
 
-            // Add message to chat
-            function addDemoMessage(type, text) {
+            function addMessage(type, text, hint) {
                 var messageDiv = createElement('div', 'message');
                 messageDiv.style.animation = 'messageIn 0.4s ease-out';
 
@@ -1397,9 +1388,23 @@
                     var content = createElement('div', 'message-content', text);
                     messageDiv.appendChild(label);
                     messageDiv.appendChild(content);
-                } else if (type === 'hint') {
-                    messageDiv.className = 'hint-panel';
+                } else if (type === 'loading') {
+                    messageDiv.className = 'message message-subject';
+                    messageDiv.id = 'loading-message';
+                    var label = createElement('div', 'message-label', 'Subject');
+                    var content = createElement('div', 'message-content', 'Thinking...');
+                    content.style.fontStyle = 'italic';
+                    content.style.opacity = '0.7';
+                    messageDiv.appendChild(label);
+                    messageDiv.appendChild(content);
+                }
+
+                messagesContainer.appendChild(messageDiv);
+
+                if (hint) {
+                    var hintDiv = createElement('div', 'hint-panel');
                     var hintBox = createElement('div', 'hint-box');
+                    hintBox.style.animation = 'hintIn 0.5s ease-out';
 
                     var iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     iconSvg.setAttribute('class', 'hint-icon');
@@ -1418,92 +1423,209 @@
 
                     var hintContent = createElement('div', 'hint-content');
                     var strong = createElement('strong', null, 'Training Hint');
-                    var hintText = document.createTextNode(' ' + text);
                     hintContent.appendChild(strong);
-                    hintContent.appendChild(hintText);
+                    hintContent.appendChild(document.createTextNode(' ' + hint));
 
                     hintBox.appendChild(iconSvg);
                     hintBox.appendChild(hintContent);
-                    messageDiv.appendChild(hintBox);
+                    hintDiv.appendChild(hintBox);
+                    messagesContainer.appendChild(hintDiv);
                 }
 
-                messagesContainer.appendChild(messageDiv);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
 
-            // Start demo
+            function removeLoading() {
+                var loading = document.getElementById('loading-message');
+                if (loading) loading.remove();
+            }
+
+            function setLoading(loading) {
+                isLoading = loading;
+                demoInput.disabled = loading;
+                sendBtn.disabled = loading;
+                if (loading) {
+                    addMessage('loading');
+                } else {
+                    removeLoading();
+                }
+            }
+
             function startDemo() {
                 demoStarted = true;
-                demoStep = 0;
+                messages = [];
                 messagesContainer.textContent = '';
 
-                demoScript.forEach(function(msg, index) {
-                    setTimeout(function() {
-                        addDemoMessage(msg.type, msg.text);
-                    }, index * 1000);
+                messages.push({ role: 'system', content: SCENARIO_INTRO });
+                addMessage('system', SCENARIO_INTRO);
+
+                sendToAPI('');
+            }
+
+            function sendToAPI(officerMessage) {
+                setLoading(true);
+
+                if (officerMessage) {
+                    messages.push({ role: 'officer', content: officerMessage });
+                }
+
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'chat',
+                        messages: messages,
+                        message: officerMessage,
+                        training_mode: true
+                    })
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    setLoading(false);
+
+                    var subjectResponse = data.subject_response || 'No response';
+                    messages.push({
+                        role: 'subject',
+                        content: subjectResponse,
+                        raw_response: data.raw_response,
+                        evaluation: data.evaluation
+                    });
+
+                    addMessage('subject', subjectResponse, data.hint);
+
+                    if (data.scenario_complete) {
+                        setTimeout(function() { requestDebrief(); }, 1500);
+                    }
+                })
+                .catch(function(err) {
+                    setLoading(false);
+                    console.error('API Error:', err);
+                    addMessage('system', 'Error connecting to server. Please try again.');
                 });
             }
 
-            // Open demo modal
+            function requestDebrief() {
+                setLoading(true);
+                demoInput.placeholder = 'Generating debrief...';
+
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'debrief',
+                        messages: messages
+                    })
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    setLoading(false);
+                    showDebrief(data);
+                })
+                .catch(function(err) {
+                    setLoading(false);
+                    console.error('Debrief Error:', err);
+                    showDebrief({ score: 75, summary: 'Unable to generate detailed debrief.', legal_analysis: [], recommendations: 'Please try again.' });
+                });
+            }
+
+            function showDebrief(data) {
+                chatSection.style.display = 'none';
+                debriefSection.classList.add('active');
+
+                var scoreEl = debriefSection.querySelector('.debrief-score');
+                scoreEl.textContent = '';
+                var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', '20');
+                svg.setAttribute('height', '20');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('fill', 'none');
+                svg.setAttribute('stroke', 'currentColor');
+                svg.setAttribute('stroke-width', '2');
+                var path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path1.setAttribute('d', 'M22 11.08V12a10 10 0 1 1-5.93-9.14');
+                var path2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                path2.setAttribute('points', '22 4 12 14.01 9 11.01');
+                svg.appendChild(path1);
+                svg.appendChild(path2);
+                scoreEl.appendChild(svg);
+                scoreEl.appendChild(document.createTextNode(' ' + (data.score || 75) + '/100'));
+
+                var sections = debriefSection.querySelectorAll('.debrief-section');
+
+                if (sections[0] && data.legal_analysis && data.legal_analysis.length > 0) {
+                    var itemsContainer = sections[0].querySelector('.debrief-item');
+                    if (itemsContainer) {
+                        var parent = itemsContainer.parentNode;
+                        var heading = sections[0].querySelector('h3');
+                        while (parent.lastChild !== heading) {
+                            parent.removeChild(parent.lastChild);
+                        }
+
+                        data.legal_analysis.forEach(function(item) {
+                            var itemDiv = createElement('div', 'debrief-item');
+                            var statusSpan = createElement('span', 'debrief-status');
+                            statusSpan.className = 'debrief-status ' + (item.status === 'correct' ? 'status-correct' : 'status-issue');
+                            statusSpan.textContent = item.status === 'correct' ? '\u2713' : '!';
+
+                            var p = createElement('p');
+                            var strong = createElement('strong', null, item.topic + ': ');
+                            p.appendChild(strong);
+                            p.appendChild(document.createTextNode(item.detail));
+                            if (item.ars_reference) {
+                                var code = createElement('code', null, ' ' + item.ars_reference);
+                                p.appendChild(code);
+                            }
+
+                            itemDiv.appendChild(statusSpan);
+                            itemDiv.appendChild(p);
+                            parent.appendChild(itemDiv);
+                        });
+                    }
+                }
+
+                if (sections[1] && data.recommendations) {
+                    var recP = sections[1].querySelector('p');
+                    if (recP) recP.textContent = data.recommendations;
+                }
+            }
+
             function openDemo() {
                 modal.classList.add('active');
                 chatSection.style.display = 'block';
                 debriefSection.classList.remove('active');
+                demoInput.placeholder = 'Type your response...';
                 if (!demoStarted) {
                     startDemo();
                 }
             }
 
-            // Close demo modal
             function closeDemo() {
                 modal.classList.remove('active');
+                demoStarted = false;
+                messages = [];
             }
 
-            // Show debrief
-            function showDebrief() {
-                chatSection.style.display = 'none';
-                debriefSection.classList.add('active');
-            }
-
-            // Send demo message
-            function sendDemoMessage() {
+            function sendMessage() {
                 var text = demoInput.value.trim();
-                if (!text) return;
+                if (!text || isLoading) return;
 
                 demoInput.value = '';
-                addDemoMessage('officer', text);
-                demoStep++;
-
-                if (demoStep === 1) {
-                    setTimeout(function() {
-                        addDemoMessage('subject', demoResponses[0].text);
-                    }, 1000);
-                    setTimeout(function() {
-                        addDemoMessage('hint', demoResponses[1].text);
-                    }, 2000);
-                    setTimeout(function() {
-                        showDebrief();
-                    }, 4000);
-                }
+                addMessage('officer', text);
+                sendToAPI(text);
             }
 
-            // Event listeners
             document.getElementById('nav-demo-btn').addEventListener('click', openDemo);
             document.getElementById('hero-demo-btn').addEventListener('click', openDemo);
             document.getElementById('modal-close-btn').addEventListener('click', closeDemo);
-            document.getElementById('demo-send-btn').addEventListener('click', sendDemoMessage);
+            document.getElementById('demo-send-btn').addEventListener('click', sendMessage);
             document.getElementById('debrief-cta-btn').addEventListener('click', closeDemo);
 
             demoInput.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    sendDemoMessage();
-                }
+                if (event.key === 'Enter') sendMessage();
             });
 
             modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeDemo();
-                }
+                if (e.target === modal) closeDemo();
             });
 
             document.getElementById('checkout-btn').addEventListener('click', function() {
