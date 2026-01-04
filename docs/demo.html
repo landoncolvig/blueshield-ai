@@ -6647,10 +6647,14 @@
                 messagesContainer.appendChild(messageDiv);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-                // Show officer speech bubble with "Say" and/or "Radio" content
+                // Show officer speech bubble with all actions (Say, Do, Radio)
                 var bubbleText = '';
                 if (input.say) {
-                    bubbleText = '"' + input.say + '"';
+                    bubbleText = '💬 "' + input.say + '"';
+                }
+                if (input.do) {
+                    if (bubbleText) bubbleText += '\n';
+                    bubbleText += '👁 ' + input.do;
                 }
                 if (input.radio) {
                     if (bubbleText) bubbleText += '\n';
@@ -7055,7 +7059,7 @@
                     }
                 });
 
-                sendToAPI('');
+                // Don't auto-send to API - wait for user to submit first action
             }
 
             // Send message
