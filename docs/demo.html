@@ -2748,6 +2748,46 @@
             border-bottom: 8px solid rgba(52, 211, 153, 0.08);
         }
 
+        /* Backup officer bubble */
+        .speech-bubble.backup-bubble {
+            background: rgba(96, 165, 250, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            color: #93c5fd;
+            max-width: 220px;
+            font-size: 0.7rem;
+        }
+
+        .speech-bubble.backup-bubble .bubble-label {
+            color: #60a5fa;
+        }
+
+        .speech-bubble.backup-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid rgba(96, 165, 250, 0.4);
+        }
+
+        .speech-bubble.backup-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid rgba(96, 165, 250, 0.15);
+            z-index: 1;
+        }
+
         /* Subject bubble - positioned dynamically by JavaScript */
 
         /* Side-positioned bubbles (when not enough room above) */
@@ -5521,10 +5561,185 @@
             function removeBackupUnit() {
                 var backup = document.getElementById('backup-pos');
                 var backupCar = document.getElementById('backup-car');
+                var backupBubble = document.getElementById('backup-speech');
                 if (backup) backup.remove();
                 if (backupCar) backupCar.remove();
+                if (backupBubble) backupBubble.remove();
                 backupRequested = false;
                 backupOnScene = false;
+                backupWeaponDrawn = null;
+                backupLastAction = null;
+            }
+
+            // ========== AUTONOMOUS BACKUP OFFICER AI ==========
+            var backupWeaponDrawn = null;
+            var backupLastAction = null;
+
+            // Generate autonomous backup action based on main officer's action
+            function generateBackupAction(officerInput) {
+                if (!backupOnScene) return null;
+
+                var say = officerInput.say || '';
+                var doAction = officerInput.do || '';
+                var radio = officerInput.radio || '';
+                var lowerSay = say.toLowerCase();
+                var lowerDo = doAction.toLowerCase();
+
+                var backupAction = { action: null, speech: null };
+
+                // Backup mirrors tactical positioning
+                if (lowerDo.indexOf('cover') !== -1 || lowerDo.indexOf('position') !== -1) {
+                    var positions = ['flanking left', 'flanking right', 'covering the exit', 'watching the perimeter', 'maintaining crossfire position'];
+                    backupAction.action = 'Backup ' + positions[Math.floor(Math.random() * positions.length)];
+                }
+
+                // Backup draws weapon if main officer does
+                if (lowerDo.indexOf('draw') !== -1 || lowerDo.indexOf('weapon') !== -1 || lowerDo.indexOf('pistol') !== -1 || lowerDo.indexOf('gun') !== -1) {
+                    if (!backupWeaponDrawn) {
+                        backupWeaponDrawn = 'pistol';
+                        backupAction.action = 'Backup draws sidearm and takes cover position';
+                    }
+                }
+
+                // Backup deploys less-lethal if situation escalates
+                if (lowerDo.indexOf('taser') !== -1 || lowerDo.indexOf('taze') !== -1) {
+                    var backupOptions = ['draws pepper spray', 'readies baton', 'prepares to assist with control'];
+                    backupAction.action = 'Backup ' + backupOptions[Math.floor(Math.random() * backupOptions.length)];
+                }
+
+                // Backup provides verbal support when main officer gives commands
+                if (lowerSay.indexOf('hands') !== -1 || lowerSay.indexOf('down') !== -1 || lowerSay.indexOf('ground') !== -1) {
+                    var supportPhrases = [
+                        'Do what he says!',
+                        'Comply now!',
+                        'Listen to him!',
+                        'Do it!',
+                        'You heard him!'
+                    ];
+                    backupAction.speech = supportPhrases[Math.floor(Math.random() * supportPhrases.length)];
+                    if (!backupAction.action) {
+                        backupAction.action = 'Backup maintains cover on subject';
+                    }
+                }
+
+                // Backup watches for threats when officer approaches
+                if (lowerDo.indexOf('approach') !== -1 || lowerDo.indexOf('walk') !== -1 || lowerDo.indexOf('move') !== -1 || lowerDo.indexOf('step') !== -1) {
+                    var watchActions = [
+                        'Backup maintains overwatch position',
+                        'Backup scans for additional threats',
+                        'Backup covers your approach',
+                        'Backup watches subject\'s hands'
+                    ];
+                    backupAction.action = watchActions[Math.floor(Math.random() * watchActions.length)];
+                }
+
+                // Backup assists with arrest
+                if (lowerDo.indexOf('cuff') !== -1 || lowerDo.indexOf('arrest') !== -1 || lowerDo.indexOf('handcuff') !== -1 || lowerDo.indexOf('detain') !== -1) {
+                    backupAction.action = 'Backup moves in to assist with handcuffing';
+                    backupAction.speech = 'I\'ve got the other arm';
+                }
+
+                // Backup assists with search
+                if (lowerDo.indexOf('search') !== -1 || lowerDo.indexOf('pat down') !== -1 || lowerDo.indexOf('frisk') !== -1) {
+                    backupAction.action = 'Backup provides cover during search';
+                }
+
+                // Backup watches vehicle during traffic stop actions
+                if (lowerDo.indexOf('vehicle') !== -1 || lowerDo.indexOf('car') !== -1 || lowerDo.indexOf('driver') !== -1) {
+                    var vehicleActions = [
+                        'Backup watches passenger side',
+                        'Backup monitors rear of vehicle',
+                        'Backup illuminates interior with flashlight'
+                    ];
+                    backupAction.action = vehicleActions[Math.floor(Math.random() * vehicleActions.length)];
+                }
+
+                // If main officer is talking to subject, backup stays alert
+                if (say && !backupAction.action) {
+                    var alertActions = [
+                        'Backup maintains visual on subject',
+                        'Backup scanning area',
+                        'Backup ready to assist'
+                    ];
+                    // Only add action 40% of the time to not spam
+                    if (Math.random() < 0.4) {
+                        backupAction.action = alertActions[Math.floor(Math.random() * alertActions.length)];
+                    }
+                }
+
+                // Default - backup stays alert if doing something significant
+                if (doAction && !backupAction.action && Math.random() < 0.3) {
+                    backupAction.action = 'Backup maintains position';
+                }
+
+                return (backupAction.action || backupAction.speech) ? backupAction : null;
+            }
+
+            // Display backup officer's action
+            function showBackupAction(backupAction) {
+                if (!backupAction || !backupOnScene) return;
+
+                var scene = document.getElementById('position-scene');
+                var backupMarker = document.getElementById('backup-pos');
+                if (!scene || !backupMarker) return;
+
+                // Create or get backup speech bubble
+                var bubble = document.getElementById('backup-speech');
+                if (!bubble) {
+                    bubble = document.createElement('div');
+                    bubble.id = 'backup-speech';
+                    bubble.className = 'speech-bubble backup-bubble';
+                    bubble.innerHTML = '<div class="bubble-label">Backup</div><div class="bubble-text"></div>';
+                    scene.appendChild(bubble);
+                }
+
+                // Build display text
+                var displayText = '';
+                if (backupAction.speech) {
+                    displayText = '"' + backupAction.speech + '"';
+                }
+                if (backupAction.action) {
+                    if (displayText) displayText += ' ';
+                    displayText += '(' + backupAction.action + ')';
+                }
+
+                bubble.querySelector('.bubble-text').textContent = displayText;
+
+                // Position bubble near backup officer
+                var sceneRect = scene.getBoundingClientRect();
+                var markerRect = backupMarker.getBoundingClientRect();
+                var markerX = markerRect.left - sceneRect.left + markerRect.width / 2;
+                var markerY = markerRect.top - sceneRect.top;
+
+                bubble.style.left = Math.max(5, markerX - 100) + 'px';
+                bubble.style.top = Math.max(5, markerY - 70) + 'px';
+                bubble.style.display = 'block';
+                bubble.style.animation = 'none';
+                bubble.offsetHeight;
+                bubble.style.animation = 'bubbleFadeIn 0.3s ease-out';
+
+                // Flash backup marker
+                backupMarker.classList.add('active');
+                setTimeout(function() { backupMarker.classList.remove('active'); }, 500);
+
+                // Hide bubble after a delay
+                setTimeout(function() {
+                    if (bubble) bubble.style.display = 'none';
+                }, 4000);
+            }
+
+            // Get backup action text for including in message to AI
+            function getBackupActionText(backupAction) {
+                if (!backupAction) return '';
+                var text = '';
+                if (backupAction.action) {
+                    text += '[BACKUP DOES]: ' + backupAction.action;
+                }
+                if (backupAction.speech) {
+                    if (text) text += ' ';
+                    text += '[BACKUP SAYS]: "' + backupAction.speech + '"';
+                }
+                return text;
             }
 
             // Subject movement system
@@ -6336,7 +6551,22 @@
                 inputDo.value = '';
                 inputRadio.value = '';
                 addOfficerMessage(input);
-                sendToAPI(input.combined);
+
+                // Generate autonomous backup action if backup is on scene
+                var backupAction = generateBackupAction(input);
+                var fullMessage = input.combined;
+
+                if (backupAction) {
+                    // Show backup action visually
+                    showBackupAction(backupAction);
+                    // Include backup action in message to AI
+                    var backupText = getBackupActionText(backupAction);
+                    if (backupText) {
+                        fullMessage += '\n' + backupText;
+                    }
+                }
+
+                sendToAPI(fullMessage);
             }
 
             // Restart
