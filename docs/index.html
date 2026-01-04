@@ -818,20 +818,24 @@
 
         .modal {
             background: var(--navy-mid);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            max-width: 700px;
-            width: 100%;
-            max-height: 90vh;
+            border: none;
+            border-radius: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
             overflow-y: auto;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-close {
-            position: absolute;
+            position: fixed;
             top: 1rem;
             right: 1rem;
             width: 36px;
+            z-index: 1001;
             height: 36px;
             background: var(--navy-deep);
             border: 1px solid var(--border-color);
@@ -852,6 +856,11 @@
 
         .demo-chat {
             padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
         }
 
         .demo-chat .chat-header {
@@ -859,14 +868,17 @@
         }
 
         .demo-chat .chat-messages {
-            min-height: 400px;
-            max-height: 50vh;
+            flex: 1;
+            min-height: 200px;
+            max-height: none;
             overflow-y: auto;
         }
 
         .demo-debrief {
             display: none;
             padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .demo-debrief.active {
@@ -987,6 +999,13 @@
             transition: all 0.3s;
         }
 
+        .portrait-gif {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
         .subject-info {
             flex: 1;
         }
@@ -1047,6 +1066,662 @@
             font-style: italic;
         }
 
+        /* Observation Panel */
+        .observation-panel {
+            background: var(--navy-deep);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.25rem;
+        }
+
+        .observation-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .observation-header svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--accent-gold);
+            fill: none;
+        }
+
+        .observation-header span {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+        }
+
+        .observation-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .observation-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: rgba(46, 90, 140, 0.2);
+            border: 1px solid var(--border-color);
+            padding: 0.35rem 0.65rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .observation-tag.critical {
+            background: rgba(248, 113, 113, 0.15);
+            border-color: rgba(248, 113, 113, 0.3);
+            color: var(--error);
+        }
+
+        .observation-tag.warning {
+            background: rgba(251, 191, 36, 0.15);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: var(--warning);
+        }
+
+        .observation-tag svg {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        /* FI Card */
+        .fi-card-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.25rem;
+            background: var(--navy-deep);
+            border-top: 1px solid var(--border-color);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .fi-card-toggle:hover {
+            background: var(--navy-light);
+        }
+
+        .fi-card-toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+        }
+
+        .fi-card-toggle-label svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .fi-card-toggle-arrow {
+            transition: transform 0.2s;
+        }
+
+        .fi-card-toggle.open .fi-card-toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        .fi-card-panel {
+            display: none;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2d4a 100%);
+            border-top: 1px solid var(--border-color);
+            padding: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .fi-card-panel.open {
+            display: block;
+        }
+
+        .fi-card-form {
+            background: linear-gradient(180deg, #0d1f3c 0%, #132744 100%);
+            border: 1px solid rgba(100, 160, 255, 0.3);
+            border-radius: 8px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 11px;
+            color: #e0e8f4;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .fi-row {
+            display: flex;
+            border-bottom: 1px solid rgba(100, 160, 255, 0.15);
+        }
+
+        .fi-row:last-child {
+            border-bottom: none;
+        }
+
+        .fi-cell {
+            border-right: 1px solid rgba(100, 160, 255, 0.15);
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            min-height: 32px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .fi-cell:last-child {
+            border-right: none;
+        }
+
+        .fi-cell:hover {
+            background: rgba(100, 160, 255, 0.05);
+        }
+
+        .fi-cell label {
+            font-size: 9px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #64a0ff;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .fi-cell input,
+        .fi-cell textarea {
+            border: none;
+            background: transparent;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 12px;
+            color: #fff;
+            width: 100%;
+            flex: 1;
+            padding: 2px 0;
+            outline: none;
+            min-height: 0;
+        }
+
+        .fi-cell input::placeholder,
+        .fi-cell textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .fi-cell input:focus,
+        .fi-cell textarea:focus {
+            background: rgba(100, 160, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .fi-cell textarea {
+            resize: none;
+            height: 100%;
+        }
+
+        .fi-cell.w8 { flex: 0 0 8%; }
+        .fi-cell.w10 { flex: 0 0 10%; }
+        .fi-cell.w12 { flex: 0 0 12%; }
+        .fi-cell.w15 { flex: 0 0 15%; }
+        .fi-cell.w16 { flex: 0 0 16%; }
+        .fi-cell.w17 { flex: 0 0 17%; }
+        .fi-cell.w20 { flex: 0 0 20%; }
+        .fi-cell.w22 { flex: 0 0 22%; }
+        .fi-cell.w25 { flex: 0 0 25%; }
+        .fi-cell.w28 { flex: 0 0 28%; }
+        .fi-cell.w30 { flex: 0 0 30%; }
+        .fi-cell.w33 { flex: 0 0 33.33%; }
+        .fi-cell.w35 { flex: 0 0 35%; }
+        .fi-cell.w40 { flex: 0 0 40%; }
+        .fi-cell.w45 { flex: 0 0 45%; }
+        .fi-cell.w50 { flex: 0 0 50%; }
+        .fi-cell.w60 { flex: 0 0 60%; }
+        .fi-cell.w70 { flex: 0 0 70%; }
+        .fi-cell.w100 { flex: 0 0 100%; }
+
+        .fi-checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            font-size: 10px;
+        }
+
+        .fi-checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: normal;
+            cursor: pointer;
+            color: #c0d0e8;
+            transition: color 0.2s;
+        }
+
+        .fi-checkbox-group label:hover {
+            color: #fff;
+        }
+
+        .fi-checkbox-group input[type="checkbox"],
+        .fi-checkbox-group input[type="radio"] {
+            width: 12px;
+            height: 12px;
+            margin: 0;
+            accent-color: #64a0ff;
+        }
+
+        .fi-section-header {
+            background: linear-gradient(90deg, #1a3a5c 0%, #2a4a6c 50%, #1a3a5c 100%);
+            font-weight: 700;
+            text-align: center;
+            padding: 8px;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: #64a0ff;
+            border-bottom: 1px solid rgba(100, 160, 255, 0.3);
+            border-top: 1px solid rgba(100, 160, 255, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .fi-field label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .fi-field input,
+        .fi-field select,
+        .fi-field textarea {
+            background: var(--navy-mid);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.4rem 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-family: inherit;
+        }
+
+        .fi-field input:focus,
+        .fi-field select:focus,
+        .fi-field textarea:focus {
+            outline: none;
+            border-color: var(--tactical-blue);
+        }
+
+        .fi-field textarea {
+            resize: none;
+            min-height: 50px;
+        }
+
+        .fi-section-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--tactical-blue);
+            margin: 0.75rem 0 0.5rem 0;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            grid-column: span 3;
+        }
+
+        .fi-section-title:first-child {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        /* Split Input Area */
+        .split-input-area {
+            padding: 1rem 1.25rem;
+            background: var(--navy-deep);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .input-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .input-label svg {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .input-label.say-label { color: var(--tactical-blue); }
+        .input-label.do-label { color: var(--accent-gold); }
+        .input-label.radio-label { color: var(--success); }
+
+        .split-input {
+            background: var(--navy-mid);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.6rem 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: none;
+            min-height: 60px;
+            transition: border-color 0.2s;
+        }
+
+        .split-input::placeholder {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .split-input:focus {
+            outline: none;
+            border-color: var(--tactical-blue);
+        }
+
+        .split-input.say-input:focus { border-color: var(--tactical-blue); }
+        .split-input.do-input:focus { border-color: var(--accent-gold); }
+        .split-input.radio-input:focus { border-color: var(--success); }
+
+        .input-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .response-timer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .timer-value {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            min-width: 50px;
+        }
+
+        .timer-value.active {
+            color: var(--warning);
+            animation: pulse 1s infinite;
+        }
+
+        .submit-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            background: var(--accent-gold);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--navy-deep);
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--accent-gold-bright);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .submit-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--navy-deep);
+        }
+
+        /* Scenario Selection */
+        .scenario-select {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .scenario-select-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .scenario-select-header h2 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-select-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .select-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .select-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            flex: 1;
+            min-height: 200px;
+            max-height: calc(100vh - 350px);
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .scenario-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scenario-grid::-webkit-scrollbar-track {
+            background: var(--navy-deep);
+            border-radius: 3px;
+        }
+
+        .scenario-grid::-webkit-scrollbar-thumb {
+            background: var(--tactical-blue);
+            border-radius: 3px;
+        }
+
+        .scenario-card.random-card {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--navy-deep), var(--navy-light));
+            border-style: dashed;
+        }
+
+        .scenario-card.random-card .scenario-icon-box {
+            background: rgba(201, 162, 39, 0.2);
+        }
+
+        .scenario-score {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--navy-light);
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+            font-family: 'Barlow Condensed', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .scenario-score.no-score {
+            color: var(--text-muted);
+        }
+
+        .scenario-score.score-low {
+            color: var(--error);
+            background: rgba(248, 113, 113, 0.15);
+        }
+
+        .scenario-score.score-mid {
+            color: var(--warning);
+            background: rgba(251, 191, 36, 0.15);
+        }
+
+        .scenario-score.score-high {
+            color: var(--success);
+            background: rgba(74, 222, 128, 0.15);
+        }
+
+        .scenario-card {
+            position: relative;
+        }
+
+        .scenario-card {
+            background: var(--navy-deep);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--tactical-blue);
+        }
+
+        .scenario-card.selected {
+            border-color: var(--accent-gold);
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .scenario-icon-box {
+            width: 48px;
+            height: 48px;
+            background: rgba(46, 90, 140, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .scenario-card.selected .scenario-icon-box {
+            background: rgba(201, 162, 39, 0.2);
+        }
+
+        .scenario-details h4 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .scenario-details p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+
+        .difficulty-card {
+            background: var(--navy-deep);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .difficulty-card:hover {
+            border-color: var(--tactical-blue);
+        }
+
+        .difficulty-card.selected {
+            border-color: var(--accent-gold);
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .difficulty-card.easy .difficulty-icon { color: var(--success); }
+        .difficulty-card.medium .difficulty-icon { color: var(--warning); }
+        .difficulty-card.hard .difficulty-icon { color: var(--error); }
+
+        .difficulty-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .difficulty-card h4 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .difficulty-card p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .start-scenario-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            justify-content: center;
+        }
+
         @media (max-width: 900px) {
             .hero-content {
                 grid-template-columns: 1fr;
@@ -1096,6 +1771,277 @@
 
             .pricing-card {
                 padding: 2rem 1.5rem;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            .split-input {
+                min-height: 50px;
+            }
+
+            /* Modal mobile styles */
+            .modal {
+                border-radius: 0;
+                padding: 0;
+            }
+
+            .modal-header {
+                padding: 1rem;
+                padding-right: 3rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                position: relative;
+            }
+
+            .modal-header h2 {
+                font-size: 1rem;
+                width: 100%;
+            }
+
+            .scenario-timer {
+                font-size: 0.9rem;
+            }
+
+            .modal-close {
+                position: fixed;
+                top: 0.5rem;
+                right: 0.5rem;
+                width: 36px;
+                height: 36px;
+                z-index: 1001;
+            }
+
+            /* Scenario selection mobile */
+            .scenario-selection {
+                padding: 1rem;
+            }
+
+            .scenario-categories {
+                gap: 1.5rem;
+            }
+
+            .category-title {
+                font-size: 0.75rem;
+            }
+
+            .scenario-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+
+            .scenario-card {
+                padding: 0.75rem;
+                min-height: auto;
+            }
+
+            .scenario-card .icon {
+                font-size: 1.5rem;
+            }
+
+            .scenario-card .title {
+                font-size: 0.7rem;
+            }
+
+            .scenario-score {
+                font-size: 0.6rem;
+                padding: 2px 4px;
+            }
+
+            /* Difficulty selector mobile */
+            .difficulty-selector {
+                padding: 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .difficulty-selector label {
+                font-size: 0.7rem;
+            }
+
+            .difficulty-options {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+            }
+
+            .difficulty-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.65rem;
+            }
+
+            /* Chat area mobile */
+            .demo-chat {
+                min-height: auto;
+            }
+
+            .chat-messages {
+                padding: 0.75rem;
+                max-height: 250px;
+            }
+
+            .message {
+                max-width: 95%;
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            /* Observation panel mobile */
+            .observation-panel {
+                padding: 0.75rem;
+            }
+
+            .observation-panel h4 {
+                font-size: 0.7rem;
+            }
+
+            .observation-list {
+                gap: 0.3rem;
+            }
+
+            .observation-item {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.5rem;
+            }
+
+            /* Split input mobile */
+            .split-input-area {
+                padding: 0.75rem;
+            }
+
+            .input-row {
+                gap: 0.5rem;
+            }
+
+            .input-label {
+                font-size: 0.65rem;
+            }
+
+            .split-input {
+                font-size: 0.85rem;
+                padding: 0.5rem;
+            }
+
+            .send-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.8rem;
+            }
+
+            /* FI Card mobile */
+            .fi-card-panel {
+                padding: 8px;
+                max-height: 400px;
+            }
+
+            .fi-card-form {
+                font-size: 10px;
+            }
+
+            .fi-row {
+                flex-wrap: wrap;
+            }
+
+            .fi-cell {
+                min-height: 28px;
+                padding: 4px 6px;
+                flex: 1 1 45% !important;
+                min-width: 45%;
+            }
+
+            .fi-cell.w100 {
+                flex: 1 1 100% !important;
+                min-width: 100%;
+            }
+
+            .fi-cell.w70,
+            .fi-cell.w60,
+            .fi-cell.w50,
+            .fi-cell.w45,
+            .fi-cell.w40 {
+                flex: 1 1 100% !important;
+                min-width: 100%;
+            }
+
+            .fi-cell label {
+                font-size: 8px;
+            }
+
+            .fi-cell input,
+            .fi-cell textarea {
+                font-size: 11px;
+            }
+
+            .fi-checkbox-group {
+                gap: 2px 6px;
+            }
+
+            .fi-checkbox-group label {
+                font-size: 8px;
+            }
+
+            .fi-checkbox-group input[type="checkbox"],
+            .fi-checkbox-group input[type="radio"] {
+                width: 10px;
+                height: 10px;
+            }
+
+            .fi-section-header {
+                font-size: 9px;
+                padding: 6px;
+            }
+
+            /* Features section mobile */
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .feature-card {
+                padding: 1.25rem;
+            }
+
+            /* General mobile typography */
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .section-header p {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 380px) {
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .difficulty-btn {
+                padding: 0.35rem 0.5rem;
+                font-size: 0.6rem;
+            }
+
+            .fi-cell {
+                flex: 1 1 100% !important;
+                min-width: 100%;
+            }
+
+            .chat-messages {
+                max-height: 200px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
             }
         }
     </style>
@@ -1361,7 +2307,278 @@
                     <line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>
-            <div class="demo-chat" id="demo-chat-section">
+
+            <!-- Scenario Selection -->
+            <div class="scenario-select" id="scenario-select-section">
+                <div class="scenario-select-header">
+                    <h2>Select Training Scenario</h2>
+                    <p>Choose a scenario and difficulty level to begin</p>
+                </div>
+
+                <div class="select-section">
+                    <span class="select-label">Scenario Type</span>
+                    <div class="scenario-grid" id="scenario-grid">
+                        <!-- Random/Unknown -->
+                        <div class="scenario-card random-card" data-scenario="random">
+                            <div class="scenario-icon-box">🎲</div>
+                            <div class="scenario-details">
+                                <h4>Unknown Scenario</h4>
+                                <p>Test your adaptability - scenario revealed on arrival</p>
+                            </div>
+                        </div>
+                        <!-- Traffic -->
+                        <div class="scenario-card selected" data-scenario="dui">
+                            <div class="scenario-icon-box">🚗</div>
+                            <div class="scenario-details">
+                                <h4>Traffic Stop - DUI</h4>
+                                <p>Suspected impaired driver</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="traffic_warrant">
+                            <div class="scenario-icon-box">🚨</div>
+                            <div class="scenario-details">
+                                <h4>Traffic Stop - Warrant</h4>
+                                <p>Driver has outstanding warrant</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="traffic_drugs">
+                            <div class="scenario-icon-box">💊</div>
+                            <div class="scenario-details">
+                                <h4>Traffic Stop - Narcotics</h4>
+                                <p>Suspected drug possession</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="traffic_suspended">
+                            <div class="scenario-icon-box">🪪</div>
+                            <div class="scenario-details">
+                                <h4>Suspended License</h4>
+                                <p>Driver with suspended license</p>
+                            </div>
+                        </div>
+                        <!-- Domestic/Violence -->
+                        <div class="scenario-card" data-scenario="domestic">
+                            <div class="scenario-icon-box">🏠</div>
+                            <div class="scenario-details">
+                                <h4>Domestic Violence</h4>
+                                <p>Yelling and breaking glass reported</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="domestic_weapons">
+                            <div class="scenario-icon-box">🔪</div>
+                            <div class="scenario-details">
+                                <h4>DV - Weapons Involved</h4>
+                                <p>Domestic with knife/weapon mentioned</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="assault">
+                            <div class="scenario-icon-box">👊</div>
+                            <div class="scenario-details">
+                                <h4>Assault in Progress</h4>
+                                <p>Physical altercation between parties</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="threats">
+                            <div class="scenario-icon-box">⚠️</div>
+                            <div class="scenario-details">
+                                <h4>Threatening/Intimidation</h4>
+                                <p>Verbal threats made against victim</p>
+                            </div>
+                        </div>
+                        <!-- Property Crimes -->
+                        <div class="scenario-card" data-scenario="shoplifting">
+                            <div class="scenario-icon-box">🛒</div>
+                            <div class="scenario-details">
+                                <h4>Shoplifting</h4>
+                                <p>LP detained suspect at store</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="burglary">
+                            <div class="scenario-icon-box">🏚️</div>
+                            <div class="scenario-details">
+                                <h4>Burglary in Progress</h4>
+                                <p>Suspect inside residence/business</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="theft">
+                            <div class="scenario-icon-box">💰</div>
+                            <div class="scenario-details">
+                                <h4>Theft Report</h4>
+                                <p>Victim reporting stolen property</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="vehicle_theft">
+                            <div class="scenario-icon-box">🚙</div>
+                            <div class="scenario-details">
+                                <h4>Vehicle Theft</h4>
+                                <p>Stolen vehicle recovered with occupant</p>
+                            </div>
+                        </div>
+                        <!-- Trespass/Disturbance -->
+                        <div class="scenario-card" data-scenario="trespass">
+                            <div class="scenario-icon-box">🚧</div>
+                            <div class="scenario-details">
+                                <h4>Criminal Trespass</h4>
+                                <p>Refusing to leave property</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="disturbance">
+                            <div class="scenario-icon-box">🗣️</div>
+                            <div class="scenario-details">
+                                <h4>Disorderly Conduct</h4>
+                                <p>Disturbance at bar/public place</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="noise">
+                            <div class="scenario-icon-box">🔊</div>
+                            <div class="scenario-details">
+                                <h4>Noise Complaint</h4>
+                                <p>Loud party, music complaints</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="loitering">
+                            <div class="scenario-icon-box">🚶</div>
+                            <div class="scenario-details">
+                                <h4>Loitering/Panhandling</h4>
+                                <p>Aggressive panhandler at business</p>
+                            </div>
+                        </div>
+                        <!-- Civil Disputes -->
+                        <div class="scenario-card" data-scenario="civil_property">
+                            <div class="scenario-icon-box">📋</div>
+                            <div class="scenario-details">
+                                <h4>Civil - Property Dispute</h4>
+                                <p>Neighbors arguing over property line</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="civil_custody">
+                            <div class="scenario-icon-box">👨‍👩‍👧</div>
+                            <div class="scenario-details">
+                                <h4>Civil - Custody Exchange</h4>
+                                <p>Disputed child custody exchange</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="civil_landlord">
+                            <div class="scenario-icon-box">🔑</div>
+                            <div class="scenario-details">
+                                <h4>Civil - Landlord/Tenant</h4>
+                                <p>Eviction or lockout dispute</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="civil_repo">
+                            <div class="scenario-icon-box">🚛</div>
+                            <div class="scenario-details">
+                                <h4>Civil - Repossession</h4>
+                                <p>Vehicle repo standby request</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="civil_business">
+                            <div class="scenario-icon-box">🏪</div>
+                            <div class="scenario-details">
+                                <h4>Civil - Business Dispute</h4>
+                                <p>Customer/business disagreement</p>
+                            </div>
+                        </div>
+                        <!-- Mental Health/Welfare -->
+                        <div class="scenario-card" data-scenario="mental_crisis">
+                            <div class="scenario-icon-box">🧠</div>
+                            <div class="scenario-details">
+                                <h4>Mental Health Crisis</h4>
+                                <p>Person in psychological distress</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="welfare_check">
+                            <div class="scenario-icon-box">❤️</div>
+                            <div class="scenario-details">
+                                <h4>Welfare Check</h4>
+                                <p>Family hasn't heard from resident</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="suicide_threat">
+                            <div class="scenario-icon-box">🆘</div>
+                            <div class="scenario-details">
+                                <h4>Suicide Threat</h4>
+                                <p>Person threatening self-harm</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="intoxicated">
+                            <div class="scenario-icon-box">🍺</div>
+                            <div class="scenario-details">
+                                <h4>Intoxicated Person</h4>
+                                <p>Passed out/incapacitated in public</p>
+                            </div>
+                        </div>
+                        <!-- Other -->
+                        <div class="scenario-card" data-scenario="suspicious">
+                            <div class="scenario-icon-box">👀</div>
+                            <div class="scenario-details">
+                                <h4>Suspicious Person</h4>
+                                <p>Subject casing neighborhood</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="alarm">
+                            <div class="scenario-icon-box">🚨</div>
+                            <div class="scenario-details">
+                                <h4>Alarm Response</h4>
+                                <p>Burglar alarm at business</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="harassment">
+                            <div class="scenario-icon-box">📱</div>
+                            <div class="scenario-details">
+                                <h4>Harassment</h4>
+                                <p>Ongoing harassment complaint</p>
+                            </div>
+                        </div>
+                        <div class="scenario-card" data-scenario="stalking">
+                            <div class="scenario-icon-box">🔍</div>
+                            <div class="scenario-details">
+                                <h4>Stalking</h4>
+                                <p>Victim reports being followed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="select-section">
+                    <span class="select-label">Difficulty Level</span>
+                    <div class="difficulty-grid" id="difficulty-grid">
+                        <div class="difficulty-card" data-difficulty="trainee">
+                            <div class="difficulty-icon">⚪</div>
+                            <h4>Trainee</h4>
+                            <p>Very cooperative</p>
+                        </div>
+                        <div class="difficulty-card selected" data-difficulty="easy">
+                            <div class="difficulty-icon">🟢</div>
+                            <h4>Rookie</h4>
+                            <p>Mostly compliant</p>
+                        </div>
+                        <div class="difficulty-card" data-difficulty="medium">
+                            <div class="difficulty-icon">🟡</div>
+                            <h4>Standard</h4>
+                            <p>Evasive</p>
+                        </div>
+                        <div class="difficulty-card" data-difficulty="hard">
+                            <div class="difficulty-icon">🟠</div>
+                            <h4>Veteran</h4>
+                            <p>Resistant</p>
+                        </div>
+                        <div class="difficulty-card" data-difficulty="expert">
+                            <div class="difficulty-icon">🔴</div>
+                            <h4>Expert</h4>
+                            <p>Hostile/volatile</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary start-scenario-btn" id="start-scenario-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5,3 19,12 5,21"/>
+                    </svg>
+                    Start Scenario
+                </button>
+            </div>
+
+            <div class="demo-chat" id="demo-chat-section" style="display: none;">
                 <div class="chat-header">
                     <div class="chat-scenario">
                         <div class="scenario-icon">
@@ -1377,6 +2594,34 @@
                     </div>
                     <span class="mode-badge">Training Mode</span>
                 </div>
+                <!-- Observation Panel -->
+                <div class="observation-panel" id="observation-panel">
+                    <div class="observation-header">
+                        <svg viewBox="0 0 24 24" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6m0 6v10M1 12h6m6 0h10"/>
+                        </svg>
+                        <span>Current Observations</span>
+                    </div>
+                    <div class="observation-list" id="observation-list">
+                        <span class="observation-tag warning">
+                            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Bloodshot eyes
+                        </span>
+                        <span class="observation-tag critical">
+                            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19l-7-7 1.41-1.41L12 16.17l11.59-11.58L25 6z"/></svg>
+                            Strong odor of alcohol
+                        </span>
+                        <span class="observation-tag warning">
+                            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            Slurred speech
+                        </span>
+                        <span class="observation-tag">
+                            <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Weaving between lanes
+                        </span>
+                    </div>
+                </div>
                 <div class="subject-panel" id="subject-panel">
                     <div class="subject-portrait mood-nervous" id="subject-portrait">
                         <span class="portrait-face" id="portrait-face">😰</span>
@@ -1391,13 +2636,268 @@
                     </div>
                 </div>
                 <div class="chat-messages" id="demo-messages"></div>
-                <div class="chat-input">
-                    <input type="text" id="demo-input" placeholder="Type your response...">
-                    <button class="send-btn" id="demo-send-btn">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+
+                <!-- FI Card (36 Card) -->
+                <div class="fi-card-toggle" id="fi-card-toggle">
+                    <div class="fi-card-toggle-label">
+                        <svg viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
                         </svg>
-                    </button>
+                        FI Card (36 Card)
+                    </div>
+                    <svg class="fi-card-toggle-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </div>
+                <div class="fi-card-panel" id="fi-card-panel">
+                    <div class="fi-card-form">
+                        <!-- Row 1: Date, Time, Serial#, Officer, Squad, Inc -->
+                        <div class="fi-row">
+                            <div class="fi-cell w12"><label>Date *</label><input type="text" id="fi-date"></div>
+                            <div class="fi-cell w12"><label>Time *</label><input type="text" id="fi-time"></div>
+                            <div class="fi-cell w15"><label>Serial # *</label><input type="text" id="fi-serial"></div>
+                            <div class="fi-cell w30"><label>Officer Name</label><input type="text" id="fi-officer"></div>
+                            <div class="fi-cell w15"><label>Squad</label><input type="text" id="fi-squad"></div>
+                            <div class="fi-cell w16"><label>Inc. #</label><input type="text" id="fi-inc"></div>
+                        </div>
+                        <!-- Call Details Section -->
+                        <div class="fi-section-header">Call Details</div>
+                        <div class="fi-row">
+                            <div class="fi-cell w25"><label>Call Type / Nature</label><input type="text" id="fi-call-type"></div>
+                            <div class="fi-cell w25"><label>CAD / Call #</label><input type="text" id="fi-cad-number"></div>
+                            <div class="fi-cell w15"><label>Dispatched</label><input type="text" id="fi-dispatched"></div>
+                            <div class="fi-cell w15"><label>Arrived</label><input type="text" id="fi-arrived"></div>
+                            <div class="fi-cell w20"><label>Cleared</label><input type="text" id="fi-cleared"></div>
+                        </div>
+                        <div class="fi-row">
+                            <div class="fi-cell w50"><label>Disposition / How Cleared</label><input type="text" id="fi-disposition"></div>
+                            <div class="fi-cell w50"><label>Beat / Zone</label><input type="text" id="fi-beat"></div>
+                        </div>
+                        <!-- Row 2: Location + Contact Type -->
+                        <div class="fi-row">
+                            <div class="fi-cell w70"><label>Location of Occurrence *</label><input type="text" id="fi-location"></div>
+                            <div class="fi-cell w30">
+                                <label>Contact Type</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="radio" name="fi-contact-type" value="1"> 1. Driver</label>
+                                    <label><input type="radio" name="fi-contact-type" value="2"> 2. Passenger</label>
+                                    <label><input type="radio" name="fi-contact-type" value="3"> 3. Pedestrian</label>
+                                    <label><input type="radio" name="fi-contact-type" value="4"> 4. N/A</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Row 3: Name -->
+                        <div class="fi-row">
+                            <div class="fi-cell w40"><label>Last Name</label><input type="text" id="fi-last-name"></div>
+                            <div class="fi-cell w40"><label>First Name</label><input type="text" id="fi-first-name"></div>
+                            <div class="fi-cell w20"><label>M.I.</label><input type="text" id="fi-middle"></div>
+                        </div>
+                        <!-- Row 4: Home Address + SSN -->
+                        <div class="fi-row">
+                            <div class="fi-cell w70"><label>Home Address</label><input type="text" id="fi-address"></div>
+                            <div class="fi-cell w30"><label>Social Security Number</label><input type="text" id="fi-ssn"></div>
+                        </div>
+                        <!-- Row 5: Physical descriptors + DL -->
+                        <div class="fi-row">
+                            <div class="fi-cell w10"><label>Race</label><input type="text" id="fi-race"></div>
+                            <div class="fi-cell w8"><label>Sex</label><input type="text" id="fi-sex"></div>
+                            <div class="fi-cell w10"><label>Weight</label><input type="text" id="fi-weight"></div>
+                            <div class="fi-cell w10"><label>Height</label><input type="text" id="fi-height"></div>
+                            <div class="fi-cell w10"><label>Eyes</label><input type="text" id="fi-eyes"></div>
+                            <div class="fi-cell w10"><label>Hair</label><input type="text" id="fi-hair-color"></div>
+                            <div class="fi-cell w12"><label>Date of Birth</label><input type="text" id="fi-dob"></div>
+                            <div class="fi-cell w22"><label>Driver's License Number</label><input type="text" id="fi-dl"></div>
+                            <div class="fi-cell w8"><label>State</label><input type="text" id="fi-dl-state"></div>
+                        </div>
+                        <!-- Row 6: Business/Occupation + Misc/Clothing -->
+                        <div class="fi-row">
+                            <div class="fi-cell w60"><label>Business Address/Occupation</label><input type="text" id="fi-occupation"></div>
+                            <div class="fi-cell w40"><label>Misc./Clothing</label><input type="text" id="fi-clothing"></div>
+                        </div>
+                        <!-- Row 7: Gang Affiliation + Phone -->
+                        <div class="fi-row">
+                            <div class="fi-cell w60"><label>Gang Affiliation</label><input type="text" id="fi-gang"></div>
+                            <div class="fi-cell w40"><label>Phone Number</label><input type="text" id="fi-phone"></div>
+                        </div>
+                        <!-- Row 8: Nickname/Alias full width -->
+                        <div class="fi-row">
+                            <div class="fi-cell w100"><label>Nickname/Alias</label><input type="text" id="fi-alias"></div>
+                        </div>
+                        <!-- Row 9: Build, Hair Length, Hair Style, Facial Hair, Complexion, Misc -->
+                        <div class="fi-row">
+                            <div class="fi-cell w12">
+                                <label>Build</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="radio" name="fi-build" value="2"> 2 Thin</label>
+                                    <label><input type="radio" name="fi-build" value="3"> 3 Medium</label>
+                                    <label><input type="radio" name="fi-build" value="4"> 4 Heavy</label>
+                                    <label><input type="radio" name="fi-build" value="5"> 5 Misc.</label>
+                                </div>
+                            </div>
+                            <div class="fi-cell w15">
+                                <label>Hair Length</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="radio" name="fi-hair-len" value="3"> 3 Conserv.</label>
+                                    <label><input type="radio" name="fi-hair-len" value="4"> 4 Short</label>
+                                    <label><input type="radio" name="fi-hair-len" value="5"> 5 Bald/Shaved</label>
+                                    <label><input type="radio" name="fi-hair-len" value="6"> 6 Thin</label>
+                                    <label><input type="radio" name="fi-hair-len" value="8"> 8 Long</label>
+                                </div>
+                            </div>
+                            <div class="fi-cell w15">
+                                <label>Hair Style</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="radio" name="fi-hair-style" value="1"> 1 Afro</label>
+                                    <label><input type="radio" name="fi-hair-style" value="4"> 4 Curly</label>
+                                    <label><input type="radio" name="fi-hair-style" value="4"> 4 Strght</label>
+                                    <label><input type="radio" name="fi-hair-style" value="5"> 5 Braided</label>
+                                    <label><input type="radio" name="fi-hair-style" value="8"> 8 Ponytail</label>
+                                </div>
+                            </div>
+                            <div class="fi-cell w15">
+                                <label>Facial Hair</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="checkbox" name="fi-facial" value="2"> 2 Beard</label>
+                                    <label><input type="checkbox" name="fi-facial" value="3"> 3 Goatee</label>
+                                    <label><input type="checkbox" name="fi-facial" value="4"> 4 Moustache</label>
+                                    <label><input type="checkbox" name="fi-facial" value="5"> 5 Sideburn</label>
+                                    <label><input type="checkbox" name="fi-facial" value="6"> 6 Clean Shaven</label>
+                                </div>
+                            </div>
+                            <div class="fi-cell w15">
+                                <label>Complexion</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="radio" name="fi-complex" value="2"> 2 Fair</label>
+                                    <label><input type="radio" name="fi-complex" value="4"> 4 Medium</label>
+                                    <label><input type="radio" name="fi-complex" value="5"> 5 Dark</label>
+                                    <label><input type="radio" name="fi-complex" value="7"> 7 Acne</label>
+                                    <label><input type="radio" name="fi-complex" value="9"> 9 Ruddy</label>
+                                </div>
+                            </div>
+                            <div class="fi-cell w28">
+                                <label>Misc.</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="checkbox" name="fi-misc" value="1"> 1 Accent</label>
+                                    <label><input type="checkbox" name="fi-misc" value="2"> 2 Glasses</label>
+                                    <label><input type="checkbox" name="fi-misc" value="3"> 3 Tattoos</label>
+                                    <label><input type="checkbox" name="fi-misc" value="4"> 4 Scars</label>
+                                    <label><input type="checkbox" name="fi-misc" value="5"> 5 Deformity</label>
+                                    <label><input type="checkbox" name="fi-misc" value="99"> 99 Other</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Row 10: Vehicle - Plate, Year, State, Make, Style, Model, Color -->
+                        <div class="fi-row">
+                            <div class="fi-cell w20"><label>Plate Number</label><input type="text" id="fi-plate"></div>
+                            <div class="fi-cell w10"><label>Year</label><input type="text" id="fi-veh-year"></div>
+                            <div class="fi-cell w10"><label>State</label><input type="text" id="fi-plate-state"></div>
+                            <div class="fi-cell w15"><label>Make</label><input type="text" id="fi-veh-make"></div>
+                            <div class="fi-cell w15"><label>Style</label><input type="text" id="fi-veh-style"></div>
+                            <div class="fi-cell w15"><label>Model</label><input type="text" id="fi-veh-model"></div>
+                            <div class="fi-cell w15"><label>Color</label><input type="text" id="fi-veh-color"></div>
+                        </div>
+                        <!-- Row 11: VIN + Registered Owner + Camper -->
+                        <div class="fi-row">
+                            <div class="fi-cell w40"><label>Vehicle Identification Number</label><input type="text" id="fi-vin"></div>
+                            <div class="fi-cell w45"><label>Registered Owner</label><input type="text" id="fi-reg-owner"></div>
+                            <div class="fi-cell w15">
+                                <label>Camper</label>
+                                <div class="fi-checkbox-group">
+                                    <label><input type="checkbox" id="fi-camper"> (x if yes)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Back of Card Section -->
+                        <div class="fi-section-header">Additional Subjects / Weapons</div>
+                        <!-- Subject #2 -->
+                        <div class="fi-row">
+                            <div class="fi-cell w15"><label>Subject #2</label></div>
+                            <div class="fi-cell w35"><label>Last, First Middle</label><input type="text" id="fi-subj2-name"></div>
+                            <div class="fi-cell w10"><label>Race</label><input type="text" id="fi-subj2-race"></div>
+                            <div class="fi-cell w10"><label>Sex</label><input type="text" id="fi-subj2-sex"></div>
+                            <div class="fi-cell w15"><label>DOB</label><input type="text" id="fi-subj2-dob"></div>
+                            <div class="fi-cell w15"><label>SS#</label><input type="text" id="fi-subj2-ssn"></div>
+                        </div>
+                        <!-- Subject #3 -->
+                        <div class="fi-row">
+                            <div class="fi-cell w15"><label>Subject #3</label></div>
+                            <div class="fi-cell w35"><label>Last, First Middle</label><input type="text" id="fi-subj3-name"></div>
+                            <div class="fi-cell w10"><label>Race</label><input type="text" id="fi-subj3-race"></div>
+                            <div class="fi-cell w10"><label>Sex</label><input type="text" id="fi-subj3-sex"></div>
+                            <div class="fi-cell w15"><label>DOB</label><input type="text" id="fi-subj3-dob"></div>
+                            <div class="fi-cell w15"><label>SS#</label><input type="text" id="fi-subj3-ssn"></div>
+                        </div>
+                        <!-- Weapon -->
+                        <div class="fi-row">
+                            <div class="fi-cell w25"><label>Weapon Make</label><input type="text" id="fi-weapon-make"></div>
+                            <div class="fi-cell w25"><label>Model</label><input type="text" id="fi-weapon-model"></div>
+                            <div class="fi-cell w25"><label>Caliber</label><input type="text" id="fi-weapon-caliber"></div>
+                            <div class="fi-cell w25"><label>Serial #</label><input type="text" id="fi-weapon-serial"></div>
+                        </div>
+                        <!-- Narrative Section -->
+                        <div class="fi-section-header">Narrative</div>
+                        <div class="fi-row">
+                            <div class="fi-cell w100" style="min-height: 80px;"><textarea id="fi-narrative" style="min-height: 70px;"></textarea></div>
+                        </div>
+                        <!-- Email/Social -->
+                        <div class="fi-row">
+                            <div class="fi-cell w70"><label>Email Address/Social Media Handle</label><input type="text" id="fi-social"></div>
+                            <div class="fi-cell w30" style="text-align: right; font-size: 8px; color: #666; justify-content: flex-end;">Field Interview (FI) Card<br>80-36D Rev. 2/14</div>
+                        </div>
+                        <!-- Call Description - largest field -->
+                        <div class="fi-section-header">Call Description</div>
+                        <div class="fi-row">
+                            <div class="fi-cell w100" style="min-height: 150px;"><textarea id="fi-call-description" style="min-height: 140px;"></textarea></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split Input Area -->
+                <div class="split-input-area">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label class="input-label say-label">
+                                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                What I Say
+                            </label>
+                            <textarea class="split-input say-input" id="input-say" placeholder="License and registration..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label do-label">
+                                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20 4l-2 2m-8 8l-6 6"/><path d="M15 15l6 6"/><path d="M3 3l18 18"/></svg>
+                                What I Do
+                            </label>
+                            <textarea class="split-input do-input" id="input-do" placeholder="Shine flashlight in vehicle..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label radio-label">
+                                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 20h.01"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M1.5 8.5a15 15 0 0 1 21 0"/></svg>
+                                What I Radio
+                            </label>
+                            <textarea class="split-input radio-input" id="input-radio" placeholder="Dispatch, I have a 10-55..."></textarea>
+                        </div>
+                    </div>
+                    <div class="input-actions">
+                        <div class="response-timer">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            Response time: <span class="timer-value" id="response-timer">0.0s</span>
+                        </div>
+                        <div class="submit-action">
+                            <button class="submit-btn" id="demo-send-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+                                </svg>
+                                Submit Action
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="demo-debrief" id="demo-debrief-section">
@@ -1457,18 +2957,315 @@
             var API_URL = 'https://us-central1-dayta-analytics-sandbox.cloudfunctions.net/blueshield-chat';
 
             var modal = document.getElementById('demo-modal');
+            var scenarioSelectSection = document.getElementById('scenario-select-section');
             var chatSection = document.getElementById('demo-chat-section');
             var debriefSection = document.getElementById('demo-debrief-section');
             var messagesContainer = document.getElementById('demo-messages');
-            var demoInput = document.getElementById('demo-input');
+            var inputSay = document.getElementById('input-say');
+            var inputDo = document.getElementById('input-do');
+            var inputRadio = document.getElementById('input-radio');
             var sendBtn = document.getElementById('demo-send-btn');
+            var timerDisplay = document.getElementById('response-timer');
+            var scenarioTitle = document.getElementById('scenario-title');
+            var scenarioLocation = document.getElementById('scenario-location');
 
             var messages = [];
             var isLoading = false;
             var demoStarted = false;
             var currentMood = 'nervous';
+            var timerInterval = null;
+            var timerStart = null;
+            var selectedScenario = 'dui';
+            var selectedDifficulty = 'easy';
+            var scenarioScores = loadScores();
 
-            var SCENARIO_INTRO = 'Vehicle pulled over for weaving between lanes. Driver shows signs of intoxication: bloodshot eyes, strong odor of alcohol, slurred speech.';
+            function loadScores() {
+                try {
+                    var stored = localStorage.getItem('blueshield_scores');
+                    return stored ? JSON.parse(stored) : {};
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function saveScores() {
+                try {
+                    localStorage.setItem('blueshield_scores', JSON.stringify(scenarioScores));
+                } catch (e) {
+                    console.error('Could not save scores:', e);
+                }
+            }
+
+            function updateScenarioScore(scenarioId, score) {
+                if (!scenarioScores[scenarioId]) {
+                    scenarioScores[scenarioId] = { best: 0, attempts: 0, total: 0 };
+                }
+                scenarioScores[scenarioId].attempts++;
+                scenarioScores[scenarioId].total += score;
+                if (score > scenarioScores[scenarioId].best) {
+                    scenarioScores[scenarioId].best = score;
+                }
+                saveScores();
+                renderScoreOnCard(scenarioId);
+            }
+
+            function renderScoreOnCard(scenarioId) {
+                var card = document.querySelector('.scenario-card[data-scenario="' + scenarioId + '"]');
+                if (!card || scenarioId === 'random') return;
+
+                var existingScore = card.querySelector('.scenario-score');
+                if (existingScore) existingScore.remove();
+
+                var scoreData = scenarioScores[scenarioId];
+                var scoreDiv = document.createElement('div');
+
+                if (!scoreData || scoreData.attempts === 0) {
+                    scoreDiv.className = 'scenario-score no-score';
+                    scoreDiv.textContent = '—';
+                } else {
+                    var best = scoreData.best;
+                    var scoreClass = best >= 80 ? 'score-high' : (best >= 60 ? 'score-mid' : 'score-low');
+                    scoreDiv.className = 'scenario-score ' + scoreClass;
+                    scoreDiv.textContent = '★ ' + best;
+                }
+                card.appendChild(scoreDiv);
+            }
+
+            function renderAllScores() {
+                // Render scores for all scenario cards
+                document.querySelectorAll('.scenario-card[data-scenario]').forEach(function(card) {
+                    var scenarioId = card.dataset.scenario;
+                    renderScoreOnCard(scenarioId);
+                });
+            }
+
+            var SCENARIOS = {
+                // Traffic
+                dui: {
+                    title: 'Traffic Stop - DUI',
+                    location: 'State Route 87, 11:42 PM',
+                    icon: '🚗',
+                    intro: 'Vehicle pulled over for weaving between lanes. Driver shows signs of intoxication: bloodshot eyes, strong odor of alcohol, slurred speech.',
+                    observations: ['Bloodshot eyes', 'Strong odor of alcohol', 'Slurred speech', 'Weaving between lanes']
+                },
+                traffic_warrant: {
+                    title: 'Traffic Stop - Warrant',
+                    location: 'Main St & 7th Ave, 2:30 PM',
+                    icon: '🚨',
+                    intro: 'Routine traffic stop for expired registration. Dispatch advises driver has active felony warrant for failure to appear.',
+                    observations: ['Expired registration', 'Active warrant on file', 'Driver nervous', 'Passenger in vehicle']
+                },
+                traffic_drugs: {
+                    title: 'Traffic Stop - Narcotics',
+                    location: 'Interstate 10, 1:15 AM',
+                    icon: '💊',
+                    intro: 'Vehicle stopped for equipment violation. Strong odor of marijuana emanating from vehicle. Driver appears nervous and fidgety.',
+                    observations: ['Marijuana odor', 'Air fresheners visible', 'Nervous behavior', 'Fast food bags/trash']
+                },
+                traffic_suspended: {
+                    title: 'Suspended License',
+                    location: 'Central Ave, 4:45 PM',
+                    icon: '🪪',
+                    intro: 'Vehicle stopped for running red light. Driver unable to produce license, claims to have left it at home.',
+                    observations: ['Traffic violation observed', 'No license produced', 'Registration in another name', 'Driver hesitant']
+                },
+                // Domestic/Violence
+                domestic: {
+                    title: 'Domestic Violence Call',
+                    location: '1847 W Elm St, 9:15 PM',
+                    icon: '🏠',
+                    intro: 'Dispatch reports neighbors called about yelling and breaking glass. Male and female voices heard arguing. You approach the front door.',
+                    observations: ['Broken glass on porch', 'Yelling from inside', 'Crying heard', 'Damaged door frame']
+                },
+                domestic_weapons: {
+                    title: 'DV - Weapons Involved',
+                    location: '2234 N Desert Dr, 10:30 PM',
+                    icon: '🔪',
+                    intro: 'Caller reports partner threatened them with a knife during argument. Caller locked in bathroom. Suspect may still have weapon.',
+                    observations: ['Weapon mentioned', 'Victim barricaded', 'Ongoing argument', 'Children may be present']
+                },
+                assault: {
+                    title: 'Assault in Progress',
+                    location: 'Circle K Parking Lot, 8:45 PM',
+                    icon: '👊',
+                    intro: 'Two males fighting in parking lot. One appears injured. Crowd gathering. Unknown if weapons involved.',
+                    observations: ['Physical altercation', 'Visible injuries', 'Crowd present', 'Unknown weapon status']
+                },
+                threats: {
+                    title: 'Threatening/Intimidation',
+                    location: 'Sunrise Apartments #204, 6:30 PM',
+                    icon: '⚠️',
+                    intro: 'Resident reports neighbor threatened to harm them after noise complaint. Suspect made specific threats about "teaching them a lesson."',
+                    observations: ['Verbal threats made', 'Prior disputes', 'Witnesses available', 'Suspect in unit']
+                },
+                // Property Crimes
+                shoplifting: {
+                    title: 'Shoplifting - Retail',
+                    location: 'Target Store #4521, 3:30 PM',
+                    icon: '🛒',
+                    intro: 'Loss prevention has detained a suspect who allegedly concealed merchandise. Subject is being held in the LP office. Store manager is present.',
+                    observations: ['Concealed merchandise', 'Subject detained by LP', 'Store video available', 'Witness present']
+                },
+                burglary: {
+                    title: 'Burglary in Progress',
+                    location: '445 E Commerce St, 3:15 AM',
+                    icon: '🏚️',
+                    intro: 'Silent alarm triggered at closed business. Back door appears forced open. Unknown if suspect still inside.',
+                    observations: ['Forced entry signs', 'Alarm triggered', 'Business closed', 'Unknown occupancy']
+                },
+                theft: {
+                    title: 'Theft Report',
+                    location: 'Victim residence, 5:00 PM',
+                    icon: '💰',
+                    intro: 'Victim reports items stolen from unlocked vehicle overnight. Neighbor saw suspicious person in area around 2 AM.',
+                    observations: ['Vehicle entered', 'Items missing', 'Witness available', 'No forced entry']
+                },
+                vehicle_theft: {
+                    title: 'Vehicle Theft Recovery',
+                    location: 'Industrial Blvd, 11:30 PM',
+                    icon: '🚙',
+                    intro: 'Plate reader hit on stolen vehicle. Vehicle occupied, pulled into parking lot. Driver claims to have borrowed car from friend.',
+                    observations: ['Stolen vehicle confirmed', 'Occupant present', 'No keys visible', 'Ignition damage possible']
+                },
+                // Trespass/Disturbance
+                trespass: {
+                    title: 'Criminal Trespass',
+                    location: 'Abandoned Warehouse, 2:15 AM',
+                    icon: '🚧',
+                    intro: 'Security guard reports individual refusing to leave private property after being asked multiple times. Subject appears to be camping in the area.',
+                    observations: ['No Trespassing signs', 'Prior warning given', 'Personal belongings', 'Subject aware of status']
+                },
+                disturbance: {
+                    title: 'Disorderly Conduct',
+                    location: 'Murphys Bar & Grill, 11:50 PM',
+                    icon: '🗣️',
+                    intro: 'Bar staff reports intoxicated male yelling at other patrons and knocking over furniture. Subject has been asked to leave but refuses.',
+                    observations: ['Strong alcohol odor', 'Overturned furniture', 'Crowd gathering', 'Subject yelling']
+                },
+                noise: {
+                    title: 'Noise Complaint',
+                    location: '892 W University Dr, 1:30 AM',
+                    icon: '🔊',
+                    intro: 'Multiple calls about loud party. Music audible from street. This is third complaint tonight from same address.',
+                    observations: ['Loud music audible', 'Multiple complaints', 'Prior warnings tonight', 'Large gathering']
+                },
+                loitering: {
+                    title: 'Loitering/Panhandling',
+                    location: 'QuikTrip #127, 4:00 PM',
+                    icon: '🚶',
+                    intro: 'Store manager reports aggressive panhandler blocking entrance and harassing customers. Subject has been previously trespassed.',
+                    observations: ['Blocking entrance', 'Prior trespass', 'Customers harassed', 'Subject refusing to leave']
+                },
+                // Civil Disputes
+                civil_property: {
+                    title: 'Civil - Property Dispute',
+                    location: '1122 & 1124 Oak Lane, 2:00 PM',
+                    icon: '📋',
+                    intro: 'Two neighbors in heated argument over property line. One claims other built fence on their property. Both demanding action.',
+                    observations: ['Property line dispute', 'Both parties present', 'No physical contact', 'Civil matter']
+                },
+                civil_custody: {
+                    title: 'Civil - Custody Exchange',
+                    location: 'McDonalds Parking Lot, 6:00 PM',
+                    icon: '👨‍👩‍👧',
+                    intro: 'Mother refusing to release child to father for scheduled visitation. Father has court order. Both parties arguing.',
+                    observations: ['Court order present', 'Child present', 'Verbal argument', 'Custody dispute']
+                },
+                civil_landlord: {
+                    title: 'Civil - Landlord/Tenant',
+                    location: 'Sunset Apartments #15, 10:00 AM',
+                    icon: '🔑',
+                    intro: 'Tenant reports landlord changed locks while they were at work. Tenant claims rent is paid. Landlord claims eviction was filed.',
+                    observations: ['Lockout situation', 'Disputed rent status', 'No court order shown', 'Belongings inside']
+                },
+                civil_repo: {
+                    title: 'Civil - Repossession',
+                    location: '567 Pine St, 7:00 AM',
+                    icon: '🚛',
+                    intro: 'Repo company requesting standby while recovering vehicle. Owner came outside and is blocking tow truck. Repo agent has paperwork.',
+                    observations: ['Valid repo order', 'Owner obstructing', 'Vehicle in driveway', 'Civil matter']
+                },
+                civil_business: {
+                    title: 'Civil - Business Dispute',
+                    location: 'Auto Repair Shop, 3:30 PM',
+                    icon: '🏪',
+                    intro: 'Customer refusing to pay repair bill, claims work was not authorized. Shop refusing to release vehicle. Both parties yelling.',
+                    observations: ['Payment dispute', 'Vehicle held', 'Verbal altercation', 'Civil matter']
+                },
+                // Mental Health/Welfare
+                mental_crisis: {
+                    title: 'Mental Health Crisis',
+                    location: 'Bus Stop - Central Station, 4:15 PM',
+                    icon: '🧠',
+                    intro: 'Subject talking to themselves, appears agitated, scaring other passengers. May be off medication. No weapons observed.',
+                    observations: ['Erratic behavior', 'Talking to self', 'Agitated state', 'Public location']
+                },
+                welfare_check: {
+                    title: 'Welfare Check',
+                    location: '789 Maple Ave, 11:00 AM',
+                    icon: '❤️',
+                    intro: 'Family requests welfare check. Elderly resident hasnt answered phone in 3 days. Mail piling up. Vehicle in driveway.',
+                    observations: ['No contact 3 days', 'Mail accumulating', 'Vehicle present', 'Medical concerns']
+                },
+                suicide_threat: {
+                    title: 'Suicide Threat',
+                    location: '456 River Rd, 8:30 PM',
+                    icon: '🆘',
+                    intro: 'Friend called 911 after receiving text messages about suicide. Subject not answering phone. May have access to firearms.',
+                    observations: ['Suicidal statements', 'Not responding', 'Possible weapons', 'Friend on scene']
+                },
+                intoxicated: {
+                    title: 'Intoxicated Person',
+                    location: 'City Park Bench, 2:45 PM',
+                    icon: '🍺',
+                    intro: 'Subject passed out on park bench. Not responsive to passersby. Unknown medical status. Empty bottles nearby.',
+                    observations: ['Unresponsive', 'Alcohol containers', 'Public location', 'Medical status unknown']
+                },
+                // Other
+                suspicious: {
+                    title: 'Suspicious Person',
+                    location: 'Residential neighborhood, 10:30 PM',
+                    icon: '👀',
+                    intro: 'Multiple calls about male walking through yards, looking into windows. Subject wearing dark clothing, carrying backpack.',
+                    observations: ['Looking in windows', 'Dark clothing', 'Backpack', 'Multiple reports']
+                },
+                alarm: {
+                    title: 'Alarm Response',
+                    location: 'First National Bank, 2:30 AM',
+                    icon: '🚨',
+                    intro: 'Silent alarm triggered at bank. All doors appear secure from exterior. Key holder en route, ETA 15 minutes.',
+                    observations: ['Silent alarm', 'Doors appear secure', 'Key holder notified', 'No visible activity']
+                },
+                harassment: {
+                    title: 'Harassment',
+                    location: 'Victim workplace, 1:00 PM',
+                    icon: '📱',
+                    intro: 'Victim reports ex-partner sending threatening texts and showing up at workplace. Has documentation of 50+ messages today.',
+                    observations: ['Multiple messages', 'Workplace contact', 'Prior relationship', 'Documentation available']
+                },
+                stalking: {
+                    title: 'Stalking',
+                    location: 'Victim residence, 7:30 PM',
+                    icon: '🔍',
+                    intro: 'Victim reports being followed for past two weeks. Same vehicle seen near home and work. Photos and log provided.',
+                    observations: ['Pattern of behavior', 'Vehicle identified', 'Documentation provided', 'Ongoing concern']
+                },
+                random: {
+                    title: 'Unknown Scenario',
+                    location: 'Dispatched Location',
+                    icon: '🎲',
+                    intro: 'Respond to the call. Details will be revealed upon arrival.',
+                    observations: ['Awaiting details', 'Stay alert', 'Assess on arrival']
+                }
+            };
+
+            var DIFFICULTY_MODIFIERS = {
+                trainee: 'The subject is very cooperative, immediately compliant, and provides clear answers. Perfect for learning basic procedures without complications.',
+                easy: 'The subject is mostly cooperative but may ask questions or show mild reluctance. Provides clear indicators and responds to authority.',
+                medium: 'The subject is evasive, tries to talk their way out, and requires persistence. May become slightly agitated if pressed but eventually complies.',
+                hard: 'The subject is resistant, argumentative, and challenges your authority. May attempt to leave or escalate. Requires firm command presence.',
+                expert: 'The subject is hostile, potentially volatile, and may attempt to flee or fight. Complex legal issues arise. Situation may involve weapons or multiple subjects.'
+            };
 
             var MOOD_CONFIG = {
                 calm: { emoji: '😐', label: 'Calm' },
@@ -1498,6 +3295,43 @@
                 if (action) {
                     actionEl.textContent = action;
                 }
+            }
+
+            function addObservations(newObs) {
+                var list = document.getElementById('observation-list');
+                newObs.forEach(function(obs) {
+                    // Check if observation already exists
+                    var existing = list.querySelectorAll('.observation-tag');
+                    var found = false;
+                    for (var i = 0; i < existing.length; i++) {
+                        if (existing[i].textContent.trim().toLowerCase() === obs.toLowerCase()) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        var tag = document.createElement('span');
+                        tag.className = 'observation-tag';
+                        tag.style.animation = 'messageIn 0.4s ease-out';
+
+                        // Add eye icon
+                        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        svg.setAttribute('viewBox', '0 0 24 24');
+                        svg.setAttribute('stroke-width', '2');
+                        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        path.setAttribute('d', 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
+                        var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        circle.setAttribute('cx', '12');
+                        circle.setAttribute('cy', '12');
+                        circle.setAttribute('r', '3');
+                        svg.appendChild(path);
+                        svg.appendChild(circle);
+
+                        tag.appendChild(svg);
+                        tag.appendChild(document.createTextNode(' ' + obs));
+                        list.appendChild(tag);
+                    }
+                });
             }
 
             function createElement(tag, className, textContent) {
@@ -1579,14 +3413,35 @@
                 if (loading) loading.remove();
             }
 
+            function startTimer() {
+                timerStart = Date.now();
+                timerDisplay.classList.add('active');
+                timerInterval = setInterval(function() {
+                    var elapsed = (Date.now() - timerStart) / 1000;
+                    timerDisplay.textContent = elapsed.toFixed(1) + 's';
+                }, 100);
+            }
+
+            function stopTimer() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                timerDisplay.classList.remove('active');
+            }
+
             function setLoading(loading) {
                 isLoading = loading;
-                demoInput.disabled = loading;
+                inputSay.disabled = loading;
+                inputDo.disabled = loading;
+                inputRadio.disabled = loading;
                 sendBtn.disabled = loading;
                 if (loading) {
                     addMessage('loading');
+                    startTimer();
                 } else {
                     removeLoading();
+                    stopTimer();
                 }
             }
 
@@ -1595,11 +3450,51 @@
                 messages = [];
                 messagesContainer.textContent = '';
 
-                updateSubjectMood('nervous', 'Gripping steering wheel tightly');
+                // Handle random scenario selection
+                var actualScenario = selectedScenario;
+                if (selectedScenario === 'random') {
+                    var scenarioKeys = Object.keys(SCENARIOS).filter(function(k) { return k !== 'random'; });
+                    actualScenario = scenarioKeys[Math.floor(Math.random() * scenarioKeys.length)];
+                }
 
-                messages.push({ role: 'system', content: SCENARIO_INTRO });
-                addMessage('system', SCENARIO_INTRO);
+                var scenario = SCENARIOS[actualScenario];
 
+                // Update header
+                document.querySelector('#demo-chat-section .scenario-info h3').textContent = scenario.title;
+                document.querySelector('#demo-chat-section .scenario-info span').textContent = scenario.location;
+
+                // Update observations
+                var obsList = document.getElementById('observation-list');
+                obsList.textContent = '';
+                scenario.observations.forEach(function(obs, i) {
+                    var tag = document.createElement('span');
+                    tag.className = 'observation-tag' + (i < 2 ? ' warning' : '');
+
+                    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('viewBox', '0 0 24 24');
+                    svg.setAttribute('stroke-width', '2');
+                    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
+                    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', '12');
+                    circle.setAttribute('cy', '12');
+                    circle.setAttribute('r', '3');
+                    svg.appendChild(path);
+                    svg.appendChild(circle);
+
+                    tag.appendChild(svg);
+                    tag.appendChild(document.createTextNode(' ' + obs));
+                    obsList.appendChild(tag);
+                });
+
+                updateSubjectMood('nervous', 'Tense body language');
+
+                var introText = scenario.intro;
+                messages.push({ role: 'system', content: introText });
+                addMessage('system', introText);
+
+                // Store actual scenario for API calls
+                selectedScenario = actualScenario;
                 sendToAPI('');
             }
 
@@ -1617,7 +3512,11 @@
                         action: 'chat',
                         messages: messages,
                         message: officerMessage,
-                        training_mode: true
+                        training_mode: true,
+                        scenario: selectedScenario,
+                        difficulty: selectedDifficulty,
+                        scenario_config: SCENARIOS[selectedScenario],
+                        difficulty_modifier: DIFFICULTY_MODIFIERS[selectedDifficulty]
                     })
                 })
                 .then(function(response) { return response.json(); })
@@ -1635,6 +3534,11 @@
                     updateSubjectMood(data.subject_mood, data.subject_action);
                     addMessage('subject', subjectResponse, data.hint);
 
+                    // Add new observations
+                    if (data.new_observations && data.new_observations.length > 0) {
+                        addObservations(data.new_observations);
+                    }
+
                     if (data.scenario_complete) {
                         setTimeout(function() { requestDebrief(); }, 1500);
                     }
@@ -1648,7 +3552,7 @@
 
             function requestDebrief() {
                 setLoading(true);
-                demoInput.placeholder = 'Generating debrief...';
+                inputSay.placeholder = 'Generating debrief...';
 
                 fetch(API_URL, {
                     method: 'POST',
@@ -1673,6 +3577,10 @@
             function showDebrief(data) {
                 chatSection.style.display = 'none';
                 debriefSection.classList.add('active');
+
+                // Update scenario score
+                var score = data.score || 75;
+                updateScenarioScore(selectedScenario, score);
 
                 var scoreEl = debriefSection.querySelector('.debrief-score');
                 scoreEl.textContent = '';
@@ -1733,27 +3641,110 @@
 
             function openDemo() {
                 modal.classList.add('active');
-                chatSection.style.display = 'block';
+                scenarioSelectSection.style.display = 'block';
+                chatSection.style.display = 'none';
                 debriefSection.classList.remove('active');
-                demoInput.placeholder = 'Type your response...';
-                if (!demoStarted) {
-                    startDemo();
-                }
+                demoStarted = false;
+            }
+
+            function startScenario() {
+                scenarioSelectSection.style.display = 'none';
+                chatSection.style.display = 'block';
+                inputSay.placeholder = 'What do you say to the subject...';
+                inputDo.placeholder = 'Physical actions you take...';
+                inputRadio.placeholder = 'Radio communication...';
+                timerDisplay.textContent = '0.0s';
+                startDemo();
             }
 
             function closeDemo() {
                 modal.classList.remove('active');
                 demoStarted = false;
                 messages = [];
+                inputSay.value = '';
+                inputDo.value = '';
+                inputRadio.value = '';
+                stopTimer();
+                timerDisplay.textContent = '0.0s';
+            }
+
+            function buildOfficerMessage() {
+                var say = inputSay.value.trim();
+                var doAction = inputDo.value.trim();
+                var radio = inputRadio.value.trim();
+
+                var parts = [];
+                if (say) parts.push('[SAYS]: "' + say + '"');
+                if (doAction) parts.push('[DOES]: ' + doAction);
+                if (radio) parts.push('[RADIOS]: "' + radio + '"');
+
+                return {
+                    combined: parts.join('\n'),
+                    say: say,
+                    do: doAction,
+                    radio: radio
+                };
             }
 
             function sendMessage() {
-                var text = demoInput.value.trim();
-                if (!text || isLoading) return;
+                var input = buildOfficerMessage();
+                if (!input.combined || isLoading) return;
 
-                demoInput.value = '';
-                addMessage('officer', text);
-                sendToAPI(text);
+                inputSay.value = '';
+                inputDo.value = '';
+                inputRadio.value = '';
+                addOfficerMessage(input);
+                sendToAPI(input.combined);
+            }
+
+            function addOfficerMessage(input) {
+                var messageDiv = createElement('div', 'message message-officer');
+                messageDiv.style.animation = 'messageIn 0.4s ease-out';
+
+                var label = createElement('div', 'message-label', 'You');
+                messageDiv.appendChild(label);
+
+                var content = createElement('div', 'message-content');
+
+                if (input.say) {
+                    var sayLine = createElement('div');
+                    sayLine.style.marginBottom = '0.35rem';
+                    var sayIcon = createElement('span');
+                    sayIcon.style.color = 'var(--tactical-blue)';
+                    sayIcon.style.marginRight = '0.35rem';
+                    sayIcon.textContent = '💬';
+                    sayLine.appendChild(sayIcon);
+                    sayLine.appendChild(document.createTextNode('"' + input.say + '"'));
+                    content.appendChild(sayLine);
+                }
+
+                if (input.do) {
+                    var doLine = createElement('div');
+                    doLine.style.marginBottom = '0.35rem';
+                    doLine.style.fontStyle = 'italic';
+                    doLine.style.color = 'var(--accent-gold)';
+                    var doIcon = createElement('span');
+                    doIcon.style.marginRight = '0.35rem';
+                    doIcon.textContent = '👁';
+                    doLine.appendChild(doIcon);
+                    doLine.appendChild(document.createTextNode(input.do));
+                    content.appendChild(doLine);
+                }
+
+                if (input.radio) {
+                    var radioLine = createElement('div');
+                    radioLine.style.color = 'var(--success)';
+                    var radioIcon = createElement('span');
+                    radioIcon.style.marginRight = '0.35rem';
+                    radioIcon.textContent = '📻';
+                    radioLine.appendChild(radioIcon);
+                    radioLine.appendChild(document.createTextNode('"' + input.radio + '"'));
+                    content.appendChild(radioLine);
+                }
+
+                messageDiv.appendChild(content);
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
 
             document.getElementById('nav-demo-btn').addEventListener('click', openDemo);
@@ -1761,10 +3752,40 @@
             document.getElementById('modal-close-btn').addEventListener('click', closeDemo);
             document.getElementById('demo-send-btn').addEventListener('click', sendMessage);
             document.getElementById('debrief-cta-btn').addEventListener('click', closeDemo);
+            document.getElementById('start-scenario-btn').addEventListener('click', startScenario);
 
-            demoInput.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') sendMessage();
+            // Scenario selection
+            document.querySelectorAll('.scenario-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.scenario-card').forEach(function(c) {
+                        c.classList.remove('selected');
+                    });
+                    card.classList.add('selected');
+                    selectedScenario = card.dataset.scenario;
+                });
             });
+
+            // Difficulty selection
+            document.querySelectorAll('.difficulty-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.difficulty-card').forEach(function(c) {
+                        c.classList.remove('selected');
+                    });
+                    card.classList.add('selected');
+                    selectedDifficulty = card.dataset.difficulty;
+                });
+            });
+
+            // Ctrl+Enter to submit from any input
+            function handleKeydown(event) {
+                if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            }
+            inputSay.addEventListener('keydown', handleKeydown);
+            inputDo.addEventListener('keydown', handleKeydown);
+            inputRadio.addEventListener('keydown', handleKeydown);
 
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) closeDemo();
@@ -1773,6 +3794,31 @@
             document.getElementById('checkout-btn').addEventListener('click', function() {
                 alert('Stripe checkout will be integrated here. For now, contact us to get started!');
             });
+
+            // FI Card toggle
+            document.getElementById('fi-card-toggle').addEventListener('click', function() {
+                this.classList.toggle('open');
+                document.getElementById('fi-card-panel').classList.toggle('open');
+            });
+
+            // Make radio buttons deselectable by clicking again
+            document.querySelectorAll('.fi-card-form input[type="radio"]').forEach(function(radio) {
+                radio.addEventListener('click', function(e) {
+                    if (this.dataset.wasChecked === 'true') {
+                        this.checked = false;
+                        this.dataset.wasChecked = 'false';
+                    } else {
+                        // Unmark all radios in same group
+                        document.querySelectorAll('input[name="' + this.name + '"]').forEach(function(r) {
+                            r.dataset.wasChecked = 'false';
+                        });
+                        this.dataset.wasChecked = 'true';
+                    }
+                });
+            });
+
+            // Initialize scores display
+            renderAllScores();
         })();
     </script>
 </body>
