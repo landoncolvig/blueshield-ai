@@ -1755,6 +1755,19 @@
         }
 
         @media (max-width: 600px) {
+            /* Prevent horizontal scroll */
+            html, body {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
+            .content-wrapper,
+            .modal,
+            .modal-overlay {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
             .hero {
                 padding: 7rem 1rem 3rem;
             }
@@ -1785,211 +1798,261 @@
             .modal {
                 border-radius: 0;
                 padding: 0;
+                width: 100vw;
+                max-width: 100vw;
             }
 
             .modal-header {
-                padding: 1rem;
-                padding-right: 3rem;
+                padding: 0.75rem;
+                padding-right: 2.5rem;
                 flex-wrap: wrap;
                 gap: 0.5rem;
                 position: relative;
             }
 
             .modal-header h2 {
-                font-size: 1rem;
+                font-size: 0.9rem;
                 width: 100%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .scenario-timer {
-                font-size: 0.9rem;
+                font-size: 0.8rem;
             }
 
             .modal-close {
                 position: fixed;
                 top: 0.5rem;
                 right: 0.5rem;
-                width: 36px;
-                height: 36px;
+                width: 32px;
+                height: 32px;
                 z-index: 1001;
             }
 
             /* Scenario selection mobile */
             .scenario-selection {
-                padding: 1rem;
+                padding: 0.75rem;
+                overflow-x: hidden;
             }
 
             .scenario-categories {
-                gap: 1.5rem;
+                gap: 1.25rem;
             }
 
             .category-title {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
 
             .scenario-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 0.5rem;
+                gap: 0.4rem;
             }
 
             .scenario-card {
-                padding: 0.75rem;
+                padding: 0.5rem;
                 min-height: auto;
             }
 
             .scenario-card .icon {
-                font-size: 1.5rem;
+                font-size: 1.25rem;
             }
 
             .scenario-card .title {
-                font-size: 0.7rem;
+                font-size: 0.6rem;
+                line-height: 1.2;
             }
 
             .scenario-score {
-                font-size: 0.6rem;
-                padding: 2px 4px;
+                font-size: 0.55rem;
+                padding: 1px 3px;
             }
 
             /* Difficulty selector mobile */
             .difficulty-selector {
-                padding: 1rem;
-                flex-wrap: wrap;
+                padding: 0.75rem;
+                flex-direction: column;
+                align-items: stretch;
                 gap: 0.5rem;
             }
 
             .difficulty-selector label {
                 font-size: 0.7rem;
+                text-align: center;
             }
 
             .difficulty-options {
                 width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 0.4rem;
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0.25rem;
             }
 
             .difficulty-btn {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.65rem;
+                padding: 0.5rem 0.25rem;
+                font-size: 0.55rem;
+                text-align: center;
+                white-space: nowrap;
             }
 
             /* Chat area mobile */
             .demo-chat {
                 min-height: auto;
+                overflow-x: hidden;
             }
 
             .chat-messages {
-                padding: 0.75rem;
-                max-height: 250px;
+                padding: 0.5rem;
+                max-height: 200px;
             }
 
             .message {
-                max-width: 95%;
-                padding: 0.6rem 0.8rem;
-                font-size: 0.85rem;
+                max-width: 90%;
+                padding: 0.5rem 0.6rem;
+                font-size: 0.8rem;
             }
 
             /* Observation panel mobile */
             .observation-panel {
-                padding: 0.75rem;
+                padding: 0.5rem;
             }
 
             .observation-panel h4 {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
 
             .observation-list {
-                gap: 0.3rem;
+                gap: 0.25rem;
+                flex-wrap: wrap;
             }
 
             .observation-item {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.5rem;
+                font-size: 0.65rem;
+                padding: 0.2rem 0.4rem;
             }
 
             /* Split input mobile */
             .split-input-area {
-                padding: 0.75rem;
-            }
-
-            .input-row {
-                gap: 0.5rem;
-            }
-
-            .input-label {
-                font-size: 0.65rem;
-            }
-
-            .split-input {
-                font-size: 0.85rem;
                 padding: 0.5rem;
             }
 
-            .send-btn {
-                padding: 0.75rem 1.25rem;
-                font-size: 0.8rem;
+            .input-row {
+                gap: 0.4rem;
             }
 
-            /* FI Card mobile */
+            .input-label {
+                font-size: 0.6rem;
+            }
+
+            .input-label svg {
+                width: 10px;
+                height: 10px;
+            }
+
+            .split-input {
+                font-size: 0.8rem;
+                padding: 0.4rem;
+                min-height: 40px;
+            }
+
+            .send-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.75rem;
+            }
+
+            .send-btn svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            /* FI Card mobile - complete redesign for mobile */
+            .fi-card-toggle {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .fi-card-toggle-label {
+                font-size: 0.7rem;
+            }
+
             .fi-card-panel {
-                padding: 8px;
-                max-height: 400px;
+                padding: 4px;
+                max-height: 350px;
+                overflow-x: hidden;
             }
 
             .fi-card-form {
-                font-size: 10px;
+                font-size: 9px;
+                overflow-x: hidden;
             }
 
             .fi-row {
                 flex-wrap: wrap;
             }
 
+            /* All cells stack vertically on mobile */
             .fi-cell {
-                min-height: 28px;
-                padding: 4px 6px;
-                flex: 1 1 45% !important;
-                min-width: 45%;
+                min-height: 24px;
+                padding: 3px 5px;
+                flex: 1 1 48% !important;
+                max-width: 50%;
+                box-sizing: border-box;
+                border-right: 1px solid rgba(100, 160, 255, 0.15);
+                border-bottom: 1px solid rgba(100, 160, 255, 0.15);
             }
 
-            .fi-cell.w100 {
-                flex: 1 1 100% !important;
-                min-width: 100%;
+            .fi-cell:nth-child(2n) {
+                border-right: none;
             }
 
+            /* Full width cells */
+            .fi-cell.w100,
             .fi-cell.w70,
             .fi-cell.w60,
             .fi-cell.w50,
             .fi-cell.w45,
-            .fi-cell.w40 {
+            .fi-cell.w40,
+            .fi-cell.w35,
+            .fi-cell.w30,
+            .fi-cell.w28,
+            .fi-cell.w25 {
                 flex: 1 1 100% !important;
-                min-width: 100%;
+                max-width: 100%;
+                border-right: none;
             }
 
             .fi-cell label {
-                font-size: 8px;
+                font-size: 7px;
+                margin-bottom: 1px;
             }
 
             .fi-cell input,
             .fi-cell textarea {
-                font-size: 11px;
+                font-size: 10px;
             }
 
+            /* Checkbox groups - vertical stack */
             .fi-checkbox-group {
-                gap: 2px 6px;
+                display: flex;
+                flex-direction: column;
+                gap: 1px;
+                font-size: 8px;
             }
 
             .fi-checkbox-group label {
-                font-size: 8px;
+                font-size: 7px;
+                padding: 1px 0;
             }
 
             .fi-checkbox-group input[type="checkbox"],
             .fi-checkbox-group input[type="radio"] {
-                width: 10px;
-                height: 10px;
+                width: 9px;
+                height: 9px;
             }
 
             .fi-section-header {
-                font-size: 9px;
-                padding: 6px;
+                font-size: 8px;
+                padding: 4px;
             }
 
             /* Features section mobile */
@@ -2004,44 +2067,58 @@
 
             /* General mobile typography */
             h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
 
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
 
             .section-header h2 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
 
             .section-header p {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
         }
 
         /* Extra small devices */
         @media (max-width: 380px) {
             .scenario-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.3rem;
+            }
+
+            .scenario-card .title {
+                font-size: 0.55rem;
+            }
+
+            .difficulty-options {
+                grid-template-columns: repeat(5, 1fr);
             }
 
             .difficulty-btn {
-                padding: 0.35rem 0.5rem;
-                font-size: 0.6rem;
+                padding: 0.4rem 0.15rem;
+                font-size: 0.5rem;
             }
 
             .fi-cell {
                 flex: 1 1 100% !important;
-                min-width: 100%;
+                max-width: 100%;
+                border-right: none;
             }
 
             .chat-messages {
-                max-height: 200px;
+                max-height: 180px;
             }
 
             h1 {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
+            }
+
+            .message {
+                font-size: 0.75rem;
             }
         }
     </style>
