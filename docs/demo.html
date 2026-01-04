@@ -192,6 +192,317 @@
             background: var(--success);
         }
 
+
+        /* === JACK'S SUGGESTIONS === */
+
+        /* Dispatch/Radio text in yellow */
+        .message-dispatch .message-content,
+        .message-radio .message-content,
+        .dispatcher-bubble .dispatch-text {
+            color: #FFD700 !important;
+        }
+
+        .message-radio {
+            border-left: 3px solid #FFD700;
+        }
+
+        /* Handcuff indicator on cuffed subjects */
+        .stick-figure.cuffed::after,
+        .position-marker.subject.cuffed::after {
+            content: '🔗';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 16px;
+            background: rgba(10, 22, 40, 0.9);
+            border-radius: 50%;
+            padding: 2px;
+            border: 2px solid #C9A227;
+            z-index: 100;
+        }
+
+        /* Force effect indicators */
+        .stick-figure.tazed,
+        .position-marker.subject.tazed {
+            animation: tazeEffect 0.3s ease-in-out 3;
+        }
+
+        @keyframes tazeEffect {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(2) hue-rotate(60deg); box-shadow: 0 0 20px #FFD700; }
+        }
+
+        .stick-figure.oc-sprayed,
+        .position-marker.subject.oc-sprayed {
+            animation: ocEffect 0.5s ease-in-out;
+        }
+
+        @keyframes ocEffect {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.5) hue-rotate(-30deg); }
+            100% { filter: brightness(0.8); }
+        }
+
+        .stick-figure.oc-sprayed::before,
+        .position-marker.subject.oc-sprayed::before {
+            content: '🌶️';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            animation: ocFloat 1s ease-out forwards;
+        }
+
+        @keyframes ocFloat {
+            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+        }
+
+        /* Weapon drawn indicator for officer */
+        .position-marker.officer.weapon-drawn::before,
+        .position-marker.backup.weapon-drawn::before {
+            content: '🔫';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            background: rgba(248, 113, 113, 0.3);
+            border-radius: 4px;
+            padding: 2px 4px;
+            border: 1px solid #F87171;
+            animation: weaponPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes weaponPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(248, 113, 113, 0.5); }
+            50% { box-shadow: 0 0 15px rgba(248, 113, 113, 0.8); }
+        }
+
+        /* Help button */
+        .help-toggle-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tactical-blue), var(--navy-light));
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .help-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+        }
+
+        .help-toggle-btn.active {
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+        }
+
+        .help-panel {
+            position: fixed;
+            bottom: 160px;
+            right: 20px;
+            width: 280px;
+            background: var(--navy-mid);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .help-panel.visible {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .help-panel h4 {
+            color: var(--accent-gold);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .help-panel p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .help-hint {
+            background: rgba(201, 162, 39, 0.1);
+            border-left: 3px solid var(--accent-gold);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        /* Post-cuff action buttons */
+        .post-cuff-actions {
+            display: none;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(52, 211, 153, 0.1);
+            border-radius: 8px;
+            border: 1px solid var(--success);
+        }
+
+        .post-cuff-actions.visible {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .post-cuff-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.6rem 0.8rem;
+            background: var(--navy-light);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .post-cuff-btn:hover {
+            border-color: var(--accent-gold);
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .post-cuff-btn.active {
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+            border-color: var(--accent-gold);
+        }
+
+        /* Pass/Fail result screens */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result-icon {
+            font-size: 120px;
+            margin-bottom: 1rem;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .result-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .result-pass .result-title {
+            color: var(--success);
+        }
+
+        .result-fail .result-title {
+            color: var(--error);
+        }
+
+        .result-score {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .result-continue-btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .result-pass .result-continue-btn {
+            background: var(--success);
+            color: var(--navy-deep);
+        }
+
+        .result-fail .result-continue-btn {
+            background: var(--error);
+            color: white;
+        }
+
+        .result-continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Confetti animation for pass */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+
         /* Main content area */
         .demo-content {
             flex: 1;
@@ -6248,6 +6559,13 @@
                 reportSection.classList.remove('active');
                 chatSection.style.display = 'none';
 
+                // Calculate overall score
+                var overallScore = (typeof data.overall_score === 'number') ? data.overall_score :
+                                   (typeof data.scenario_score === 'number') ? data.scenario_score : 0;
+
+                // Show pass/fail overlay first (70% threshold)
+                showResultOverlay(overallScore >= 70, overallScore);
+
                 // Hide FI card
                 document.getElementById('fi-card-tab').style.display = 'none';
                 document.getElementById('fi-card-panel').classList.remove('open');
@@ -7548,6 +7866,11 @@
 
                     var actionText = actionTexts[action] || action;
 
+                    // Apply visual force effect
+                    if (typeof applyForceEffect === 'function') {
+                        applyForceEffect(action);
+                    }
+
                     // Populate the "Do" input with the action
                     if (inputDo) {
                         inputDo.value = actionText;
@@ -7881,6 +8204,217 @@
             initScenarioGrid();
             initDifficultyGrid();
             updateProgress('select');
+
+            // ========== PASS/FAIL RESULT OVERLAY ==========
+            function showResultOverlay(passed, score) {
+                var overlay = document.createElement('div');
+                overlay.className = 'result-overlay ' + (passed ? 'result-pass' : 'result-fail');
+                overlay.id = 'result-overlay';
+
+                var icon = document.createElement('div');
+                icon.className = 'result-icon';
+                icon.textContent = passed ? '☕🍩' : '🔒';
+
+                var title = document.createElement('div');
+                title.className = 'result-title';
+                title.textContent = passed ? 'PASSED!' : 'FAILED';
+
+                var scoreDiv = document.createElement('div');
+                scoreDiv.className = 'result-score';
+                scoreDiv.textContent = 'Score: ' + score + '/100';
+
+                var message = document.createElement('div');
+                message.className = 'result-message';
+                message.textContent = passed
+                    ? 'Great work, Officer! Enjoy your coffee and donuts!'
+                    : 'Congrats, you failed. Have a good trip to jail!';
+
+                var btn = document.createElement('button');
+                btn.className = 'result-continue-btn';
+                btn.textContent = 'View Detailed Debrief';
+                btn.onclick = function() {
+                    overlay.remove();
+                };
+
+                overlay.appendChild(icon);
+                overlay.appendChild(title);
+                overlay.appendChild(scoreDiv);
+                overlay.appendChild(message);
+                overlay.appendChild(btn);
+
+                document.body.appendChild(overlay);
+
+                // Add confetti for pass
+                if (passed) {
+                    for (var i = 0; i < 50; i++) {
+                        setTimeout(function() {
+                            var confetti = document.createElement('div');
+                            confetti.className = 'confetti';
+                            confetti.style.left = Math.random() * 100 + '%';
+                            confetti.style.background = ['#FFD700', '#34D399', '#60A5FA', '#F472B6', '#FBBF24'][Math.floor(Math.random() * 5)];
+                            confetti.style.animationDelay = Math.random() * 2 + 's';
+                            overlay.appendChild(confetti);
+                        }, i * 50);
+                    }
+                }
+            }
+
+            // ========== HELP TOGGLE SYSTEM ==========
+            var helpVisible = false;
+
+            function createHelpSystem() {
+                // Help button
+                var helpBtn = document.createElement('button');
+                helpBtn.className = 'help-toggle-btn';
+                helpBtn.id = 'help-toggle-btn';
+                helpBtn.innerHTML = '?';
+                helpBtn.title = 'Toggle Help';
+                helpBtn.onclick = toggleHelp;
+
+                // Help panel
+                var helpPanel = document.createElement('div');
+                helpPanel.className = 'help-panel';
+                helpPanel.id = 'help-panel';
+                helpPanel.innerHTML = `
+                    <h4>💡 Training Tips</h4>
+                    <p><strong>Click subjects</strong> to access force options</p>
+                    <p><strong>Click officer</strong> to draw weapons or speak</p>
+                    <p><strong>Request backup</strong> via radio for assistance</p>
+                    <div class="help-hint" id="contextual-hint">
+                        Start by identifying yourself and stating your purpose.
+                    </div>
+                `;
+
+                document.body.appendChild(helpBtn);
+                document.body.appendChild(helpPanel);
+            }
+
+            function toggleHelp() {
+                helpVisible = !helpVisible;
+                var panel = document.getElementById('help-panel');
+                var btn = document.getElementById('help-toggle-btn');
+                if (panel) panel.classList.toggle('visible', helpVisible);
+                if (btn) btn.classList.toggle('active', helpVisible);
+            }
+
+            function updateContextualHint(hint) {
+                var hintEl = document.getElementById('contextual-hint');
+                if (hintEl && hint) {
+                    hintEl.textContent = hint;
+                }
+            }
+
+            // ========== POST-CUFF ACTIONS ==========
+            var subjectCuffed = false;
+            var mirandaRead = false;
+            var transportedToSquad = false;
+
+            function showPostCuffActions() {
+                var container = document.getElementById('post-cuff-actions');
+                if (container) {
+                    container.classList.add('visible');
+                }
+            }
+
+            function hidePostCuffActions() {
+                var container = document.getElementById('post-cuff-actions');
+                if (container) {
+                    container.classList.remove('visible');
+                }
+            }
+
+            function handleMirandaRights() {
+                if (mirandaRead) return;
+                mirandaRead = true;
+
+                var mirandaBtn = document.getElementById('miranda-btn');
+                if (mirandaBtn) mirandaBtn.classList.add('active');
+
+                var mirandaText = "You have the right to remain silent. Anything you say can and will be used against you in a court of law. You have the right to an attorney. If you cannot afford an attorney, one will be appointed for you.";
+
+                var inputSay = document.getElementById('input-say');
+                if (inputSay) {
+                    inputSay.value = mirandaText;
+                }
+
+                addMessage('officer', '[MIRANDA WARNING]: ' + mirandaText);
+            }
+
+            function handleTransportToSquad() {
+                if (transportedToSquad) return;
+                transportedToSquad = true;
+
+                var transportBtn = document.getElementById('transport-btn');
+                if (transportBtn) transportBtn.classList.add('active');
+
+                var inputDo = document.getElementById('input-do');
+                if (inputDo) {
+                    inputDo.value = 'Transport subject to patrol vehicle and secure in back seat';
+                }
+
+                addMessage('officer', '[ACTION]: Transporting subject to patrol vehicle');
+
+                // Move subject marker to near patrol car
+                var subject = document.getElementById('subject-pos');
+                var patrolCar = document.querySelector('.patrol-car:not(.backup-car)');
+                if (subject && patrolCar) {
+                    subject.style.transition = 'all 1s ease-in-out';
+                    subject.style.left = '25%';
+                    subject.style.top = '85%';
+                }
+            }
+
+            // ========== FORCE EFFECT INDICATORS ==========
+            function applyForceEffect(action) {
+                var subject = document.getElementById('subject-pos');
+                if (!subject) return;
+
+                if (action === 'taze' || action === 'taser') {
+                    subject.classList.add('tazed');
+                    setTimeout(function() { subject.classList.remove('tazed'); }, 1000);
+                } else if (action === 'oc-spray' || action === 'oc' || action === 'pepper') {
+                    subject.classList.add('oc-sprayed');
+                    setTimeout(function() { subject.classList.remove('oc-sprayed'); }, 2000);
+                } else if (action === 'cuff' || action === 'handcuff') {
+                    subject.classList.add('cuffed');
+                    subjectCuffed = true;
+                    showPostCuffActions();
+                }
+            }
+
+            // ========== WEAPON DRAWN INDICATOR ==========
+            function setOfficerWeaponDrawn(drawn, weaponType) {
+                var officer = document.getElementById('officer-pos');
+                if (officer) {
+                    officer.classList.toggle('weapon-drawn', drawn);
+                }
+            }
+
+            function setBackupWeaponDrawn(drawn) {
+                var backup = document.getElementById('backup-pos');
+                if (backup) {
+                    backup.classList.toggle('weapon-drawn', drawn);
+                }
+            }
+
+            // Initialize help system when chat starts
+            var originalStartScenario = startScenario;
+            startScenario = function() {
+                originalStartScenario();
+
+                // Create help system if not exists
+                if (!document.getElementById('help-toggle-btn')) {
+                    createHelpSystem();
+                }
+
+                // Reset states
+                subjectCuffed = false;
+                mirandaRead = false;
+                transportedToSquad = false;
+                hidePostCuffActions();
+            };
+
+
         })();
     </script>
 </body>
