@@ -8378,9 +8378,10 @@
 
                     hideOfficerMenu();
 
-                    // Trigger send
-                    var sendBtn = document.getElementById('send-btn');
-                    if (sendBtn) sendBtn.click();
+                    // Trigger send directly
+                    if (typeof sendMessage === 'function') {
+                        sendMessage();
+                    }
                 }
 
                 // Track mouse/touch down on officer to distinguish click from drag
