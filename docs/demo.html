@@ -3769,6 +3769,137 @@
             -webkit-touch-callout: none;
             touch-action: none;
         }
+
+        /* ========== STICK FIGURE CHARACTERS ========== */
+        .stick-figure {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            z-index: 20;
+        }
+
+        .stick-figure:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+        }
+
+        .stick-figure.subject1 {
+            filter: drop-shadow(0 0 4px rgba(248, 113, 113, 0.6));
+        }
+
+        .stick-figure.subject2 {
+            filter: drop-shadow(0 0 4px rgba(251, 146, 60, 0.6));
+        }
+
+        .stick-figure.subject1:hover {
+            filter: drop-shadow(0 0 10px rgba(248, 113, 113, 0.8));
+        }
+
+        .stick-figure.subject2:hover {
+            filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.8));
+        }
+
+        /* Skin tone colors */
+        .stick-figure .skin { fill: #FFDCB5; } /* Default light */
+        .stick-figure.skin-light .skin { fill: #FFDCB5; }
+        .stick-figure.skin-medium .skin { fill: #D4A574; }
+        .stick-figure.skin-tan .skin { fill: #C4956A; }
+        .stick-figure.skin-brown .skin { fill: #8D5524; }
+        .stick-figure.skin-dark .skin { fill: #5C3A21; }
+
+        /* Hair colors */
+        .stick-figure .hair { fill: #4A3728; } /* Default brown */
+        .stick-figure.hair-black .hair { fill: #1A1A1A; }
+        .stick-figure.hair-brown .hair { fill: #4A3728; }
+        .stick-figure.hair-blonde .hair { fill: #D4A857; }
+        .stick-figure.hair-red .hair { fill: #8B3A3A; }
+        .stick-figure.hair-gray .hair { fill: #888888; }
+        .stick-figure.hair-bald .hair { fill: transparent; }
+
+        /* Clothing base */
+        .stick-figure .shirt { fill: #3B82F6; }
+        .stick-figure .pants { fill: #1E3A5F; }
+        .stick-figure .outline { stroke: #333; stroke-width: 1; fill: none; }
+
+        /* Character type clothing */
+        .stick-figure.type-business .shirt { fill: #FFFFFF; }
+        .stick-figure.type-business .pants { fill: #2D3748; }
+        .stick-figure.type-business .tie { fill: #C53030; display: block; }
+
+        .stick-figure.type-casual .shirt { fill: #48BB78; }
+        .stick-figure.type-casual .pants { fill: #4A5568; }
+
+        .stick-figure.type-worker .shirt { fill: #ED8936; }
+        .stick-figure.type-worker .pants { fill: #2D3748; }
+
+        .stick-figure.type-hoodie .shirt { fill: #718096; }
+        .stick-figure.type-hoodie .pants { fill: #1A202C; }
+
+        .stick-figure.type-elderly .shirt { fill: #E2E8F0; }
+        .stick-figure.type-elderly .pants { fill: #4A5568; }
+
+        .stick-figure.type-athletic .shirt { fill: #E53E3E; }
+        .stick-figure.type-athletic .pants { fill: #1A202C; }
+
+        .stick-figure.type-formal .shirt { fill: #2B6CB0; }
+        .stick-figure.type-formal .pants { fill: #1A202C; }
+
+        /* Small label under figure */
+        .stick-figure-label {
+            position: absolute;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            padding: 1px 4px;
+            border-radius: 3px;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .stick-figure.subject1 .stick-figure-label {
+            color: #F87171;
+        }
+
+        .stick-figure.subject2 .stick-figure-label {
+            color: #fb923c;
+        }
+
+        /* In-vehicle indicator */
+        .stick-figure.in-vehicle {
+            width: 30px;
+            height: 45px;
+        }
+
+        .stick-figure.in-vehicle::after {
+            content: '🚗';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+        }
+
+        @media (max-width: 600px) {
+            .stick-figure {
+                width: 32px;
+                height: 48px;
+            }
+
+            .stick-figure.in-vehicle {
+                width: 24px;
+                height: 36px;
+            }
+
+            .stick-figure-label {
+                font-size: 0.45rem;
+                bottom: -12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -4333,6 +4464,183 @@
                 hostile: { emoji: '😡', label: 'Hostile' },
                 defeated: { emoji: '😔', label: 'Defeated' }
             };
+
+            // ========== STICK FIGURE CHARACTER SYSTEM ==========
+            var SKIN_TONES = ['skin-light', 'skin-medium', 'skin-tan', 'skin-brown', 'skin-dark'];
+            var HAIR_COLORS = ['hair-black', 'hair-brown', 'hair-blonde', 'hair-red', 'hair-gray', 'hair-bald'];
+
+            // Character types with their "expected" scenarios
+            var CHARACTER_TYPES = {
+                business: { name: 'Business', expected: ['civil_business', 'civil_property', 'harassment'] },
+                casual: { name: 'Casual', expected: ['domestic', 'domestic_weapons', 'noise', 'civil_custody', 'threats'] },
+                worker: { name: 'Worker', expected: ['trespass', 'civil_landlord', 'civil_repo'] },
+                hoodie: { name: 'Hoodie', expected: ['burglary', 'theft', 'vehicle_theft', 'suspicious', 'shoplifting'] },
+                elderly: { name: 'Elderly', expected: ['welfare_check', 'civil_property'] },
+                athletic: { name: 'Athletic', expected: ['assault', 'disturbance', 'intoxicated'] },
+                formal: { name: 'Formal', expected: ['dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended'] }
+            };
+
+            // Store generated characters
+            var currentCharacters = {};
+
+            function pickRandom(arr) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+
+            // Get SVG for stick figure
+            function getStickFigureSVG() {
+                return '<svg viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg">' +
+                    '<!-- Head -->' +
+                    '<circle cx="20" cy="10" r="8" class="skin"/>' +
+                    '<!-- Hair -->' +
+                    '<path d="M12 8 Q20 2 28 8 Q28 6 20 4 Q12 6 12 8" class="hair"/>' +
+                    '<!-- Body/Shirt -->' +
+                    '<rect x="12" y="18" width="16" height="18" rx="2" class="shirt"/>' +
+                    '<!-- Arms -->' +
+                    '<rect x="4" y="20" width="8" height="4" rx="2" class="shirt"/>' +
+                    '<rect x="28" y="20" width="8" height="4" rx="2" class="shirt"/>' +
+                    '<!-- Hands -->' +
+                    '<circle cx="4" cy="22" r="3" class="skin"/>' +
+                    '<circle cx="36" cy="22" r="3" class="skin"/>' +
+                    '<!-- Pants -->' +
+                    '<rect x="12" y="36" width="7" height="16" rx="2" class="pants"/>' +
+                    '<rect x="21" y="36" width="7" height="16" rx="2" class="pants"/>' +
+                    '<!-- Feet -->' +
+                    '<ellipse cx="15" cy="54" rx="4" ry="2" fill="#333"/>' +
+                    '<ellipse cx="25" cy="54" rx="4" ry="2" fill="#333"/>' +
+                    '<!-- Face -->' +
+                    '<circle cx="17" cy="9" r="1" fill="#333"/>' +
+                    '<circle cx="23" cy="9" r="1" fill="#333"/>' +
+                    '<path d="M17 13 Q20 15 23 13" stroke="#333" stroke-width="1" fill="none"/>' +
+                '</svg>';
+            }
+
+            // Select character type based on scenario and difficulty
+            function selectCharacterType(scenarioType, difficulty, isSecondary) {
+                var allTypes = Object.keys(CHARACTER_TYPES);
+
+                // Find the "expected" type for this scenario
+                var expectedType = null;
+                for (var type in CHARACTER_TYPES) {
+                    if (CHARACTER_TYPES[type].expected.indexOf(scenarioType) !== -1) {
+                        expectedType = type;
+                        break;
+                    }
+                }
+
+                // Default to casual if no match
+                if (!expectedType) expectedType = 'casual';
+
+                // On easier difficulties, use the expected type
+                // On harder difficulties, sometimes use unexpected types
+                var mismatchChance = {
+                    'trainee': 0,
+                    'easy': 0.1,
+                    'medium': 0.3,
+                    'hard': 0.5,
+                    'expert': 0.7
+                };
+
+                var shouldMismatch = Math.random() < (mismatchChance[difficulty] || 0.3);
+
+                if (shouldMismatch) {
+                    // Pick a random type that's NOT the expected one
+                    var otherTypes = allTypes.filter(function(t) { return t !== expectedType; });
+                    return pickRandom(otherTypes);
+                }
+
+                return expectedType;
+            }
+
+            // Generate a character with appearance
+            function generateCharacter(id, scenarioType, difficulty, isSecondary) {
+                var charType = selectCharacterType(scenarioType, difficulty, isSecondary);
+
+                return {
+                    id: id,
+                    type: charType,
+                    skin: pickRandom(SKIN_TONES),
+                    hair: pickRandom(HAIR_COLORS)
+                };
+            }
+
+            // Create stick figure HTML element
+            function createStickFigureElement(character, subjectNum, position, inVehicle) {
+                var div = document.createElement('div');
+                div.className = 'stick-figure subject' + subjectNum + ' type-' + character.type + ' ' + character.skin + ' ' + character.hair;
+                div.id = subjectNum === 1 ? 'subject-pos' : 'subject2-pos';
+
+                if (inVehicle) {
+                    div.classList.add('in-vehicle');
+                }
+
+                div.style.top = position.top;
+                div.style.left = position.left;
+                if (position.right) div.style.right = position.right;
+
+                div.innerHTML = getStickFigureSVG() + '<span class="stick-figure-label">S' + subjectNum + '</span>';
+
+                div.title = 'Subject ' + subjectNum;
+
+                return div;
+            }
+
+            // Generate characters for a scenario
+            function generateScenarioCharacters(scenarioType, difficulty) {
+                currentCharacters = {};
+
+                // Generate primary subject
+                currentCharacters.s1 = generateCharacter('s1', scenarioType, difficulty, false);
+
+                // Check if scenario needs second subject
+                var multiPersonScenarios = ['domestic', 'domestic_weapons', 'assault', 'threats', 'civil_custody', 'civil_property'];
+                if (multiPersonScenarios.indexOf(scenarioType) !== -1) {
+                    currentCharacters.s2 = generateCharacter('s2', scenarioType, difficulty, true);
+                }
+
+                return currentCharacters;
+            }
+
+            // Inject stick figures into the scene, replacing dot markers
+            function injectStickFigures(scenarioType) {
+                var scene = document.getElementById('position-scene');
+                if (!scene) return;
+
+                // Get the existing subject marker to read its position
+                var oldSubject = document.getElementById('subject-pos');
+                var oldSubject2 = document.getElementById('subject2-pos');
+
+                // Check if this is a traffic stop (subject in vehicle)
+                var trafficScenarios = ['dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended', 'vehicle_theft'];
+                var inVehicle = trafficScenarios.indexOf(scenarioType) !== -1;
+
+                // Replace subject 1
+                if (oldSubject && currentCharacters.s1) {
+                    var pos1 = {
+                        top: oldSubject.style.top || '130px',
+                        left: oldSubject.style.left || '50%',
+                        right: oldSubject.style.right
+                    };
+
+                    // Create new stick figure
+                    var figure1 = createStickFigureElement(currentCharacters.s1, 1, pos1, inVehicle);
+
+                    // Replace old marker
+                    oldSubject.parentNode.replaceChild(figure1, oldSubject);
+                }
+
+                // Replace subject 2 if exists
+                if (oldSubject2 && currentCharacters.s2) {
+                    var pos2 = {
+                        top: oldSubject2.style.top || '130px',
+                        left: oldSubject2.style.left || '58%',
+                        right: oldSubject2.style.right
+                    };
+
+                    var figure2 = createStickFigureElement(currentCharacters.s2, 2, pos2, false);
+                    oldSubject2.parentNode.replaceChild(figure2, oldSubject2);
+                }
+            }
 
             // DOM elements
             var scenarioSelectSection = document.getElementById('scenario-select-section');
@@ -5477,6 +5785,10 @@
                 // Load the appropriate scene for this scenario type
                 SceneManager.loadSceneForScenario(actualScenario);
 
+                // Generate characters and inject stick figures
+                generateScenarioCharacters(actualScenario, selectedDifficulty);
+                injectStickFigures(actualScenario);
+
                 // Update header
                 document.getElementById('chat-scenario-title').textContent = scenario.title;
                 document.getElementById('chat-scenario-location').textContent = scenario.location;
@@ -6548,17 +6860,17 @@
                     hideMenu();
                 }
 
-                // Click on any subject marker (S1, S2, etc.)
+                // Click on any subject marker (S1, S2, etc.) or stick figure
                 document.addEventListener('click', function(e) {
-                    // Check for any subject-type marker (subject, subject2, person2)
-                    var subjectMarker = e.target.closest('.position-marker.subject, .position-marker.subject2, .position-marker.person2');
+                    // Check for any subject-type marker (subject, subject2, person2) or stick figure
+                    var subjectMarker = e.target.closest('.position-marker.subject, .position-marker.subject2, .position-marker.person2, .stick-figure.subject1, .stick-figure.subject2');
 
                     if (subjectMarker) {
                         e.preventDefault();
                         e.stopPropagation();
 
                         // Store which subject was clicked for the action
-                        var subjectLabel = subjectMarker.id === 'subject-pos' ? 'Party 1' : 'Party 2';
+                        var subjectLabel = (subjectMarker.id === 'subject-pos' || subjectMarker.classList.contains('subject1')) ? 'Party 1' : 'Party 2';
                         window.lastClickedSubject = { element: subjectMarker, label: subjectLabel };
 
                         var rect = subjectMarker.getBoundingClientRect();
