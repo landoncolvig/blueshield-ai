@@ -2294,8 +2294,10 @@
         }
 
         .speech-bubble.officer-bubble {
-            background: rgba(52, 211, 153, 0.15);
-            border: 1px solid rgba(52, 211, 153, 0.4);
+            background: rgba(52, 211, 153, 0.08);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(52, 211, 153, 0.25);
             color: #6ee7b7;
             max-width: 200px;
         }
@@ -2311,7 +2313,7 @@
             height: 0;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            border-top: 10px solid rgba(52, 211, 153, 0.4);
+            border-top: 10px solid rgba(52, 211, 153, 0.25);
         }
 
         .speech-bubble.officer-bubble::before {
@@ -2324,7 +2326,7 @@
             height: 0;
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
-            border-top: 8px solid rgba(52, 211, 153, 0.15);
+            border-top: 8px solid rgba(52, 211, 153, 0.08);
             z-index: 1;
         }
 
