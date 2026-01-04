@@ -6550,7 +6550,9 @@
 
                 // Track mouse/touch down on officer to distinguish click from drag
                 function handleOfficerPointerStart(e) {
-                    if (e.target.closest('.position-marker.officer')) {
+                    var marker = e.target.closest('.position-marker.officer');
+                    // Only track for main officer, not backup
+                    if (marker && marker.id === 'officer-pos') {
                         clickStartTime = Date.now();
                         var clientX = e.touches ? e.touches[0].clientX : e.clientX;
                         var clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -6561,7 +6563,8 @@
                 // Handle click/tap (not drag) on officer
                 function handleOfficerPointerEnd(e) {
                     var officerMarker = e.target.closest('.position-marker.officer');
-                    if (officerMarker && !isOfficerMenuOpen) {
+                    // Only show menu for main officer, not backup
+                    if (officerMarker && officerMarker.id === 'officer-pos' && !isOfficerMenuOpen) {
                         var timeDiff = Date.now() - clickStartTime;
                         var clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
                         var clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
