@@ -6535,12 +6535,16 @@
 
                 // Handle force action selection
                 function handleForceAction(action) {
+                    // Get the clicked subject info
+                    var clickedSubject = window.lastClickedSubject || { element: document.getElementById('subject-pos'), label: 'subject' };
+                    var subjectLabel = clickedSubject.label || 'subject';
+
                     var actionTexts = {
-                        'shoot': 'Draw weapon and fire at subject',
-                        'taze': 'Deploy taser on subject',
-                        'oc-spray': 'Deploy OC spray on subject',
-                        'fight': 'Engage in physical control techniques',
-                        'cuff': 'Place subject in handcuffs'
+                        'shoot': 'Draw weapon and fire at ' + subjectLabel,
+                        'taze': 'Deploy taser on ' + subjectLabel,
+                        'oc-spray': 'Deploy OC spray on ' + subjectLabel,
+                        'fight': 'Engage ' + subjectLabel + ' with physical control techniques',
+                        'cuff': 'Place ' + subjectLabel + ' in handcuffs'
                     };
 
                     var actionText = actionTexts[action] || action;
@@ -6557,25 +6561,29 @@
                         }
                     }
 
-                    // Visual feedback on subject
-                    var subject = document.getElementById('subject-pos');
-                    if (subject) {
-                        subject.classList.add('active');
+                    // Visual feedback on the clicked subject
+                    if (clickedSubject.element) {
+                        clickedSubject.element.classList.add('active');
                         setTimeout(function() {
-                            subject.classList.remove('active');
+                            clickedSubject.element.classList.remove('active');
                         }, 500);
                     }
 
                     hideMenu();
                 }
 
-                // Click on subject marker
+                // Click on any subject marker (S1, S2, etc.)
                 document.addEventListener('click', function(e) {
-                    var subjectMarker = e.target.closest('.position-marker.subject');
+                    // Check for any subject-type marker (subject, subject2, person2)
+                    var subjectMarker = e.target.closest('.position-marker.subject, .position-marker.subject2, .position-marker.person2');
 
                     if (subjectMarker) {
                         e.preventDefault();
                         e.stopPropagation();
+
+                        // Store which subject was clicked for the action
+                        var subjectLabel = subjectMarker.id === 'subject-pos' ? 'Party 1' : 'Party 2';
+                        window.lastClickedSubject = { element: subjectMarker, label: subjectLabel };
 
                         var rect = subjectMarker.getBoundingClientRect();
                         showMenu(rect.right + 5, rect.top);
