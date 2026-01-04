@@ -2620,6 +2620,21 @@
             z-index: 1;
         }
 
+        /* Officer bubble below marker - tail points UP */
+        .speech-bubble.officer-bubble.below-marker::after {
+            bottom: auto;
+            top: -10px;
+            border-top: none;
+            border-bottom: 10px solid rgba(52, 211, 153, 0.25);
+        }
+
+        .speech-bubble.officer-bubble.below-marker::before {
+            bottom: auto;
+            top: -8px;
+            border-top: none;
+            border-bottom: 8px solid rgba(52, 211, 153, 0.08);
+        }
+
         /* Subject bubble - positioned dynamically by JavaScript */
 
         /* Side-positioned bubbles (when not enough room above) */
@@ -5260,6 +5275,7 @@
                 var textEl = document.getElementById('officer-speech-text');
                 var officerMarker = document.getElementById('officer-pos');
                 var scene = document.getElementById('position-scene');
+                var subjectBubble = document.getElementById('subject-speech');
 
                 if (!bubble || !textEl) return;
 
@@ -5275,11 +5291,36 @@
                     // Calculate marker center position relative to scene
                     var markerCenterX = markerRect.left - sceneRect.left + markerRect.width / 2;
                     var markerTopY = markerRect.top - sceneRect.top;
+                    var markerBottomY = markerTopY + markerRect.height;
 
-                    // Position bubble above the officer (with space for the tail)
-                    var bubbleTop = Math.max(5, markerTopY - 85);
-                    bubble.style.top = bubbleTop + 'px';
-                    bubble.style.bottom = 'auto';
+                    // Check if subject bubble is visible and would overlap
+                    var subjectBubbleVisible = subjectBubble && subjectBubble.style.display !== 'none';
+                    var needsAlternatePosition = false;
+
+                    if (subjectBubbleVisible) {
+                        var subjectBubbleRect = subjectBubble.getBoundingClientRect();
+                        var subjectBubbleBottom = subjectBubbleRect.bottom - sceneRect.top;
+                        var officerBubbleTop = markerTopY - 85;
+
+                        // If bubbles would overlap vertically (within 20px of each other)
+                        if (officerBubbleTop < subjectBubbleBottom + 20) {
+                            needsAlternatePosition = true;
+                        }
+                    }
+
+                    if (needsAlternatePosition) {
+                        // Position bubble BELOW the officer marker instead
+                        var bubbleTop = markerBottomY + 15;
+                        bubble.style.top = bubbleTop + 'px';
+                        bubble.style.bottom = 'auto';
+                        bubble.classList.add('below-marker');
+                    } else {
+                        // Position bubble above the officer (with space for the tail)
+                        var bubbleTop = Math.max(5, markerTopY - 85);
+                        bubble.style.top = bubbleTop + 'px';
+                        bubble.style.bottom = 'auto';
+                        bubble.classList.remove('below-marker');
+                    }
 
                     // Center bubble horizontally above the officer
                     // Offset by half bubble width (approx 100px) to center it

@@ -4239,11 +4239,8 @@
             }
 
             function openDemo() {
-                modal.classList.add('active');
-                scenarioSelectSection.style.display = 'block';
-                chatSection.style.display = 'none';
-                debriefSection.classList.remove('active');
-                demoStarted = false;
+                // Navigate to dedicated demo page for better mobile experience
+                window.location.href = 'demo.html';
             }
 
             function startScenario() {

@@ -245,29 +245,30 @@ LEGAL FRAMEWORK (Arizona):
 
 Always respond with valid JSON only. No other text."""
 
-DEBRIEF_PROMPT = """You are an AI training evaluator for law enforcement. Based on the following conversation between an officer and a DUI suspect, provide a comprehensive debrief.
+DEBRIEF_PROMPT = """You are a STRICT law enforcement training evaluator. Evaluate the officer's SCENARIO PERFORMANCE based on what they actually did during the contact.
 
 CONVERSATION:
 {conversation}
 
-Provide a JSON response with:
-{{
-  "score": 0-100,
-  "summary": "2-3 sentence overall assessment",
-  "legal_analysis": [
-    {{
-      "topic": "e.g., Initial Contact",
-      "status": "correct" | "needs_improvement" | "incorrect",
-      "detail": "What happened and relevant ARS",
-      "ars_reference": "e.g., ARS 28-1595"
-    }}
-  ],
-  "recommendations": "Paragraph with specific improvement suggestions",
-  "strengths": ["List of things done well"],
-  "areas_for_improvement": ["List of areas to work on"]
-}}
+SCENARIO SCORING (0-100 points):
 
-Be specific, reference actual ARS sections, and be constructive. Respond with valid JSON only."""
+OFFICER SAFETY (0-15 pts): Positioning, watching hands, backup
+LEGAL PROCEDURE (0-25 pts): ID self, state reason, request documents, articulate RS/PC, Miranda
+INVESTIGATION (0-25 pts): Questions, statements, observations, evidence, dispatch
+COMMUNICATION (0-20 pts): Professional language, de-escalation, commands, control
+RESOLUTION (0-15 pts): Enforcement decision, documentation, proper procedures
+
+SCORING GUIDANCE:
+- 0-20: Did nothing or ended immediately
+- 20-40: Minimal interaction, no real procedure
+- 40-60: Attempted investigation but missed key steps
+- 60-80: Did most things correctly with some issues
+- 80-100: Exceptional performance
+
+You MUST respond with ONLY valid JSON, no markdown, no code blocks, no extra text:
+{{"overall_score": 0, "scenario_score": 0, "scenario_summary": "What the officer did during the contact", "scenario_analysis": [{{"category": "Officer Safety", "score": 0, "status": "incorrect", "detail": "What happened"}}], "scenario_strengths": [], "scenario_improvements": [], "report_score": 0, "report_summary": "Report not yet evaluated - will be scored separately", "report_analysis": [], "recommendations": "What to do better next time"}}
+
+Replace values based on actual performance. Be strict - if they did nothing, score should be 0-15."""
 
 
 @functions_framework.http
@@ -378,6 +379,7 @@ def handle_chat(data, headers):
 
 def handle_debrief(data, headers):
     """Generate scenario debrief."""
+    import re
     messages = data.get('messages', [])
 
     # Format conversation for debrief
@@ -404,14 +406,46 @@ def handle_debrief(data, headers):
 
     response_text = response.content[0].text
 
+    # Try to extract JSON from response (handle markdown code blocks)
+    parsed = None
+
+    # First try direct parse
     try:
         parsed = json.loads(response_text)
     except json.JSONDecodeError:
+        pass
+
+    # Try extracting from markdown code block
+    if not parsed:
+        json_match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', response_text)
+        if json_match:
+            try:
+                parsed = json.loads(json_match.group(1))
+            except json.JSONDecodeError:
+                pass
+
+    # Try finding JSON object in text
+    if not parsed:
+        json_match = re.search(r'\{[\s\S]*\}', response_text)
+        if json_match:
+            try:
+                parsed = json.loads(json_match.group(0))
+            except json.JSONDecodeError:
+                pass
+
+    # Fallback
+    if not parsed:
         parsed = {
-            'score': 75,
-            'summary': 'Unable to parse detailed analysis.',
-            'legal_analysis': [],
-            'recommendations': response_text
+            'overall_score': 0,
+            'scenario_score': 0,
+            'scenario_summary': 'Unable to parse response. The officer may not have taken enough actions to evaluate.',
+            'scenario_analysis': [],
+            'scenario_strengths': [],
+            'scenario_improvements': ['Complete the scenario with more interactions'],
+            'report_score': 0,
+            'report_summary': 'Report not evaluated.',
+            'report_analysis': [],
+            'recommendations': 'Try the scenario again and interact more with the subject.'
         }
 
     return (json.dumps(parsed), 200, headers)
