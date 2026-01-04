@@ -4829,6 +4829,114 @@
                 backupOnScene = false;
             }
 
+            // Subject movement system
+            var currentSubjectMood = 'nervous';
+
+            function checkForMovementCommand(officerMessage, subjectMood) {
+                if (!officerMessage) return false;
+
+                var moveKeywords = [
+                    'come here', 'come over', 'step over', 'walk over', 'get over here',
+                    'come to me', 'step towards', 'walk towards', 'approach me',
+                    'come closer', 'step forward', 'move over here', 'get out',
+                    'exit the vehicle', 'step out', 'out of the car', 'out of the vehicle'
+                ];
+
+                var lowerText = officerMessage.toLowerCase();
+                for (var i = 0; i < moveKeywords.length; i++) {
+                    if (lowerText.indexOf(moveKeywords[i]) !== -1) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function willSubjectComply(mood, difficulty) {
+                // Compliance based on mood and difficulty
+                var complianceChance = {
+                    'trainee': { calm: 1.0, nervous: 1.0, agitated: 0.95, hostile: 0.9, defeated: 1.0 },
+                    'easy': { calm: 1.0, nervous: 0.95, agitated: 0.85, hostile: 0.7, defeated: 1.0 },
+                    'medium': { calm: 0.95, nervous: 0.85, agitated: 0.6, hostile: 0.4, defeated: 1.0 },
+                    'hard': { calm: 0.85, nervous: 0.7, agitated: 0.4, hostile: 0.2, defeated: 0.95 },
+                    'expert': { calm: 0.7, nervous: 0.5, agitated: 0.25, hostile: 0.1, defeated: 0.9 }
+                };
+
+                var difficultyLevel = complianceChance[difficulty] || complianceChance['medium'];
+                var chance = difficultyLevel[mood] || 0.5;
+
+                return Math.random() < chance;
+            }
+
+            function moveSubjectTowardOfficer() {
+                var subject = document.getElementById('subject-pos');
+                var officer = document.getElementById('officer-pos');
+                var scene = document.getElementById('position-scene');
+
+                if (!subject || !officer || !scene) return;
+
+                var sceneRect = scene.getBoundingClientRect();
+                var officerRect = officer.getBoundingClientRect();
+
+                // Calculate officer position relative to scene
+                var officerX = officerRect.left - sceneRect.left + officerRect.width / 2;
+                var officerY = officerRect.top - sceneRect.top + officerRect.height / 2;
+
+                // Get current subject position
+                var subjectRect = subject.getBoundingClientRect();
+                var subjectX = subjectRect.left - sceneRect.left + subjectRect.width / 2;
+                var subjectY = subjectRect.top - sceneRect.top + subjectRect.height / 2;
+
+                // Calculate new position (move 60-70% of the way toward officer)
+                var moveRatio = 0.6 + Math.random() * 0.1;
+                var newX = subjectX + (officerX - subjectX) * moveRatio;
+                var newY = subjectY + (officerY - subjectY) * moveRatio;
+
+                // Keep some distance (about 5 feet / ~40px)
+                var dx = officerX - newX;
+                var dy = officerY - newY;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 40) {
+                    // Too close, back off a bit
+                    newX = officerX - (dx / dist) * 45;
+                    newY = officerY - (dy / dist) * 45;
+                }
+
+                // Animate the movement
+                subject.style.transition = 'left 0.8s ease-out, top 0.8s ease-out';
+                subject.style.left = newX + 'px';
+                subject.style.top = newY + 'px';
+                subject.style.transform = 'translate(-50%, -50%)';
+
+                // Flash to indicate movement
+                subject.classList.add('active');
+                setTimeout(function() {
+                    subject.classList.remove('active');
+                    subject.style.transition = '';
+                }, 1000);
+
+                // Update distance indicator
+                setTimeout(function() {
+                    var distIndicator = document.getElementById('distance-indicator');
+                    if (distIndicator) {
+                        distIndicator.textContent = '~5 ft';
+                        distIndicator.style.left = (newX + 20) + 'px';
+                        distIndicator.style.top = (newY - 30) + 'px';
+                    }
+                }, 800);
+            }
+
+            function handleSubjectMovement(officerMessage, subjectMood, difficulty) {
+                if (!checkForMovementCommand(officerMessage, subjectMood)) return;
+
+                currentSubjectMood = subjectMood || 'nervous';
+
+                if (willSubjectComply(currentSubjectMood, difficulty)) {
+                    // Subject complies - move after a short delay
+                    setTimeout(moveSubjectTowardOfficer, 500);
+                }
+                // If not complying, the AI response will indicate refusal
+            }
+
             // Dispatch response system
             function generateDispatchResponse(radioText) {
                 if (!radioText) return null;
@@ -5146,6 +5254,9 @@
 
                     updateSubjectMood(data.subject_mood, data.subject_action);
                     addMessage('subject', subjectResponse, data.hint);
+
+                    // Check if officer gave movement command and subject should comply
+                    handleSubjectMovement(officerMessage, data.subject_mood, selectedDifficulty);
 
                     if (data.new_observations && data.new_observations.length > 0) {
                         addObservations(data.new_observations);
