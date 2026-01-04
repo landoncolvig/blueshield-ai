@@ -355,7 +355,7 @@ def handle_chat(data):
     })
 
     response = client.messages.create(
-        model='claude-haiku-4-20250414',  # Haiku is 10x faster/cheaper for chat
+        model='claude-3-5-haiku-20241022',  # Haiku is 10x faster/cheaper for chat
         max_tokens=512,  # Reduced from 1024 - responses are short
         temperature=0.7,  # Slightly higher for more natural roleplay
         system=system_prompt,
