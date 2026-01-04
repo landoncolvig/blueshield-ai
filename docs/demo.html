@@ -5922,10 +5922,6 @@
 
                 document.getElementById('report-scenario-info').textContent = scenario.title + ' | ' + scenario.location + ' | Case #' + caseNum + ' | ' + dateStr + ' ' + timeStr;
 
-                // Pre-fill FI card location and datetime
-                document.getElementById('fi-location').value = scenario.location;
-                document.getElementById('fi-datetime').value = dateStr + ' ' + timeStr;
-
                 // Clear all textboxes (leave blank for user to fill)
                 document.getElementById('report-synopsis').value = '';
                 document.getElementById('report-call-details').value = '';
@@ -6121,13 +6117,20 @@
                 scenarioSelectSection.style.display = 'none';
                 chatSection.style.display = 'flex';
 
-                // Show FI card tab and pre-fill location/datetime
+                // Show FI card tab and clear all fields (user fills in everything)
                 document.getElementById('fi-card-tab').style.display = 'block';
-                var now = new Date();
-                var dateStr = (now.getMonth() + 1) + '/' + now.getDate() + '/' + now.getFullYear();
-                var timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                document.getElementById('fi-location').value = scenario.location;
-                document.getElementById('fi-datetime').value = dateStr + ' ' + timeStr;
+                document.getElementById('fi-card-panel').classList.remove('open');
+                document.getElementById('fi-card-tab').classList.remove('active');
+                var fiFields = document.querySelectorAll('#fi-card-panel input, #fi-card-panel textarea, #fi-card-panel select');
+                fiFields.forEach(function(field) {
+                    if (field.tagName === 'SELECT') {
+                        field.selectedIndex = 0;
+                    } else if (field.id === 'fi-state' || field.id === 'fi-dl-state' || field.id === 'fi-plate-state') {
+                        field.value = 'AZ';
+                    } else {
+                        field.value = '';
+                    }
+                });
 
                 sendToAPI('');
             }
