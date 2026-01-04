@@ -293,6 +293,8 @@ def chat(request):
             return handle_chat(data)
         elif action == 'debrief':
             return handle_debrief(data)
+        elif action == 'help':
+            return handle_help(data)
         else:
             return (json.dumps({'error': 'Invalid action'}), 400, CORS_HEADERS)
 
@@ -482,3 +484,71 @@ def handle_debrief(data):
         }
 
     return (json.dumps(parsed), 200, CORS_HEADERS)
+
+
+def handle_help(data):
+    """Handle training help questions."""
+    question = data.get('question', '')
+    scenario = data.get('scenario', 'unknown')
+    scenario_title = data.get('scenario_title', 'Unknown Scenario')
+    scenario_context = data.get('scenario_context', '')
+    legal_context = data.get('legal_context', '')
+    safety_context = data.get('safety_context', '')
+    conversation_history = data.get('conversation_history', [])
+
+    # Build context from conversation
+    convo_summary = ""
+    if conversation_history:
+        recent = conversation_history[-4:]  # Last 4 messages
+        convo_parts = []
+        for msg in recent:
+            if msg.get('role') == 'officer':
+                convo_parts.append(f"Officer: {msg.get('content', '')[:100]}")
+            elif msg.get('role') == 'subject':
+                convo_parts.append(f"Subject: {msg.get('content', '')[:100]}")
+        convo_summary = "\n".join(convo_parts)
+
+    help_prompt = f"""You are a law enforcement training assistant helping an officer-in-training during a scenario.
+
+CURRENT SCENARIO: {scenario_title}
+SCENARIO CONTEXT: {scenario_context}
+
+LEGAL REFERENCE INFO:
+{legal_context}
+
+OFFICER SAFETY REFERENCE:
+{safety_context}
+
+RECENT INTERACTION:
+{convo_summary}
+
+TRAINEE'S QUESTION: {question}
+
+Provide a helpful, concise answer (2-4 sentences max). Focus on:
+- Practical advice they can use right now
+- Relevant Arizona statutes if legal question
+- Officer safety considerations
+- What they should do or say next
+
+Be direct and tactical. This is training, so give them guidance without doing the scenario for them."""
+
+    try:
+        response = client.messages.create(
+            model='claude-3-5-haiku-20241022',
+            max_tokens=300,
+            temperature=0.5,
+            messages=[
+                {
+                    'role': 'user',
+                    'content': help_prompt
+                }
+            ]
+        )
+
+        answer = response.content[0].text
+        return (json.dumps({'answer': answer}), 200, CORS_HEADERS)
+
+    except Exception as e:
+        return (json.dumps({
+            'answer': f'Consider your legal authority for this scenario and prioritize officer safety. What specific aspect do you need help with?'
+        }), 200, CORS_HEADERS)

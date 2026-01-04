@@ -500,8 +500,8 @@
             position: fixed;
             bottom: 60px;
             right: 20px;
-            width: 340px;
-            max-height: 55vh;
+            width: 360px;
+            max-height: 60vh;
             background: var(--navy-mid);
             border: 2px solid var(--accent-gold);
             border-radius: 12px;
@@ -510,10 +510,16 @@
             display: none;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(201, 162, 39, 0.2);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .help-panel {
+            display: none;
         }
 
         .help-panel.visible {
-            display: block;
+            display: flex;
             animation: slideIn 0.3s ease-out;
         }
 
@@ -522,78 +528,155 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .help-tabs {
+        .help-header {
             display: flex;
-            border-bottom: 1px solid var(--border-color);
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
             background: var(--navy-deep);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--accent-gold);
+            font-weight: 600;
         }
 
-        .help-tab {
-            flex: 1;
-            padding: 0.75rem 0.5rem;
+        .help-close {
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.2s;
+            line-height: 1;
+            padding: 0;
         }
 
-        .help-tab:hover {
-            background: rgba(201, 162, 39, 0.1);
-            color: var(--text-primary);
+        .help-close:hover {
+            color: var(--error);
         }
 
-        .help-tab.active {
-            background: var(--navy-mid);
-            color: var(--accent-gold);
-            border-bottom: 2px solid var(--accent-gold);
-        }
-
-        .help-content {
-            padding: 1rem;
-            max-height: 45vh;
+        .help-chat-messages {
+            flex: 1;
             overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 35vh;
+            min-height: 150px;
         }
 
-        .help-content::-webkit-scrollbar {
+        .help-chat-messages::-webkit-scrollbar {
             width: 6px;
         }
 
-        .help-content::-webkit-scrollbar-thumb {
+        .help-chat-messages::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 3px;
         }
 
-        .help-panel h4 {
-            color: var(--accent-gold);
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
+        .help-message {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            max-width: 90%;
         }
 
-        .help-panel p {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
+        .help-message.user {
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
         }
 
-        .help-panel ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .help-panel li {
-            font-size: 0.8rem;
+        .help-message.assistant {
+            background: var(--navy-light);
             color: var(--text-primary);
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            line-height: 1.4;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
         }
 
-        .help-panel li:last-child {
-            border-bottom: none;
+        .help-message.loading {
+            opacity: 0.7;
+        }
+
+        .typing-dots span {
+            animation: blink 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 1; }
+            30% { opacity: 0.3; }
+        }
+
+        .help-input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--navy-deep);
+        }
+
+        .help-input-area input {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--navy-mid);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .help-input-area input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .help-input-area button {
+            padding: 0.6rem 1rem;
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .help-input-area button:hover {
+            background: #FFD700;
+            transform: translateY(-1px);
+        }
+
+        .help-quick-questions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem 0.75rem;
+            background: var(--navy-deep);
+            flex-wrap: wrap;
+        }
+
+        .quick-q {
+            padding: 0.4rem 0.6rem;
+            background: rgba(201, 162, 39, 0.15);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 15px;
+            color: var(--accent-gold);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-q:hover {
+            background: rgba(201, 162, 39, 0.3);
+            border-color: var(--accent-gold);
         }
 
         .help-panel li::before {
@@ -5138,8 +5221,8 @@
                 <div class="chat-input" style="padding: 0.4rem 0; display: flex; justify-content: space-between; align-items: center;">
                     <div class="timer-display" id="timer-display" style="position: static; margin: 0;">0.0s</div>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <button class="scenario-help-btn" id="scenario-help-btn" title="Legal & Safety Help">
-                            <span>?</span> Help
+                        <button class="scenario-help-btn" id="scenario-help-btn" title="Ask for help">
+                            Need help?
                         </button>
                         <button class="send-btn" id="send-btn" style="display: none;">Send</button>
                         <button class="end-scenario-btn" id="end-scenario-btn">
@@ -9054,66 +9137,140 @@
             };
 
             function createHelpSystem() {
-                // Help button
-                var helpBtn = document.createElement('button');
-                helpBtn.className = 'help-toggle-btn';
-                helpBtn.id = 'help-toggle-btn';
-                helpBtn.innerHTML = '?';
-                helpBtn.title = 'Scenario Help - Legal & Safety Advice';
-                helpBtn.onclick = toggleHelp;
-
-                // Help panel with tabs
+                // Help panel - chat style
                 var helpPanel = document.createElement('div');
                 helpPanel.className = 'help-panel';
                 helpPanel.id = 'help-panel';
                 helpPanel.innerHTML = `
-                    <div class="help-tabs">
-                        <button class="help-tab active" data-tab="legal">⚖️ Legal</button>
-                        <button class="help-tab" data-tab="safety">🛡️ Safety</button>
-                        <button class="help-tab" data-tab="tips">💡 Tips</button>
+                    <div class="help-header">
+                        <span>🎓 Training Assistant</span>
+                        <button class="help-close" id="help-close-btn">×</button>
                     </div>
-                    <div class="help-content" id="help-content-legal">
-                        <h4>⚖️ Legal Guidance</h4>
-                        <ul id="legal-advice-list"></ul>
+                    <div class="help-chat-messages" id="help-chat-messages">
+                        <div class="help-message assistant">
+                            <strong>Ask me anything!</strong><br>
+                            I can help with legal questions, officer safety, tactics, or how to handle this scenario.
+                        </div>
                     </div>
-                    <div class="help-content" id="help-content-safety" style="display:none;">
-                        <h4>🛡️ Officer Safety</h4>
-                        <ul id="safety-advice-list"></ul>
+                    <div class="help-input-area">
+                        <input type="text" id="help-question-input" placeholder="Ask a question..." />
+                        <button id="help-send-btn">Ask</button>
                     </div>
-                    <div class="help-content" id="help-content-tips" style="display:none;">
-                        <h4>💡 Controls</h4>
-                        <p>• <strong>Click subjects</strong> for force options</p>
-                        <p>• <strong>Click officer</strong> to speak/draw weapon</p>
-                        <p>• <strong>Radio dispatch</strong> for backup</p>
-                        <p>• <strong>Ctrl+Enter</strong> to send message</p>
+                    <div class="help-quick-questions">
+                        <button class="quick-q" data-q="What are my legal options here?">⚖️ Legal options</button>
+                        <button class="quick-q" data-q="What safety concerns should I have?">🛡️ Safety tips</button>
+                        <button class="quick-q" data-q="What should I do next?">🤔 What next?</button>
                     </div>
                 `;
 
-                document.body.appendChild(helpBtn);
                 document.body.appendChild(helpPanel);
 
-                // Tab switching
-                helpPanel.querySelectorAll('.help-tab').forEach(function(tab) {
-                    tab.addEventListener('click', function() {
-                        var tabName = this.dataset.tab;
-                        helpPanel.querySelectorAll('.help-tab').forEach(function(t) { t.classList.remove('active'); });
-                        helpPanel.querySelectorAll('.help-content').forEach(function(c) { c.style.display = 'none'; });
-                        this.classList.add('active');
-                        document.getElementById('help-content-' + tabName).style.display = 'block';
+                // Close button
+                document.getElementById('help-close-btn').addEventListener('click', function() {
+                    toggleHelp();
+                });
+
+                // Send question
+                document.getElementById('help-send-btn').addEventListener('click', sendHelpQuestion);
+                document.getElementById('help-question-input').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendHelpQuestion();
+                    }
+                });
+
+                // Quick questions
+                helpPanel.querySelectorAll('.quick-q').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        document.getElementById('help-question-input').value = this.dataset.q;
+                        sendHelpQuestion();
                     });
+                });
+            }
+
+            function sendHelpQuestion() {
+                var input = document.getElementById('help-question-input');
+                var question = input.value.trim();
+                if (!question) return;
+
+                var messagesContainer = document.getElementById('help-chat-messages');
+
+                // Add user question
+                var userMsg = document.createElement('div');
+                userMsg.className = 'help-message user';
+                userMsg.textContent = question;
+                messagesContainer.appendChild(userMsg);
+
+                // Clear input
+                input.value = '';
+
+                // Add loading message
+                var loadingMsg = document.createElement('div');
+                loadingMsg.className = 'help-message assistant loading';
+                loadingMsg.id = 'help-loading';
+                loadingMsg.innerHTML = '<span class="typing-dots">Thinking<span>.</span><span>.</span><span>.</span></span>';
+                messagesContainer.appendChild(loadingMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                // Get scenario context
+                var scenarioInfo = SCENARIOS[selectedScenario] || {};
+                var advice = SCENARIO_ADVICE[selectedScenario] || SCENARIO_ADVICE.default;
+
+                // Send to API
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'help',
+                        question: question,
+                        scenario: selectedScenario,
+                        scenario_title: scenarioInfo.title || 'Unknown',
+                        scenario_context: scenarioInfo.intro || '',
+                        legal_context: advice.legal.join('; '),
+                        safety_context: advice.safety.join('; '),
+                        conversation_history: messages.slice(-6)
+                    })
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    // Remove loading
+                    var loading = document.getElementById('help-loading');
+                    if (loading) loading.remove();
+
+                    // Add response
+                    var responseMsg = document.createElement('div');
+                    responseMsg.className = 'help-message assistant';
+                    responseMsg.innerHTML = data.answer || data.subject_response || 'I can help you with that. Based on this scenario, consider your legal authority and officer safety first.';
+                    messagesContainer.appendChild(responseMsg);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                })
+                .catch(function(err) {
+                    // Remove loading
+                    var loading = document.getElementById('help-loading');
+                    if (loading) loading.remove();
+
+                    // Add error response
+                    var responseMsg = document.createElement('div');
+                    responseMsg.className = 'help-message assistant';
+                    responseMsg.textContent = 'Sorry, I couldn\'t process that. Try asking about legal authority, safety concerns, or what to do next.';
+                    messagesContainer.appendChild(responseMsg);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 });
             }
 
             function toggleHelp() {
                 helpVisible = !helpVisible;
                 var panel = document.getElementById('help-panel');
-                var btn = document.getElementById('help-toggle-btn');
+                var btn = document.getElementById('scenario-help-btn');
                 if (panel) panel.classList.toggle('visible', helpVisible);
                 if (btn) btn.classList.toggle('active', helpVisible);
 
-                // Update advice when opening
+                // Focus input when opening
                 if (helpVisible) {
-                    updateScenarioAdvice();
+                    setTimeout(function() {
+                        var input = document.getElementById('help-question-input');
+                        if (input) input.focus();
+                    }, 100);
                 }
             }
 
