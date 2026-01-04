@@ -463,6 +463,119 @@
             }
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% { opacity: 0.3; }
+            40% { opacity: 1; }
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-spinner::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--tactical-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 3px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: var(--tactical-blue);
+            border-radius: 50%;
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Error message */
+        .message-error {
+            background: rgba(248, 113, 113, 0.1) !important;
+            border: 1px solid var(--error) !important;
+        }
+
+        .message-error .message-content {
+            color: var(--error);
+        }
+
+        /* Progress indicator */
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--navy-deep);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .progress-step.active {
+            color: var(--accent-gold);
+        }
+
+        .progress-step.completed {
+            color: var(--success);
+        }
+
+        .progress-step-number {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--navy-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .progress-step.active .progress-step-number {
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+        }
+
+        .progress-step.completed .progress-step-number {
+            background: var(--success);
+            color: var(--navy-deep);
+        }
+
+        .progress-connector {
+            width: 30px;
+            height: 2px;
+            background: var(--border-color);
+        }
+
+        .progress-connector.completed {
+            background: var(--success);
+        }
+
         .hint-icon {
             flex-shrink: 0;
             width: 20px;
@@ -1620,7 +1733,7 @@
         }
 
         .scenario-card {
-            background: var(--navy-deep);
+            background: rgba(19, 34, 56, 0.8);
             border: 2px solid var(--border-color);
             border-radius: 8px;
             padding: 0.6rem;
@@ -1635,11 +1748,31 @@
 
         .scenario-card:hover {
             border-color: var(--tactical-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .scenario-card.selected {
             border-color: var(--accent-gold);
-            background: rgba(201, 162, 39, 0.1);
+            background: rgba(201, 162, 39, 0.15);
+            box-shadow: 0 0 0 1px var(--accent-gold), 0 4px 12px rgba(201, 162, 39, 0.2);
+        }
+
+        .scenario-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: bold;
         }
 
         .scenario-icon-box {
@@ -1679,7 +1812,7 @@
         }
 
         .difficulty-card {
-            background: var(--navy-deep);
+            background: rgba(19, 34, 56, 0.8);
             border: 2px solid var(--border-color);
             border-radius: 8px;
             padding: 0.6rem 0.4rem;
@@ -1690,11 +1823,14 @@
 
         .difficulty-card:hover {
             border-color: var(--tactical-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .difficulty-card.selected {
             border-color: var(--accent-gold);
-            background: rgba(201, 162, 39, 0.1);
+            background: rgba(201, 162, 39, 0.15);
+            box-shadow: 0 0 0 1px var(--accent-gold);
         }
 
         .difficulty-card.easy .difficulty-icon { color: var(--success); }
@@ -1720,10 +1856,21 @@
 
         .start-scenario-btn {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.85rem;
             margin-top: 0.75rem;
             font-size: 1rem;
             justify-content: center;
+            position: sticky;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-bright));
+            color: var(--navy-deep);
+            font-weight: 600;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-scenario-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(201, 162, 39, 0.4);
         }
 
         @media (max-width: 900px) {
@@ -2669,6 +2816,24 @@
                     <line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>
+
+            <!-- Progress Indicator -->
+            <div class="progress-indicator" id="progress-indicator">
+                <div class="progress-step active" id="step-select">
+                    <span class="progress-step-number">1</span>
+                    <span>Select</span>
+                </div>
+                <div class="progress-connector" id="connector-1"></div>
+                <div class="progress-step" id="step-train">
+                    <span class="progress-step-number">2</span>
+                    <span>Train</span>
+                </div>
+                <div class="progress-connector" id="connector-2"></div>
+                <div class="progress-step" id="step-debrief">
+                    <span class="progress-step-number">3</span>
+                    <span>Debrief</span>
+                </div>
+            </div>
 
             <!-- Scenario Selection -->
             <div class="scenario-select" id="scenario-select-section">
@@ -3727,9 +3892,18 @@
                     messageDiv.className = 'message message-subject';
                     messageDiv.id = 'loading-message';
                     var label = createElement('div', 'message-label', 'Subject');
-                    var content = createElement('div', 'message-content', 'Thinking...');
-                    content.style.fontStyle = 'italic';
-                    content.style.opacity = '0.7';
+                    var content = createElement('div', 'message-content');
+                    content.innerHTML = '<span class="loading-spinner">Processing</span><div class="loading-dots"><span></span><span></span><span></span></div>';
+                    content.style.display = 'flex';
+                    content.style.alignItems = 'center';
+                    content.style.gap = '0.75rem';
+                    content.style.opacity = '0.8';
+                    messageDiv.appendChild(label);
+                    messageDiv.appendChild(content);
+                } else if (type === 'error') {
+                    messageDiv.className = 'message message-subject message-error';
+                    var label = createElement('div', 'message-label', '⚠️ Error');
+                    var content = createElement('div', 'message-content', text);
                     messageDiv.appendChild(label);
                     messageDiv.appendChild(content);
                 }
@@ -3807,10 +3981,41 @@
                 }
             }
 
+            function updateProgress(step) {
+                var stepSelect = document.getElementById('step-select');
+                var stepTrain = document.getElementById('step-train');
+                var stepDebrief = document.getElementById('step-debrief');
+                var connector1 = document.getElementById('connector-1');
+                var connector2 = document.getElementById('connector-2');
+
+                // Reset all
+                [stepSelect, stepTrain, stepDebrief].forEach(function(el) {
+                    el.classList.remove('active', 'completed');
+                });
+                [connector1, connector2].forEach(function(el) {
+                    el.classList.remove('completed');
+                });
+
+                if (step === 'select') {
+                    stepSelect.classList.add('active');
+                } else if (step === 'train') {
+                    stepSelect.classList.add('completed');
+                    connector1.classList.add('completed');
+                    stepTrain.classList.add('active');
+                } else if (step === 'debrief') {
+                    stepSelect.classList.add('completed');
+                    stepTrain.classList.add('completed');
+                    connector1.classList.add('completed');
+                    connector2.classList.add('completed');
+                    stepDebrief.classList.add('active');
+                }
+            }
+
             function startDemo() {
                 demoStarted = true;
                 messages = [];
                 messagesContainer.textContent = '';
+                updateProgress('train');
 
                 // Handle random scenario selection
                 var actualScenario = selectedScenario;
@@ -3855,9 +4060,40 @@
                 messages.push({ role: 'system', content: introText });
                 addMessage('system', introText);
 
+                // Pre-populate FI card
+                prefillFICard(scenario, actualScenario);
+
                 // Store actual scenario for API calls
                 selectedScenario = actualScenario;
                 sendToAPI('');
+            }
+
+            function prefillFICard(scenario, scenarioType) {
+                // Current date/time
+                var now = new Date();
+                var dateStr = (now.getMonth() + 1) + '/' + now.getDate() + '/' + now.getFullYear();
+                var timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                document.getElementById('fi-date').value = dateStr;
+                document.getElementById('fi-time').value = timeStr;
+                document.getElementById('fi-location').value = scenario.location || '';
+                document.getElementById('fi-call-type').value = scenario.title || '';
+
+                // Set call type radio based on scenario
+                var contactType = '4'; // Default N/A
+                if (scenarioType.includes('traffic') || scenarioType === 'dui') {
+                    contactType = '1'; // Driver
+                } else if (scenarioType.includes('pedestrian') || scenarioType === 'trespass' || scenarioType === 'disturbance') {
+                    contactType = '3'; // Pedestrian
+                }
+                var radio = document.querySelector('input[name="fi-contact-type"][value="' + contactType + '"]');
+                if (radio) {
+                    radio.checked = true;
+                    radio.dataset.wasChecked = 'true';
+                }
+
+                // Generate random CAD number
+                document.getElementById('fi-cad-number').value = 'CAD-' + Math.floor(100000 + Math.random() * 900000);
             }
 
             function sendToAPI(officerMessage) {
@@ -3908,7 +4144,7 @@
                 .catch(function(err) {
                     setLoading(false);
                     console.error('API Error:', err);
-                    addMessage('system', 'Error connecting to server. Please try again.');
+                    addMessage('error', 'Connection failed. Check your internet and try again.');
                 });
             }
 
@@ -3939,6 +4175,7 @@
             function showDebrief(data) {
                 chatSection.style.display = 'none';
                 debriefSection.classList.add('active');
+                updateProgress('debrief');
 
                 // Update scenario score
                 var score = data.score || 75;
@@ -4148,6 +4385,35 @@
             inputSay.addEventListener('keydown', handleKeydown);
             inputDo.addEventListener('keydown', handleKeydown);
             inputRadio.addEventListener('keydown', handleKeydown);
+
+            // Keyboard navigation for scenario selection
+            document.addEventListener('keydown', function(e) {
+                var scenarioSelectSection = document.getElementById('scenario-select-section');
+                if (scenarioSelectSection.style.display === 'none') return;
+
+                var cards = Array.from(document.querySelectorAll('.scenario-card'));
+                var selectedCard = document.querySelector('.scenario-card.selected');
+                var currentIndex = cards.indexOf(selectedCard);
+
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    var nextIndex = (currentIndex + 1) % cards.length;
+                    cards.forEach(function(c) { c.classList.remove('selected'); });
+                    cards[nextIndex].classList.add('selected');
+                    cards[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    selectedScenario = cards[nextIndex].dataset.scenario;
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    var prevIndex = (currentIndex - 1 + cards.length) % cards.length;
+                    cards.forEach(function(c) { c.classList.remove('selected'); });
+                    cards[prevIndex].classList.add('selected');
+                    cards[prevIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    selectedScenario = cards[prevIndex].dataset.scenario;
+                } else if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) {
+                    var startBtn = document.querySelector('.start-scenario-btn');
+                    if (startBtn) startBtn.click();
+                }
+            });
 
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) closeDemo();
