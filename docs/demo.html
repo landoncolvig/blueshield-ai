@@ -990,70 +990,124 @@
             left: 50%;
             top: 0;
             bottom: 0;
-            width: 4px;
+            width: 6px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            padding: 10px 0;
+            gap: 25px;
+            padding: 15px 0;
         }
 
         .lane-dash {
-            width: 4px;
-            height: 30px;
+            width: 6px;
+            height: 40px;
             background: #f59e0b;
-            border-radius: 2px;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
         }
 
         /* Road shoulder */
         .road-shoulder {
             position: absolute;
-            right: 8%;
+            right: 6%;
             top: 0;
             bottom: 0;
-            width: 3px;
+            width: 4px;
             background: repeating-linear-gradient(
                 180deg,
                 #fff 0px,
-                #fff 20px,
-                transparent 20px,
-                transparent 40px
+                #fff 25px,
+                transparent 25px,
+                transparent 50px
             );
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         .road-shoulder.left {
             right: auto;
-            left: 8%;
+            left: 6%;
+        }
+
+        /* Road texture/asphalt detail */
+        .scene-traffic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+
+        /* Street light */
+        .street-light {
+            position: absolute;
+            right: 3%;
+            top: 50px;
+            width: 8px;
+            height: 60px;
+            background: linear-gradient(180deg, #555 0%, #333 100%);
+            border-radius: 2px;
+        }
+
+        .street-light::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 12px;
+            background: linear-gradient(180deg, #666 0%, #444 100%);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .street-light::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 6px;
+            background: rgba(255, 220, 100, 0.6);
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(255, 220, 100, 0.4), 0 20px 40px rgba(255, 220, 100, 0.15);
         }
 
         /* Direction arrow on road */
         .road-direction {
             position: absolute;
-            top: 10px;
+            top: 12px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.6rem;
-            color: rgba(255,255,255,0.3);
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
+            font-weight: 600;
         }
 
         .road-direction svg {
-            width: 16px;
-            height: 16px;
-            stroke: rgba(255,255,255,0.3);
+            width: 20px;
+            height: 20px;
+            stroke: rgba(255,255,255,0.4);
             fill: none;
         }
 
         /* Vehicle styling - suspect vehicle (top-down sedan shape) */
         .position-vehicle {
             position: absolute;
-            top: 35px;
-            left: 18%;
-            width: 52px;
-            height: 92px;
+            top: 20px;
+            left: 12%;
+            width: 78px;
+            height: 140px;
             background: transparent;
             display: flex;
             flex-direction: column;
@@ -1061,109 +1115,112 @@
         }
 
         .vehicle-hood {
-            width: 44px;
-            height: 20px;
-            background: linear-gradient(180deg, #5a5a5a 0%, #4a4a4a 100%);
-            border-radius: 14px 14px 3px 3px;
+            width: 66px;
+            height: 30px;
+            background: linear-gradient(180deg, #6a6a6a 0%, #4a4a4a 100%);
+            border-radius: 18px 18px 4px 4px;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.6);
         }
 
         .vehicle-headlights {
             position: absolute;
-            bottom: 2px;
+            bottom: 4px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: space-between;
-            padding: 0 4px;
+            padding: 0 6px;
         }
 
         .headlight {
-            width: 8px;
-            height: 4px;
-            background: #ccc;
-            border-radius: 2px;
+            width: 12px;
+            height: 6px;
+            background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(255,255,200,0.5);
         }
 
         .vehicle-windshield {
-            width: 40px;
-            height: 10px;
+            width: 60px;
+            height: 16px;
             background: linear-gradient(180deg, #1a4060 0%, #2a5070 100%);
-            border-radius: 2px;
-            margin: 1px auto;
+            border-radius: 3px;
+            margin: 2px auto;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .vehicle-cabin {
-            width: 48px;
-            height: 28px;
-            background: linear-gradient(180deg, #4a4a4a 0%, #5a5a5a 100%);
-            border-radius: 3px;
+            width: 72px;
+            height: 42px;
+            background: linear-gradient(180deg, #5a5a5a 0%, #4a4a4a 100%);
+            border-radius: 4px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
         }
 
         .vehicle-windows {
             position: absolute;
-            top: 2px;
-            left: 3px;
-            right: 3px;
-            bottom: 2px;
+            top: 4px;
+            left: 5px;
+            right: 5px;
+            bottom: 4px;
             display: flex;
             justify-content: space-between;
         }
 
         .vehicle-window {
-            width: 9px;
+            width: 14px;
             height: 100%;
-            background: #1a4060;
-            border-radius: 2px;
+            background: linear-gradient(180deg, #1a4060 0%, #2a5070 100%);
+            border-radius: 3px;
         }
 
         .vehicle-label {
-            font-size: 0.38rem;
-            color: #999;
+            font-size: 0.5rem;
+            color: #aaa;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             z-index: 1;
+            font-weight: 600;
         }
 
         .vehicle-rear-section {
-            width: 40px;
-            height: 8px;
+            width: 60px;
+            height: 12px;
             background: linear-gradient(180deg, #2a5070 0%, #1a4060 100%);
-            border-radius: 2px;
-            margin: 1px auto;
+            border-radius: 3px;
+            margin: 2px auto;
         }
 
         .vehicle-trunk {
-            width: 46px;
-            height: 16px;
-            background: linear-gradient(180deg, #4a4a4a 0%, #5a5a5a 100%);
-            border-radius: 3px 3px 12px 12px;
+            width: 68px;
+            height: 24px;
+            background: linear-gradient(180deg, #5a5a5a 0%, #4a4a4a 100%);
+            border-radius: 4px 4px 16px 16px;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.6);
         }
 
         .vehicle-taillights {
             position: absolute;
-            bottom: 2px;
+            bottom: 4px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: space-between;
-            padding: 0 4px;
+            padding: 0 6px;
         }
 
         .taillight {
-            width: 8px;
-            height: 4px;
+            width: 12px;
+            height: 6px;
             background: #dc2626;
-            border-radius: 1px;
-            box-shadow: 0 0 4px #dc2626;
+            border-radius: 2px;
+            box-shadow: 0 0 8px #dc2626;
         }
 
         /* Wheels for suspect vehicle */
@@ -1178,25 +1235,25 @@
 
         .wheel {
             position: absolute;
-            width: 8px;
-            height: 16px;
-            background: #1a1a1a;
-            border-radius: 3px;
-            border: 1px solid #333;
+            width: 12px;
+            height: 24px;
+            background: linear-gradient(90deg, #1a1a1a 0%, #333 50%, #1a1a1a 100%);
+            border-radius: 4px;
+            border: 2px solid #222;
         }
 
-        .wheel.fl { top: 16px; left: -5px; }
-        .wheel.fr { top: 16px; right: -5px; }
-        .wheel.rl { bottom: 14px; left: -5px; }
-        .wheel.rr { bottom: 14px; right: -5px; }
+        .wheel.fl { top: 24px; left: -7px; }
+        .wheel.fr { top: 24px; right: -7px; }
+        .wheel.rl { bottom: 22px; left: -7px; }
+        .wheel.rr { bottom: 22px; right: -7px; }
 
         /* Patrol car (top-down police cruiser shape) */
         .patrol-car {
             position: absolute;
-            bottom: 20px;
-            left: 16%;
-            width: 56px;
-            height: 98px;
+            bottom: 15px;
+            left: 10%;
+            width: 84px;
+            height: 148px;
             background: transparent;
             display: flex;
             flex-direction: column;
@@ -1204,139 +1261,142 @@
         }
 
         .patrol-hood {
-            width: 46px;
-            height: 22px;
+            width: 70px;
+            height: 32px;
             background: linear-gradient(180deg, #1e4a6f 0%, #0f3050 100%);
-            border-radius: 14px 14px 3px 3px;
+            border-radius: 18px 18px 4px 4px;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 0 15px rgba(46, 90, 140, 0.4);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.6), 0 0 20px rgba(46, 90, 140, 0.5);
         }
 
         .patrol-pushbar {
             position: absolute;
-            top: -2px;
+            top: -3px;
             left: 50%;
             transform: translateX(-50%);
-            width: 36px;
-            height: 3px;
-            background: #333;
-            border-radius: 2px;
+            width: 54px;
+            height: 5px;
+            background: linear-gradient(180deg, #444 0%, #222 100%);
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .patrol-headlights {
             position: absolute;
-            bottom: 3px;
+            bottom: 5px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: space-between;
-            padding: 0 5px;
+            padding: 0 8px;
         }
 
         .patrol-headlight {
-            width: 8px;
-            height: 4px;
-            background: #fbbf24;
-            border-radius: 2px;
-            box-shadow: 0 0 8px #fbbf24;
+            width: 12px;
+            height: 6px;
+            background: linear-gradient(180deg, #ffd700 0%, #fbbf24 100%);
+            border-radius: 3px;
+            box-shadow: 0 0 12px #fbbf24, 0 0 20px rgba(251, 191, 36, 0.5);
         }
 
         .patrol-windshield {
-            width: 42px;
-            height: 10px;
+            width: 64px;
+            height: 16px;
             background: linear-gradient(180deg, #1a4060 0%, #2a5070 100%);
-            border-radius: 2px;
-            margin: 1px auto;
+            border-radius: 3px;
+            margin: 2px auto;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .patrol-cabin {
-            width: 50px;
-            height: 30px;
+            width: 76px;
+            height: 46px;
             background: linear-gradient(180deg, #0f3050 0%, #1e4a6f 100%);
-            border-radius: 3px;
+            border-radius: 4px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
         }
 
         .patrol-windows {
             position: absolute;
-            top: 2px;
-            left: 3px;
-            right: 3px;
-            bottom: 2px;
+            top: 4px;
+            left: 5px;
+            right: 5px;
+            bottom: 4px;
             display: flex;
             justify-content: space-between;
         }
 
         .patrol-window {
-            width: 9px;
+            width: 14px;
             height: 100%;
-            background: #1a4060;
-            border-radius: 2px;
+            background: linear-gradient(180deg, #1a4060 0%, #2a5070 100%);
+            border-radius: 3px;
         }
 
         .lightbar {
             position: absolute;
-            top: -5px;
+            top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 38px;
-            height: 6px;
+            width: 58px;
+            height: 10px;
             background: linear-gradient(90deg, #ef4444 0%, #ef4444 45%, #3b82f6 55%, #3b82f6 100%);
-            border-radius: 3px;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6), 0 0 12px rgba(59, 130, 246, 0.6);
+            border-radius: 5px;
+            box-shadow: 0 0 16px rgba(239, 68, 68, 0.7), 0 0 16px rgba(59, 130, 246, 0.7);
             animation: lightbarFlash 0.8s ease-in-out infinite;
         }
 
         @keyframes lightbarFlash {
-            0%, 100% { opacity: 1; box-shadow: 0 0 14px rgba(239, 68, 68, 0.8), 0 0 14px rgba(59, 130, 246, 0.8); }
-            50% { opacity: 0.5; box-shadow: 0 0 6px rgba(239, 68, 68, 0.3), 0 0 6px rgba(59, 130, 246, 0.3); }
+            0%, 100% { opacity: 1; box-shadow: 0 0 20px rgba(239, 68, 68, 0.9), 0 0 20px rgba(59, 130, 246, 0.9); }
+            50% { opacity: 0.6; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4), 0 0 8px rgba(59, 130, 246, 0.4); }
         }
 
         .patrol-label {
-            font-size: 0.38rem;
+            font-size: 0.5rem;
             color: #6ba3d6;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-weight: 600;
+            font-weight: 700;
             z-index: 1;
         }
 
         .patrol-rear-section {
-            width: 42px;
-            height: 8px;
+            width: 64px;
+            height: 12px;
             background: linear-gradient(180deg, #2a5070 0%, #1a4060 100%);
-            border-radius: 2px;
-            margin: 1px auto;
+            border-radius: 3px;
+            margin: 2px auto;
         }
 
         .patrol-trunk {
-            width: 48px;
-            height: 16px;
+            width: 72px;
+            height: 24px;
             background: linear-gradient(180deg, #0f3050 0%, #1e4a6f 100%);
-            border-radius: 3px 3px 12px 12px;
+            border-radius: 4px 4px 16px 16px;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.6);
         }
 
         .patrol-taillights {
             position: absolute;
-            bottom: 2px;
+            bottom: 4px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: space-between;
-            padding: 0 5px;
+            padding: 0 8px;
         }
 
         .patrol-taillight {
-            width: 8px;
-            height: 4px;
+            width: 12px;
+            height: 6px;
             background: #dc2626;
-            border-radius: 1px;
+            border-radius: 2px;
+            box-shadow: 0 0 6px #dc2626;
         }
 
         /* Patrol wheels */
@@ -1351,17 +1411,17 @@
 
         .patrol-wheel {
             position: absolute;
-            width: 8px;
-            height: 16px;
-            background: #1a1a1a;
-            border-radius: 3px;
-            border: 1px solid #333;
+            width: 12px;
+            height: 24px;
+            background: linear-gradient(90deg, #1a1a1a 0%, #333 50%, #1a1a1a 100%);
+            border-radius: 4px;
+            border: 2px solid #222;
         }
 
-        .patrol-wheel.fl { top: 18px; left: -3px; }
-        .patrol-wheel.fr { top: 18px; right: -3px; }
-        .patrol-wheel.rl { bottom: 14px; left: -3px; }
-        .patrol-wheel.rr { bottom: 14px; right: -3px; }
+        .patrol-wheel.fl { top: 26px; left: -5px; }
+        .patrol-wheel.fr { top: 26px; right: -5px; }
+        .patrol-wheel.rl { bottom: 22px; left: -5px; }
+        .patrol-wheel.rr { bottom: 22px; right: -5px; }
 
         /* Draggable patrol car */
         .patrol-car.draggable {
@@ -1411,73 +1471,132 @@
 
         .house {
             position: absolute;
-            top: 20px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 140px;
-            height: 100px;
+            width: 220px;
+            height: 150px;
         }
 
         .house-roof {
             width: 0;
             height: 0;
-            border-left: 80px solid transparent;
-            border-right: 80px solid transparent;
-            border-bottom: 35px solid #5a4a3a;
+            border-left: 120px solid transparent;
+            border-right: 120px solid transparent;
+            border-bottom: 55px solid #5a4a3a;
             position: relative;
             left: -10px;
+            filter: drop-shadow(0 -2px 4px rgba(0,0,0,0.3));
+        }
+
+        .house-roof::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            width: 20px;
+            height: 25px;
+            background: linear-gradient(180deg, #6a5a4a 0%, #5a4a3a 100%);
+            border: 2px solid #4a3a2a;
         }
 
         .house-body {
-            width: 140px;
-            height: 65px;
-            background: linear-gradient(180deg, #6a5a4a 0%, #5a4a3a 100%);
+            width: 220px;
+            height: 95px;
+            background: linear-gradient(180deg, #7a6a5a 0%, #5a4a3a 100%);
             position: relative;
             display: flex;
             justify-content: center;
             align-items: flex-end;
             padding-bottom: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .house-body::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            bottom: 0;
+            height: 3px;
+            background: #3a3a3a;
         }
 
         .house-door {
-            width: 28px;
-            height: 45px;
-            background: linear-gradient(180deg, #4a3a2a 0%, #3a2a1a 100%);
-            border: 2px solid #2a1a0a;
-            border-radius: 3px 3px 0 0;
+            width: 42px;
+            height: 70px;
+            background: linear-gradient(180deg, #5a4a3a 0%, #3a2a1a 100%);
+            border: 3px solid #2a1a0a;
+            border-radius: 4px 4px 0 0;
             position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .house-door::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 20px;
+            background: rgba(255, 220, 150, 0.2);
+            border: 2px solid #2a1a0a;
         }
 
         .door-knob {
             position: absolute;
-            right: 4px;
-            top: 50%;
-            width: 5px;
-            height: 5px;
-            background: #c9a030;
+            right: 6px;
+            top: 55%;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #d4a030 0%, #a07020 100%);
             border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .house-window {
             position: absolute;
-            width: 24px;
-            height: 24px;
-            background: rgba(255, 220, 150, 0.3);
-            border: 2px solid #3a2a1a;
-            box-shadow: 0 0 10px rgba(255, 220, 150, 0.2);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 220, 150, 0.35);
+            border: 3px solid #3a2a1a;
+            box-shadow: 0 0 15px rgba(255, 220, 150, 0.3), inset 0 0 10px rgba(255, 220, 150, 0.2);
         }
 
-        .house-window.left { left: 15px; top: 15px; }
-        .house-window.right { right: 15px; top: 15px; }
+        .house-window::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #3a2a1a;
+        }
+
+        .house-window::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #3a2a1a;
+        }
+
+        .house-window.left { left: 20px; top: 20px; }
+        .house-window.right { right: 20px; top: 20px; }
 
         .house-label {
             position: absolute;
-            top: 5px;
+            top: 8px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.5rem;
-            color: rgba(255,255,255,0.4);
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.5);
             text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         .porch {
@@ -1485,20 +1604,38 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 12px;
-            background: #4a4a4a;
-            border-radius: 2px 2px 0 0;
+            width: 90px;
+            height: 18px;
+            background: linear-gradient(180deg, #5a5a5a 0%, #3a3a3a 100%);
+            border-radius: 3px 3px 0 0;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
         }
 
         .sidewalk {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 80px;
-            background: #5a5a5a;
+            width: 60px;
+            height: 100px;
+            background: linear-gradient(90deg, #5a5a5a 0%, #6a6a6a 50%, #5a5a5a 100%);
+            box-shadow: 2px 0 4px rgba(0,0,0,0.3);
+        }
+
+        .sidewalk::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                transparent 25px,
+                rgba(0,0,0,0.1) 25px,
+                rgba(0,0,0,0.1) 27px
+            );
         }
 
         .yard {
@@ -1506,8 +1643,59 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 100px;
-            background: linear-gradient(180deg, #2a4a2a 0%, #1a3a1a 100%);
+            height: 120px;
+            background: linear-gradient(180deg, #2a5a2a 0%, #1a4a1a 100%);
+        }
+
+        /* Grass texture */
+        .yard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 15% 30%, #3a6a3a 2px, transparent 2px),
+                radial-gradient(circle at 45% 60%, #2a5a2a 2px, transparent 2px),
+                radial-gradient(circle at 75% 20%, #3a6a3a 2px, transparent 2px),
+                radial-gradient(circle at 85% 70%, #2a5a2a 2px, transparent 2px);
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+
+        /* Bushes near house */
+        .bush {
+            position: absolute;
+            width: 30px;
+            height: 25px;
+            background: radial-gradient(ellipse at 50% 100%, #2a5a2a 0%, #1a4a1a 100%);
+            border-radius: 50% 50% 40% 40%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .bush.left { left: 25%; bottom: 95px; }
+        .bush.right { right: 25%; bottom: 95px; }
+
+        /* Mailbox */
+        .mailbox {
+            position: absolute;
+            right: 20%;
+            bottom: 80px;
+            width: 8px;
+            height: 35px;
+            background: linear-gradient(180deg, #444 0%, #222 100%);
+        }
+
+        .mailbox::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -6px;
+            width: 20px;
+            height: 14px;
+            background: linear-gradient(180deg, #333 0%, #111 100%);
+            border-radius: 3px 3px 2px 2px;
         }
 
         .street-residential {
@@ -1515,17 +1703,47 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 50px;
-            background: #3d3d3d;
+            height: 60px;
+            background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
+        }
+
+        /* Street center line */
+        .street-residential::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: repeating-linear-gradient(
+                90deg,
+                #f59e0b 0px,
+                #f59e0b 20px,
+                transparent 20px,
+                transparent 40px
+            );
+            transform: translateY(-50%);
         }
 
         .curb {
             position: absolute;
-            bottom: 50px;
+            bottom: 60px;
             left: 0;
             right: 0;
-            height: 4px;
-            background: #666;
+            height: 6px;
+            background: linear-gradient(180deg, #777 0%, #555 100%);
+        }
+
+        /* Porch light */
+        .porch-light {
+            position: absolute;
+            top: -15px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, rgba(255, 220, 100, 0.8) 0%, rgba(255, 220, 100, 0) 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 220, 100, 0.5);
         }
 
         /* ========== BUSINESS SCENE ========== */
@@ -1535,65 +1753,107 @@
 
         .store {
             position: absolute;
-            top: 15px;
+            top: 5px;
             left: 50%;
             transform: translateX(-50%);
-            width: 180px;
-            height: 110px;
+            width: 280px;
+            height: 160px;
         }
 
         .store-sign {
             width: 100%;
-            height: 20px;
+            height: 32px;
             background: linear-gradient(180deg, #2a4a6a 0%, #1a3a5a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.5rem;
-            color: #8ac;
+            font-size: 0.75rem;
+            color: #9bd;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 3px 3px 0 0;
+            letter-spacing: 2px;
+            font-weight: 700;
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 -2px 10px rgba(100, 150, 200, 0.3);
+            text-shadow: 0 0 10px rgba(100, 150, 200, 0.5);
         }
 
         .store-front {
             width: 100%;
-            height: 90px;
-            background: linear-gradient(180deg, #4a4a5a 0%, #3a3a4a 100%);
+            height: 128px;
+            background: linear-gradient(180deg, #5a5a6a 0%, #3a3a4a 100%);
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
             padding-bottom: 0;
             position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .store-front::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(180deg, #6a6a7a 0%, #4a4a5a 100%);
         }
 
         .store-window {
-            width: 50px;
-            height: 60px;
-            background: rgba(100, 150, 200, 0.2);
-            border: 2px solid #2a2a3a;
-            position: relative;
-            bottom: 0;
-        }
-
-        .store-door {
-            width: 35px;
-            height: 70px;
-            background: rgba(100, 150, 200, 0.3);
+            width: 75px;
+            height: 90px;
+            background: linear-gradient(180deg, rgba(100, 150, 200, 0.25) 0%, rgba(80, 130, 180, 0.15) 100%);
             border: 3px solid #2a2a3a;
             position: relative;
             bottom: 0;
+            box-shadow: inset 0 0 20px rgba(100, 150, 200, 0.2);
+        }
+
+        .store-window::before {
+            content: 'SALE';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            color: #ef4444;
+            font-weight: 700;
+            text-shadow: 0 0 5px #ef4444;
+        }
+
+        .store-door {
+            width: 55px;
+            height: 100px;
+            background: linear-gradient(180deg, rgba(100, 150, 200, 0.35) 0%, rgba(80, 130, 180, 0.2) 100%);
+            border: 4px solid #2a2a3a;
+            position: relative;
+            bottom: 0;
+            box-shadow: inset 0 0 15px rgba(100, 150, 200, 0.3);
+        }
+
+        .store-door::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 30px;
+            background: #444;
+            border-radius: 2px;
         }
 
         .store-door::after {
             content: 'ENTRANCE';
             position: absolute;
-            top: 5px;
+            top: 8px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.35rem;
-            color: rgba(255,255,255,0.5);
+            font-size: 0.45rem;
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .parking-lot {
@@ -1601,16 +1861,26 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 120px;
-            background: #3a3a3a;
+            height: 150px;
+            background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
+        }
+
+        .parking-lot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #fbbf24;
         }
 
         .parking-lines {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            height: 60px;
+            bottom: 30px;
+            left: 25px;
+            right: 25px;
+            height: 80px;
             display: flex;
             gap: 30px;
         }
@@ -1808,13 +2078,13 @@
         /* Position markers */
         .position-marker {
             position: absolute;
-            width: 36px;
-            height: 36px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.6rem;
+            font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -1822,35 +2092,36 @@
         }
 
         .position-marker.subject {
-            background: rgba(248, 113, 113, 0.25);
-            border: 2px solid var(--error);
+            background: rgba(248, 113, 113, 0.3);
+            border: 3px solid var(--error);
             color: var(--error);
         }
 
         .position-marker.officer {
-            background: rgba(52, 211, 153, 0.25);
-            border: 2px solid var(--success);
+            background: rgba(52, 211, 153, 0.3);
+            border: 3px solid var(--success);
             color: var(--success);
             flex-direction: column;
-            gap: 1px;
+            gap: 2px;
             cursor: grab;
             user-select: none;
             -webkit-user-select: none;
             touch-action: none;
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
         }
 
         .position-marker.officer:active,
         .position-marker.officer.dragging {
             cursor: grabbing;
             transform: scale(1.15);
-            box-shadow: 0 0 20px var(--success), 0 4px 15px rgba(0,0,0,0.4);
+            box-shadow: 0 0 25px var(--success), 0 4px 20px rgba(0,0,0,0.5);
             z-index: 100;
             transition: none;
         }
 
         .officer-facing {
-            font-size: 0.45rem;
-            opacity: 0.8;
+            font-size: 0.55rem;
+            opacity: 0.9;
         }
 
         .officer-facing svg {
@@ -3773,8 +4044,8 @@
         /* ========== STICK FIGURE CHARACTERS ========== */
         .stick-figure {
             position: absolute;
-            width: 40px;
-            height: 60px;
+            width: 60px;
+            height: 90px;
             cursor: pointer;
             transition: transform 0.2s, filter 0.2s;
             z-index: 20;
@@ -3782,23 +4053,23 @@
 
         .stick-figure:hover {
             transform: scale(1.1);
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+            filter: drop-shadow(0 0 12px rgba(255,255,255,0.5));
         }
 
         .stick-figure.subject1 {
-            filter: drop-shadow(0 0 4px rgba(248, 113, 113, 0.6));
+            filter: drop-shadow(0 0 6px rgba(248, 113, 113, 0.7));
         }
 
         .stick-figure.subject2 {
-            filter: drop-shadow(0 0 4px rgba(251, 146, 60, 0.6));
+            filter: drop-shadow(0 0 6px rgba(251, 146, 60, 0.7));
         }
 
         .stick-figure.subject1:hover {
-            filter: drop-shadow(0 0 10px rgba(248, 113, 113, 0.8));
+            filter: drop-shadow(0 0 14px rgba(248, 113, 113, 0.9));
         }
 
         .stick-figure.subject2:hover {
-            filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.8));
+            filter: drop-shadow(0 0 14px rgba(251, 146, 60, 0.9));
         }
 
         /* Skin tone colors */
@@ -3871,33 +4142,33 @@
 
         /* In-vehicle indicator */
         .stick-figure.in-vehicle {
-            width: 30px;
-            height: 45px;
+            width: 45px;
+            height: 68px;
         }
 
         .stick-figure.in-vehicle::after {
             content: '🚗';
             position: absolute;
-            bottom: -20px;
+            bottom: -24px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.6rem;
+            font-size: 0.8rem;
         }
 
         @media (max-width: 600px) {
             .stick-figure {
-                width: 32px;
-                height: 48px;
+                width: 48px;
+                height: 72px;
             }
 
             .stick-figure.in-vehicle {
-                width: 24px;
-                height: 36px;
+                width: 36px;
+                height: 54px;
             }
 
             .stick-figure-label {
-                font-size: 0.45rem;
-                bottom: -12px;
+                font-size: 0.5rem;
+                bottom: -14px;
             }
         }
     </style>
