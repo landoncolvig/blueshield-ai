@@ -2152,22 +2152,17 @@
         }
 
         .position-marker.subject.in-vehicle {
-            z-index: 25;
-            width: 28px;
-            height: 28px;
-            font-size: 0.65rem;
-            background: rgba(248, 113, 113, 0.4);
+            z-index: 26;
+            width: 32px;
+            height: 32px;
+            font-size: 0.7rem;
+            background: rgba(248, 113, 113, 0.5);
             border-width: 2px;
-            box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+            box-shadow: 0 0 10px rgba(248, 113, 113, 0.6);
         }
 
         .position-marker.subject.in-vehicle::after {
-            content: '🚗';
-            position: absolute;
-            bottom: -16px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.5rem;
+            display: none;
         }
 
         /* Second subject (for multi-person scenarios) */
@@ -4140,19 +4135,15 @@
             color: #fb923c;
         }
 
-        /* In-vehicle indicator */
+        /* In-vehicle - figure sitting in driver seat */
         .stick-figure.in-vehicle {
-            width: 45px;
-            height: 68px;
+            width: 38px;
+            height: 55px;
+            z-index: 26;
         }
 
-        .stick-figure.in-vehicle::after {
-            content: '🚗';
-            position: absolute;
-            bottom: -24px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
+        .stick-figure.in-vehicle .stick-figure-label {
+            display: none;
         }
 
         @media (max-width: 600px) {
@@ -4162,8 +4153,8 @@
             }
 
             .stick-figure.in-vehicle {
-                width: 36px;
-                height: 54px;
+                width: 32px;
+                height: 46px;
             }
 
             .stick-figure-label {
@@ -6319,7 +6310,7 @@
                 // Scene HTML templates
                 var sceneTemplates = {
                     traffic: {
-                        html: '<div class="road-markings"><div class="lane-dash"></div><div class="lane-dash"></div><div class="lane-dash"></div><div class="lane-dash"></div><div class="lane-dash"></div></div><div class="road-shoulder left"></div><div class="road-shoulder"></div><div class="road-direction"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>N</span></div><div class="position-vehicle"><div class="vehicle-wheels"><div class="wheel fl"></div><div class="wheel fr"></div><div class="wheel rl"></div><div class="wheel rr"></div></div><div class="vehicle-hood"><div class="vehicle-headlights"><div class="headlight"></div><div class="headlight"></div></div></div><div class="vehicle-windshield"></div><div class="vehicle-cabin"><div class="vehicle-windows"><div class="vehicle-window"></div><div class="vehicle-window"></div></div><div class="vehicle-label">Suspect</div></div><div class="vehicle-rear-section"></div><div class="vehicle-trunk"><div class="vehicle-taillights"><div class="taillight"></div><div class="taillight"></div></div></div></div><div class="patrol-car draggable" id="my-patrol"><div class="patrol-wheels"><div class="patrol-wheel fl"></div><div class="patrol-wheel fr"></div><div class="patrol-wheel rl"></div><div class="patrol-wheel rr"></div></div><div class="patrol-hood"><div class="patrol-pushbar"></div><div class="patrol-headlights"><div class="patrol-headlight"></div><div class="patrol-headlight"></div></div></div><div class="patrol-windshield"></div><div class="patrol-cabin"><div class="lightbar"></div><div class="patrol-windows"><div class="patrol-window"></div><div class="patrol-window"></div></div><div class="patrol-label">Patrol</div></div><div class="patrol-rear-section"></div><div class="patrol-trunk"><div class="patrol-taillights"><div class="patrol-taillight"></div><div class="patrol-taillight"></div></div></div></div><div class="position-marker subject in-vehicle" id="subject-pos" style="top: 65px; left: calc(18% + 12px);" title="Subject in Vehicle">S</div><div class="position-marker officer" id="officer-pos" style="top: 120px; right: 30%;" title="Your Position"><span>YOU</span><div class="officer-facing" id="officer-facing"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div></div><div class="distance-indicator" id="distance-indicator" style="top: 100px; right: 15%;">~15 ft</div>',
+                        html: '<div class="road-markings"><div class="lane-dash"></div><div class="lane-dash"></div><div class="lane-dash"></div><div class="lane-dash"></div><div class="lane-dash"></div></div><div class="road-shoulder left"></div><div class="road-shoulder"></div><div class="street-light"></div><div class="road-direction"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>N</span></div><div class="position-vehicle"><div class="vehicle-wheels"><div class="wheel fl"></div><div class="wheel fr"></div><div class="wheel rl"></div><div class="wheel rr"></div></div><div class="vehicle-hood"><div class="vehicle-headlights"><div class="headlight"></div><div class="headlight"></div></div></div><div class="vehicle-windshield"></div><div class="vehicle-cabin"><div class="vehicle-windows"><div class="vehicle-window"></div><div class="vehicle-window"></div></div><div class="vehicle-label">Suspect</div></div><div class="vehicle-rear-section"></div><div class="vehicle-trunk"><div class="vehicle-taillights"><div class="taillight"></div><div class="taillight"></div></div></div></div><div class="patrol-car draggable" id="my-patrol"><div class="patrol-wheels"><div class="patrol-wheel fl"></div><div class="patrol-wheel fr"></div><div class="patrol-wheel rl"></div><div class="patrol-wheel rr"></div></div><div class="patrol-hood"><div class="patrol-pushbar"></div><div class="patrol-headlights"><div class="patrol-headlight"></div><div class="patrol-headlight"></div></div></div><div class="patrol-windshield"></div><div class="patrol-cabin"><div class="lightbar"></div><div class="patrol-windows"><div class="patrol-window"></div><div class="patrol-window"></div></div><div class="patrol-label">Patrol</div></div><div class="patrol-rear-section"></div><div class="patrol-trunk"><div class="patrol-taillights"><div class="patrol-taillight"></div><div class="patrol-taillight"></div></div></div></div><div class="position-marker subject in-vehicle" id="subject-pos" style="top: 88px; left: calc(12% + 20px);" title="Subject in Vehicle">S</div><div class="position-marker officer" id="officer-pos" style="top: 160px; right: 25%;" title="Your Position"><span>YOU</span><div class="officer-facing" id="officer-facing"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div></div><div class="distance-indicator" id="distance-indicator" style="top: 130px; right: 12%;">~15 ft</div>',
                         legend: '<div class="legend-item"><div class="legend-dot subject"></div><span>Subject</span></div><div class="legend-item"><div class="legend-dot officer"></div><span>You</span></div><div class="legend-item"><div class="legend-dot patrol"></div><span>Patrol</span></div><div class="legend-item"><div class="legend-dot vehicle"></div><span>Suspect Vehicle</span></div>',
                         positions: {
                             'driver-rear': { top: '75px', left: 'calc(18% - 10px)', right: 'auto', facing: 'rotate(45deg)', distance: '~8 ft', distancePos: { top: '55px', left: 'calc(18% + 30px)' }, title: 'Driver Rear', info: '<span>Facing:</span> Toward driver door<br><span>Distance:</span> ~8 feet from subject<br><span>Cover:</span> Limited - exposed to traffic<br><span>Risk:</span> Higher risk - near traffic lane' },
