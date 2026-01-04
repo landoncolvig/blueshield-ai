@@ -2571,7 +2571,6 @@
             padding: 0;
             min-height: 0;
             overflow: hidden;
-            position: relative;
         }
 
         .scene-diagram-wrapper .position-scene {
@@ -3770,127 +3769,6 @@
             -webkit-touch-callout: none;
             touch-action: none;
         }
-
-        /* Character Info Panel */
-        .character-info-panel {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(10, 22, 40, 0.95);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px 10px;
-            min-width: 140px;
-            max-width: 180px;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .character-card {
-            margin-bottom: 8px;
-        }
-
-        .character-card:last-child {
-            margin-bottom: 0;
-        }
-
-        .character-card-header {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-            padding-bottom: 4px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .character-marker {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .character-marker.s1 {
-            background: rgba(248, 113, 113, 0.3);
-            border: 2px solid var(--error);
-            color: var(--error);
-        }
-
-        .character-marker.s2 {
-            background: rgba(251, 146, 60, 0.25);
-            border: 2px solid #fb923c;
-            color: #fb923c;
-        }
-
-        .character-marker.p2 {
-            background: rgba(96, 165, 250, 0.25);
-            border: 2px solid #60a5fa;
-            color: #60a5fa;
-        }
-
-        .character-name {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .character-details {
-            font-size: 0.6rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        .character-detail-row {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 2px;
-        }
-
-        .character-detail-label {
-            color: var(--text-muted);
-            min-width: 50px;
-        }
-
-        .character-detail-value {
-            color: var(--text-secondary);
-        }
-
-        @media (max-width: 600px) {
-            .character-info-panel {
-                top: 4px;
-                right: 4px;
-                padding: 6px 8px;
-                min-width: 120px;
-                max-width: 150px;
-            }
-
-            .character-card-header {
-                gap: 4px;
-            }
-
-            .character-marker {
-                width: 16px;
-                height: 16px;
-                font-size: 0.5rem;
-            }
-
-            .character-name {
-                font-size: 0.6rem;
-            }
-
-            .character-details {
-                font-size: 0.5rem;
-            }
-
-            .character-detail-label {
-                min-width: 40px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -4023,8 +3901,6 @@
                                     <div class="bubble-text" id="officer-speech-text"></div>
                                 </div>
                             </div>
-                            <!-- Character Info Panel -->
-                            <div class="character-info-panel" id="character-info-panel" style="display: none;"></div>
                         </div>
 
                         <!-- Position controls -->
@@ -4457,97 +4333,6 @@
                 hostile: { emoji: '😡', label: 'Hostile' },
                 defeated: { emoji: '😔', label: 'Defeated' }
             };
-
-            // ========== CHARACTER GENERATOR ==========
-            var CHARACTER_OPTIONS = {
-                gender: ['Male', 'Female'],
-                ethnicity: ['White', 'Black', 'Hispanic', 'Asian', 'Middle Eastern', 'Native American'],
-                age: ['18-25', '25-35', '35-45', '45-55', '55-65', '65+'],
-                height: ["5'4\"", "5'6\"", "5'8\"", "5'10\"", "6'0\"", "6'2\"", "6'4\""],
-                build: ['Slim', 'Average', 'Athletic', 'Heavy', 'Muscular'],
-                hair: ['Bald', 'Short black', 'Short brown', 'Short blonde', 'Long black', 'Long brown', 'Long blonde', 'Gray', 'Red'],
-                tops: ['White t-shirt', 'Black t-shirt', 'Gray hoodie', 'Blue flannel', 'Red jacket', 'Green tank top', 'Black polo', 'Denim jacket', 'Brown sweater', 'Work uniform'],
-                bottoms: ['Blue jeans', 'Black jeans', 'Khaki pants', 'Gray sweats', 'Cargo shorts', 'Black slacks', 'Athletic shorts', 'Work pants']
-            };
-
-            // Store generated characters for the current scenario
-            var currentCharacters = {};
-
-            function pickRandom(arr) {
-                return arr[Math.floor(Math.random() * arr.length)];
-            }
-
-            function generateCharacter(role) {
-                var gender = pickRandom(CHARACTER_OPTIONS.gender);
-                var hairOptions = CHARACTER_OPTIONS.hair.slice();
-
-                // Adjust hair options based on gender for realism
-                if (gender === 'Male') {
-                    hairOptions = ['Bald', 'Short black', 'Short brown', 'Short blonde', 'Gray', 'Red'];
-                }
-
-                return {
-                    role: role,
-                    gender: gender,
-                    ethnicity: pickRandom(CHARACTER_OPTIONS.ethnicity),
-                    age: pickRandom(CHARACTER_OPTIONS.age),
-                    height: pickRandom(CHARACTER_OPTIONS.height),
-                    build: pickRandom(CHARACTER_OPTIONS.build),
-                    hair: pickRandom(hairOptions),
-                    top: pickRandom(CHARACTER_OPTIONS.tops),
-                    bottom: pickRandom(CHARACTER_OPTIONS.bottoms)
-                };
-            }
-
-            function generateScenarioCharacters(sceneType) {
-                currentCharacters = {};
-
-                // Always generate primary subject (S1)
-                currentCharacters.s1 = generateCharacter('S1');
-
-                // Generate second character for multi-person scenes
-                if (sceneType === 'domestic' || sceneType === 'fight' || sceneType === 'custody') {
-                    currentCharacters.s2 = generateCharacter('S2');
-                }
-
-                return currentCharacters;
-            }
-
-            function renderCharacterPanel() {
-                var panel = document.getElementById('character-info-panel');
-                if (!panel) return;
-
-                var html = '';
-                var chars = Object.keys(currentCharacters);
-
-                if (chars.length === 0) {
-                    panel.style.display = 'none';
-                    return;
-                }
-
-                chars.forEach(function(key) {
-                    var char = currentCharacters[key];
-                    var markerClass = key === 's1' ? 's1' : (key === 's2' ? 's2' : 'p2');
-                    var label = key === 's1' ? 'S1' : 'S2';
-
-                    html += '<div class="character-card">';
-                    html += '<div class="character-card-header">';
-                    html += '<div class="character-marker ' + markerClass + '">' + label + '</div>';
-                    html += '<div class="character-name">' + char.ethnicity + ' ' + char.gender + '</div>';
-                    html += '</div>';
-                    html += '<div class="character-details">';
-                    html += '<div class="character-detail-row"><span class="character-detail-label">Age:</span><span class="character-detail-value">' + char.age + '</span></div>';
-                    html += '<div class="character-detail-row"><span class="character-detail-label">Height:</span><span class="character-detail-value">' + char.height + '</span></div>';
-                    html += '<div class="character-detail-row"><span class="character-detail-label">Build:</span><span class="character-detail-value">' + char.build + '</span></div>';
-                    html += '<div class="character-detail-row"><span class="character-detail-label">Hair:</span><span class="character-detail-value">' + char.hair + '</span></div>';
-                    html += '<div class="character-detail-row"><span class="character-detail-label">Clothing:</span><span class="character-detail-value">' + char.top + ', ' + char.bottom + '</span></div>';
-                    html += '</div>';
-                    html += '</div>';
-                });
-
-                panel.innerHTML = html;
-                panel.style.display = 'block';
-            }
 
             // DOM elements
             var scenarioSelectSection = document.getElementById('scenario-select-section');
@@ -5691,11 +5476,6 @@
 
                 // Load the appropriate scene for this scenario type
                 SceneManager.loadSceneForScenario(actualScenario);
-
-                // Generate and display character info
-                var sceneType = SceneManager.getSceneType(actualScenario);
-                generateScenarioCharacters(sceneType);
-                renderCharacterPanel();
 
                 // Update header
                 document.getElementById('chat-scenario-title').textContent = scenario.title;
