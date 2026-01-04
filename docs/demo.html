@@ -1899,6 +1899,54 @@
             font-size: 0.5rem;
         }
 
+        /* Second subject (for multi-person scenarios) */
+        .position-marker.subject2 {
+            background: rgba(251, 146, 60, 0.25);
+            border: 2px solid #fb923c;
+            color: #fb923c;
+            cursor: pointer;
+        }
+
+        .position-marker.subject2:hover {
+            box-shadow: 0 0 15px rgba(251, 146, 60, 0.6);
+        }
+
+        .position-marker.subject2::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55rem;
+            font-weight: 600;
+            white-space: nowrap;
+            color: #fb923c;
+        }
+
+        /* Victim marker (blue) */
+        .position-marker.victim {
+            background: rgba(96, 165, 250, 0.25);
+            border: 2px solid #60a5fa;
+            color: #60a5fa;
+            cursor: pointer;
+        }
+
+        .position-marker.victim:hover {
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.6);
+        }
+
+        .position-marker.victim::after {
+            content: 'VICTIM';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55rem;
+            font-weight: 600;
+            white-space: nowrap;
+            color: #60a5fa;
+        }
+
         /* Force Options Menu */
         .force-options-menu {
             position: absolute;
@@ -5565,15 +5613,17 @@
                     'traffic_drugs': 'traffic',
                     'traffic_suspended': 'traffic',
                     'vehicle_theft': 'traffic',
-                    // Residential scenes
-                    'domestic': 'residential',
-                    'domestic_weapons': 'residential',
+                    // Domestic scenes (two people - suspect + victim)
+                    'domestic': 'domestic',
+                    'domestic_weapons': 'domestic',
+                    // Residential scenes (single person)
                     'welfare_check': 'residential',
                     'suicide_threat': 'residential',
                     'noise': 'residential',
                     'civil_property': 'residential',
-                    'civil_custody': 'residential',
                     'civil_landlord': 'residential',
+                    // Custody scene (two parents + child)
+                    'civil_custody': 'custody',
                     // Business scenes
                     'shoplifting': 'business',
                     'burglary': 'business',
@@ -5582,14 +5632,15 @@
                     'alarm': 'business',
                     // Bar/venue scenes
                     'disturbance': 'bar',
-                    // Outdoor scenes
+                    // Fight scenes (two people in conflict)
+                    'assault': 'fight',
+                    'threats': 'fight',
+                    // Outdoor scenes (single person)
                     'trespass': 'outdoor',
                     'loitering': 'outdoor',
                     'mental_crisis': 'outdoor',
                     'intoxicated': 'outdoor',
                     'suspicious': 'outdoor',
-                    'assault': 'outdoor',
-                    'threats': 'outdoor',
                     'harassment': 'outdoor',
                     'stalking': 'outdoor',
                     'theft': 'outdoor'
@@ -5656,6 +5707,45 @@
                         },
                         buttons: '<button class="position-btn selected" data-pos="approach">Approach<span class="position-btn-desc">Walking toward</span></button><button class="position-btn" data-pos="contact">Contact<span class="position-btn-desc">Face to face</span></button><button class="position-btn" data-pos="flank">Flank<span class="position-btn-desc">Side approach</span></button><button class="position-btn" data-pos="cover">Cover<span class="position-btn-desc">At patrol car</span></button>',
                         defaultPos: 'approach'
+                    },
+                    // Domestic scene - two people at residence
+                    domestic: {
+                        html: '<div class="street-residential"></div><div class="curb"></div><div class="yard"></div><div class="sidewalk"></div><div class="house"><div class="house-roof"></div><div class="house-body"><div class="house-window left"></div><div class="house-window right"></div><div class="house-door"><div class="door-knob"></div></div><div class="house-label">Residence</div></div></div><div class="porch" style="top: 120px;"></div><div class="patrol-car draggable" id="my-patrol" style="bottom: 8px; left: 10%;"><div class="patrol-wheels"><div class="patrol-wheel fl"></div><div class="patrol-wheel fr"></div><div class="patrol-wheel rl"></div><div class="patrol-wheel rr"></div></div><div class="patrol-hood"><div class="patrol-pushbar"></div><div class="patrol-headlights"><div class="patrol-headlight"></div><div class="patrol-headlight"></div></div></div><div class="patrol-windshield"></div><div class="patrol-cabin"><div class="lightbar"></div><div class="patrol-windows"><div class="patrol-window"></div><div class="patrol-window"></div></div><div class="patrol-label">Patrol</div></div><div class="patrol-rear-section"></div><div class="patrol-trunk"><div class="patrol-taillights"><div class="patrol-taillight"></div><div class="patrol-taillight"></div></div></div></div><div class="position-marker subject" id="subject-pos" style="top: 125px; left: 42%;" title="Subject 1 (Suspect)">S1</div><div class="position-marker victim" id="subject2-pos" style="top: 125px; left: 58%;" title="Subject 2 (Victim)" data-label="VICTIM">S2</div><div class="position-marker officer" id="officer-pos" style="top: 200px; left: 35%;" title="Your Position"><span>YOU</span><div class="officer-facing" id="officer-facing"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div></div><div class="distance-indicator" id="distance-indicator" style="top: 165px; left: 42%;">~10 ft</div>',
+                        legend: '<div class="legend-item"><div class="legend-dot subject"></div><span>Suspect</span></div><div class="legend-item"><div class="legend-dot" style="background:#60a5fa;border-color:#60a5fa;"></div><span>Victim</span></div><div class="legend-item"><div class="legend-dot officer"></div><span>You</span></div>',
+                        positions: {
+                            'approach': { top: '200px', left: '35%', right: 'auto', facing: 'rotate(0deg)', distance: '~10 ft', distancePos: { top: '165px', left: '42%' }, title: 'Approach Position', info: '<span>Facing:</span> Toward front door<br><span>Distance:</span> ~10 feet from door<br><span>Cover:</span> None in open<br><span>Note:</span> Can see both parties' },
+                            'door-left': { top: '130px', left: '35%', right: 'auto', facing: 'rotate(90deg)', distance: '~5 ft', distancePos: { top: '110px', left: '40%' }, title: 'Door Left (Near Suspect)', info: '<span>Facing:</span> Toward suspect<br><span>Distance:</span> ~5 feet from suspect<br><span>Cover:</span> Wall provides some cover<br><span>Note:</span> Position to separate parties' },
+                            'door-right': { top: '130px', left: '62%', right: 'auto', facing: 'rotate(-90deg)', distance: '~5 ft', distancePos: { top: '110px', left: '55%' }, title: 'Door Right (Near Victim)', info: '<span>Facing:</span> Toward victim<br><span>Distance:</span> ~5 feet from victim<br><span>Cover:</span> Limited<br><span>Note:</span> Good for victim interview' },
+                            'cover': { top: '230px', left: '15%', right: 'auto', facing: 'rotate(30deg)', distance: '~25 ft', distancePos: { top: '200px', left: '25%' }, title: 'Cover Position', info: '<span>Facing:</span> Toward residence<br><span>Distance:</span> ~25 feet from door<br><span>Cover:</span> Patrol vehicle<br><span>Use:</span> Wait for backup on weapons calls' }
+                        },
+                        buttons: '<button class="position-btn selected" data-pos="approach">Approach<span class="position-btn-desc">Walking to door</span></button><button class="position-btn" data-pos="door-left">Near Suspect<span class="position-btn-desc">Left side</span></button><button class="position-btn" data-pos="door-right">Near Victim<span class="position-btn-desc">Right side</span></button><button class="position-btn" data-pos="cover">Cover<span class="position-btn-desc">At patrol car</span></button>',
+                        defaultPos: 'approach'
+                    },
+                    // Fight/assault scene - two people in conflict
+                    fight: {
+                        html: '<div class="parking-lot"></div><div class="parking-lines"><div class="parking-space"></div><div class="parking-space"></div><div class="parking-space"></div><div class="parking-space"></div></div><div class="store"><div class="store-sign">CIRCLE K</div><div class="store-front"><div class="store-window"></div><div class="store-door"></div><div class="store-window"></div></div></div><div class="crowd-area" style="top: 80px; right: 10%;"><div class="bystander">B</div><div class="bystander">B</div></div><div class="patrol-car draggable" id="my-patrol" style="bottom: 15px; left: 8%;"><div class="patrol-wheels"><div class="patrol-wheel fl"></div><div class="patrol-wheel fr"></div><div class="patrol-wheel rl"></div><div class="patrol-wheel rr"></div></div><div class="patrol-hood"><div class="patrol-pushbar"></div><div class="patrol-headlights"><div class="patrol-headlight"></div><div class="patrol-headlight"></div></div></div><div class="patrol-windshield"></div><div class="patrol-cabin"><div class="lightbar"></div><div class="patrol-windows"><div class="patrol-window"></div><div class="patrol-window"></div></div><div class="patrol-label">Patrol</div></div><div class="patrol-rear-section"></div><div class="patrol-trunk"><div class="patrol-taillights"><div class="patrol-taillight"></div><div class="patrol-taillight"></div></div></div></div><div class="position-marker subject" id="subject-pos" style="top: 140px; left: 40%;" title="Subject 1">S1</div><div class="position-marker subject2" id="subject2-pos" style="top: 140px; left: 55%;" title="Subject 2" data-label="PARTY 2">S2</div><div class="position-marker officer" id="officer-pos" style="top: 200px; left: 48%;" title="Your Position"><span>YOU</span><div class="officer-facing" id="officer-facing"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div></div><div class="distance-indicator" id="distance-indicator" style="top: 170px; left: 45%;">~10 ft</div>',
+                        legend: '<div class="legend-item"><div class="legend-dot subject"></div><span>Party 1</span></div><div class="legend-item"><div class="legend-dot" style="background:#fb923c;border-color:#fb923c;"></div><span>Party 2</span></div><div class="legend-item"><div class="legend-dot officer"></div><span>You</span></div><div class="legend-item"><div class="legend-dot" style="background:#666;"></div><span>Bystanders</span></div>',
+                        positions: {
+                            'approach': { top: '200px', left: '48%', right: 'auto', facing: 'rotate(0deg)', distance: '~10 ft', distancePos: { top: '170px', left: '45%' }, title: 'Approach', info: '<span>Facing:</span> Toward both subjects<br><span>Distance:</span> ~10 feet from conflict<br><span>Cover:</span> None<br><span>Note:</span> Command presence position' },
+                            'between': { top: '145px', left: '48%', right: 'auto', facing: 'rotate(0deg)', distance: '~3 ft', distancePos: { top: '125px', left: '45%' }, title: 'Between Parties', info: '<span>Facing:</span> Can see both<br><span>Distance:</span> ~3 feet from each<br><span>Cover:</span> None<br><span>Risk:</span> High - between combatants' },
+                            'flank-left': { top: '145px', left: '30%', right: 'auto', facing: 'rotate(45deg)', distance: '~5 ft', distancePos: { top: '125px', left: '35%' }, title: 'Flank Left', info: '<span>Facing:</span> Toward Party 1<br><span>Distance:</span> ~5 feet from Party 1<br><span>Cover:</span> None<br><span>Use:</span> Focus on primary aggressor' },
+                            'cover': { top: '230px', left: '12%', right: 'auto', facing: 'rotate(30deg)', distance: '~25 ft', distancePos: { top: '200px', left: '25%' }, title: 'Cover Position', info: '<span>Facing:</span> Toward scene<br><span>Distance:</span> ~25 feet<br><span>Cover:</span> Patrol vehicle<br><span>Use:</span> Give commands from distance' }
+                        },
+                        buttons: '<button class="position-btn selected" data-pos="approach">Approach<span class="position-btn-desc">Initial contact</span></button><button class="position-btn" data-pos="between">Between<span class="position-btn-desc">Separate parties</span></button><button class="position-btn" data-pos="flank-left">Flank Left<span class="position-btn-desc">Near Party 1</span></button><button class="position-btn" data-pos="cover">Cover<span class="position-btn-desc">At patrol car</span></button>',
+                        defaultPos: 'approach'
+                    },
+                    // Custody exchange scene - two parents
+                    custody: {
+                        html: '<div class="parking-lot"></div><div class="parking-lines"><div class="parking-space"></div><div class="parking-space"></div><div class="parking-space"></div></div><div class="store"><div class="store-sign">McDONALDS</div><div class="store-front"><div class="store-window"></div><div class="store-door"></div><div class="store-window"></div></div></div><div class="civilian-car" style="position: absolute; top: 60px; left: 20%; width: 50px; height: 25px; background: #4a5568; border-radius: 4px;"><div style="font-size: 0.5rem; color: #a0aec0; text-align: center; padding-top: 5px;">CAR</div></div><div class="civilian-car" style="position: absolute; top: 60px; right: 20%; width: 50px; height: 25px; background: #718096; border-radius: 4px;"><div style="font-size: 0.5rem; color: #a0aec0; text-align: center; padding-top: 5px;">CAR</div></div><div class="patrol-car draggable" id="my-patrol" style="bottom: 15px; left: 8%;"><div class="patrol-wheels"><div class="patrol-wheel fl"></div><div class="patrol-wheel fr"></div><div class="patrol-wheel rl"></div><div class="patrol-wheel rr"></div></div><div class="patrol-hood"><div class="patrol-pushbar"></div><div class="patrol-headlights"><div class="patrol-headlight"></div><div class="patrol-headlight"></div></div></div><div class="patrol-windshield"></div><div class="patrol-cabin"><div class="lightbar"></div><div class="patrol-windows"><div class="patrol-window"></div><div class="patrol-window"></div></div><div class="patrol-label">Patrol</div></div><div class="patrol-rear-section"></div><div class="patrol-trunk"><div class="patrol-taillights"><div class="patrol-taillight"></div><div class="patrol-taillight"></div></div></div></div><div class="position-marker subject" id="subject-pos" style="top: 100px; left: 30%;" title="Parent 1 (Has Child)">P1</div><div class="position-marker subject2" id="subject2-pos" style="top: 100px; left: 65%;" title="Parent 2" data-label="PARENT 2">P2</div><div class="position-marker" style="top: 100px; left: 38%; width: 24px; height: 24px; font-size: 0.6rem; background: rgba(167, 139, 250, 0.25); border: 2px solid #a78bfa; color: #a78bfa;" title="Child">C</div><div class="position-marker officer" id="officer-pos" style="top: 170px; left: 48%;" title="Your Position"><span>YOU</span><div class="officer-facing" id="officer-facing"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div></div><div class="distance-indicator" id="distance-indicator" style="top: 135px; left: 45%;">~12 ft</div>',
+                        legend: '<div class="legend-item"><div class="legend-dot subject"></div><span>Parent 1</span></div><div class="legend-item"><div class="legend-dot" style="background:#fb923c;border-color:#fb923c;"></div><span>Parent 2</span></div><div class="legend-item"><div class="legend-dot" style="background:#a78bfa;border-color:#a78bfa;"></div><span>Child</span></div><div class="legend-item"><div class="legend-dot officer"></div><span>You</span></div>',
+                        positions: {
+                            'center': { top: '170px', left: '48%', right: 'auto', facing: 'rotate(0deg)', distance: '~12 ft', distancePos: { top: '135px', left: '45%' }, title: 'Center Position', info: '<span>Facing:</span> Both parties visible<br><span>Distance:</span> ~12 feet from both<br><span>Cover:</span> None<br><span>Note:</span> Neutral mediator position' },
+                            'near-p1': { top: '120px', left: '25%', right: 'auto', facing: 'rotate(45deg)', distance: '~5 ft', distancePos: { top: '100px', left: '30%' }, title: 'Near Parent 1', info: '<span>Facing:</span> Toward Parent 1 and child<br><span>Distance:</span> ~5 feet<br><span>Cover:</span> None<br><span>Use:</span> Interview custodial parent' },
+                            'near-p2': { top: '120px', left: '70%', right: 'auto', facing: 'rotate(-45deg)', distance: '~5 ft', distancePos: { top: '100px', left: '62%' }, title: 'Near Parent 2', info: '<span>Facing:</span> Toward Parent 2<br><span>Distance:</span> ~5 feet<br><span>Cover:</span> None<br><span>Use:</span> Interview requesting parent' },
+                            'cover': { top: '220px', left: '12%', right: 'auto', facing: 'rotate(30deg)', distance: '~25 ft', distancePos: { top: '190px', left: '25%' }, title: 'Cover Position', info: '<span>Facing:</span> Toward scene<br><span>Distance:</span> ~25 feet<br><span>Cover:</span> Patrol vehicle<br><span>Use:</span> Review court documents' }
+                        },
+                        buttons: '<button class="position-btn selected" data-pos="center">Center<span class="position-btn-desc">Between both</span></button><button class="position-btn" data-pos="near-p1">Near P1<span class="position-btn-desc">Custodial parent</span></button><button class="position-btn" data-pos="near-p2">Near P2<span class="position-btn-desc">Other parent</span></button><button class="position-btn" data-pos="cover">Cover<span class="position-btn-desc">At patrol car</span></button>',
+                        defaultPos: 'center'
                     }
                 };
 
