@@ -1933,67 +1933,154 @@
 
             /* Scenario selection mobile */
             .scenario-selection {
-                padding: 0.75rem;
-                overflow-x: hidden;
+                padding: 0.5rem;
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
             }
 
             .scenario-categories {
-                gap: 1.25rem;
+                gap: 1rem;
+                width: 100%;
             }
 
             .category-title {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
 
             .scenario-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.4rem;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.35rem;
+                width: 100%;
+                max-width: 100%;
             }
 
             .scenario-card {
-                padding: 0.5rem;
-                min-height: auto;
+                padding: 0.35rem !important;
+                min-height: auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                gap: 0.3rem !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
             }
 
-            .scenario-card .icon {
-                font-size: 1.25rem;
+            .scenario-icon-box {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 0.9rem !important;
+                flex-shrink: 0 !important;
             }
 
-            .scenario-card .title {
-                font-size: 0.6rem;
-                line-height: 1.2;
+            .scenario-details {
+                min-width: 0 !important;
+                width: 100% !important;
+                overflow: hidden !important;
+            }
+
+            .scenario-details h4 {
+                font-size: 0.5rem !important;
+                line-height: 1.15 !important;
+                margin-bottom: 0 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            .scenario-details p {
+                display: none !important;
             }
 
             .scenario-score {
-                font-size: 0.55rem;
-                padding: 1px 3px;
+                font-size: 0.45rem !important;
+                padding: 1px 2px !important;
+                position: absolute !important;
+                top: 2px !important;
+                right: 2px !important;
             }
 
             /* Difficulty selector mobile */
             .difficulty-selector {
-                padding: 0.75rem;
+                padding: 0.5rem;
                 flex-direction: column;
                 align-items: stretch;
-                gap: 0.5rem;
+                gap: 0.4rem;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
             }
 
             .difficulty-selector label {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
                 text-align: center;
             }
 
             .difficulty-options {
-                width: 100%;
+                width: 100% !important;
                 display: grid;
                 grid-template-columns: repeat(5, 1fr);
-                gap: 0.25rem;
+                gap: 0.2rem;
+                box-sizing: border-box;
             }
 
             .difficulty-btn {
-                padding: 0.5rem 0.25rem;
+                padding: 0.4rem 0.1rem;
                 font-size: 0.55rem;
                 text-align: center;
                 white-space: nowrap;
+            }
+
+            /* Difficulty grid mobile - the cards with icons */
+            .difficulty-grid {
+                display: grid !important;
+                grid-template-columns: repeat(5, 1fr) !important;
+                gap: 0.25rem !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .difficulty-card {
+                padding: 0.35rem 0.15rem !important;
+                min-width: 0 !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+            }
+
+            .difficulty-card .difficulty-icon {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.2rem !important;
+            }
+
+            .difficulty-card h4 {
+                font-size: 0.5rem !important;
+                margin-bottom: 0.1rem !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            .difficulty-card p {
+                font-size: 0.4rem !important;
+                display: none !important;
+            }
+
+            .select-section {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                padding: 0.5rem !important;
+            }
+
+            .select-label {
+                font-size: 0.65rem !important;
             }
 
             /* Chat area mobile */
@@ -2249,11 +2336,33 @@
         @media (max-width: 380px) {
             .scenario-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 0.3rem;
+                gap: 0.25rem;
             }
 
-            .scenario-card .title {
-                font-size: 0.55rem;
+            .scenario-card {
+                padding: 0.25rem !important;
+            }
+
+            .scenario-icon-box {
+                width: 24px !important;
+                height: 24px !important;
+                font-size: 0.8rem !important;
+            }
+
+            .scenario-details h4 {
+                font-size: 0.45rem !important;
+            }
+
+            .difficulty-grid {
+                gap: 0.15rem !important;
+            }
+
+            .difficulty-card {
+                padding: 0.25rem 0.1rem !important;
+            }
+
+            .difficulty-card h4 {
+                font-size: 0.45rem !important;
             }
 
             .difficulty-options {
