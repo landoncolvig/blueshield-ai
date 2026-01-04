@@ -262,22 +262,74 @@
         /* Weapon drawn indicator for officer */
         .position-marker.officer.weapon-drawn::before,
         .position-marker.backup.weapon-drawn::before {
-            content: '🔫';
+            content: '🔫 DRAWN';
             position: absolute;
-            top: -20px;
+            top: -28px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 18px;
-            background: rgba(248, 113, 113, 0.3);
+            font-size: 12px;
+            font-weight: bold;
+            background: rgba(248, 113, 113, 0.9);
+            color: white;
             border-radius: 4px;
-            padding: 2px 4px;
-            border: 1px solid #F87171;
+            padding: 4px 8px;
+            border: 2px solid #F87171;
             animation: weaponPulse 1s ease-in-out infinite;
+            white-space: nowrap;
+            z-index: 100;
+        }
+
+        .position-marker.officer.weapon-drawn[data-weapon="taser"]::before {
+            content: '⚡ TASER';
+            background: rgba(251, 191, 36, 0.9);
+            border-color: #FBBF24;
         }
 
         @keyframes weaponPulse {
-            0%, 100% { box-shadow: 0 0 5px rgba(248, 113, 113, 0.5); }
-            50% { box-shadow: 0 0 15px rgba(248, 113, 113, 0.8); }
+            0%, 100% { box-shadow: 0 0 8px rgba(248, 113, 113, 0.6); }
+            50% { box-shadow: 0 0 20px rgba(248, 113, 113, 1); }
+        }
+
+        /* Second subject hidden inside (for domestic scenarios) */
+        .stick-figure.inside-building,
+        .position-marker.inside-building {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.5);
+            transition: all 0.5s ease-out;
+        }
+
+        .stick-figure.stepping-out,
+        .position-marker.stepping-out {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+            animation: stepOut 0.8s ease-out;
+        }
+
+        @keyframes stepOut {
+            0% { opacity: 0; transform: scale(0.5) translateY(-20px); }
+            50% { transform: scale(1.1) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Inside indicator */
+        .inside-indicator {
+            position: absolute;
+            top: 80px;
+            left: 55%;
+            background: rgba(30, 58, 95, 0.9);
+            border: 1px solid var(--accent-gold);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .inside-indicator:hover {
+            background: rgba(201, 162, 39, 0.2);
         }
 
         /* Help button */
@@ -1737,19 +1789,61 @@
         /* Draggable patrol car */
         .patrol-car.draggable {
             cursor: grab;
-            transition: transform 0.1s, box-shadow 0.2s;
+            transition: transform 0.3s, box-shadow 0.2s;
         }
 
         .patrol-car.draggable:hover {
-            transform: scale(1.05);
             filter: brightness(1.2);
         }
 
         .patrol-car.draggable.dragging {
             cursor: grabbing;
-            transform: scale(1.1);
             filter: brightness(1.3);
             z-index: 100;
+        }
+
+        /* Rotation states for patrol car */
+        .patrol-car.rotate-0 { transform: rotate(0deg); }
+        .patrol-car.rotate-45 { transform: rotate(45deg); }
+        .patrol-car.rotate-90 { transform: rotate(90deg); }
+        .patrol-car.rotate-135 { transform: rotate(135deg); }
+        .patrol-car.rotate-180 { transform: rotate(180deg); }
+        .patrol-car.rotate-225 { transform: rotate(225deg); }
+        .patrol-car.rotate-270 { transform: rotate(270deg); }
+        .patrol-car.rotate-315 { transform: rotate(315deg); }
+
+        /* Rotate button on patrol car */
+        .patrol-car .rotate-btn {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+            font-size: 18px;
+            font-weight: bold;
+            width: 50px;
+            height: 30px;
+            border-radius: 15px;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            cursor: pointer;
+            user-select: none;
+            border: 2px solid var(--navy-deep);
+            transition: all 0.2s ease;
+        }
+
+        .patrol-car .rotate-btn:hover {
+            background: #FFD700;
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        .patrol-car .rotate-btn:active {
+            transform: translateX(-50%) scale(0.95);
+            background: #FFA500;
         }
 
         .patrol-car.backup-car {
@@ -5808,8 +5902,10 @@
             function hideSpeechBubbles() {
                 var subjectBubble = document.getElementById('subject-speech');
                 var officerBubble = document.getElementById('officer-speech');
+                var backupBubble = document.getElementById('backup-speech');
                 if (subjectBubble) subjectBubble.style.display = 'none';
                 if (officerBubble) officerBubble.style.display = 'none';
+                if (backupBubble) backupBubble.style.display = 'none';
             }
 
             // Backup unit tracking
@@ -6033,10 +6129,7 @@
                 backupMarker.classList.add('active');
                 setTimeout(function() { backupMarker.classList.remove('active'); }, 500);
 
-                // Hide bubble after a delay
-                setTimeout(function() {
-                    if (bubble) bubble.style.display = 'none';
-                }, 4000);
+                // Bubble stays visible until next action (no auto-hide)
             }
 
             // Get backup action text for including in message to AI
@@ -6257,10 +6350,7 @@
                 void bubble.offsetWidth; // Trigger reflow
                 bubble.classList.add('visible');
 
-                // Hide after 5 seconds
-                setTimeout(function() {
-                    bubble.classList.remove('visible');
-                }, 5000);
+                // Bubble stays visible until next action (no auto-hide)
             }
 
             function hideDispatcherBubble() {
@@ -6446,8 +6536,27 @@
             function sendToAPI(officerMessage) {
                 setLoading(true);
 
+                // Clear previous speech bubbles when sending new message
+                hideSpeechBubbles();
+                hideDispatcherBubble();
+
+                // Apply pending force effect when action is sent
+                if (window.pendingForceAction && typeof applyForceEffect === 'function') {
+                    applyForceEffect(window.pendingForceAction);
+                    window.pendingForceAction = null;
+                }
+
                 if (officerMessage) {
                     messages.push({ role: 'officer', content: officerMessage });
+
+                    // Check if officer is asking second person to step out
+                    if (typeof checkForStepOutCommand === 'function' && checkForStepOutCommand(officerMessage)) {
+                        setTimeout(function() {
+                            if (typeof makeSecondPersonStepOut === 'function') {
+                                makeSecondPersonStepOut();
+                            }
+                        }, 1500);
+                    }
                 }
 
                 fetch(API_URL, {
@@ -6731,6 +6840,17 @@
                 // Generate characters and inject stick figures
                 generateScenarioCharacters(actualScenario, selectedDifficulty);
                 injectStickFigures(actualScenario);
+
+                // Initialize second person inside for domestic scenarios
+                if (typeof initSecondPersonInside === 'function') {
+                    initSecondPersonInside(actualScenario);
+                }
+
+                // Position officer at patrol car at start
+                positionOfficerAtPatrolCar();
+
+                // Initialize patrol car rotation
+                initPatrolCarRotation();
 
                 // Update header
                 document.getElementById('chat-scenario-title').textContent = scenario.title;
@@ -7843,6 +7963,7 @@
                     // Toggle off if clicking same action
                     if (selectedForceAction === action) {
                         selectedForceAction = null;
+                        window.pendingForceAction = null;
                         allBtns.forEach(function(btn) { btn.classList.remove('selected'); });
                         if (inputDo) {
                             inputDo.value = '';
@@ -7866,10 +7987,8 @@
 
                     var actionText = actionTexts[action] || action;
 
-                    // Apply visual force effect
-                    if (typeof applyForceEffect === 'function') {
-                        applyForceEffect(action);
-                    }
+                    // Store the pending force action (effect applied on send, not on select)
+                    window.pendingForceAction = action;
 
                     // Populate the "Do" input with the action
                     if (inputDo) {
@@ -8049,11 +8168,20 @@
                         if (taserBtn) taserBtn.classList.toggle('selected', weapon === 'taser');
                     }
 
-                    // Visual feedback on officer
+                    // Visual feedback on officer + weapon drawn indicator
                     var officer = document.getElementById('officer-pos');
                     if (officer) {
                         officer.classList.add('active');
                         setTimeout(function() { officer.classList.remove('active'); }, 500);
+
+                        // Show/hide weapon drawn indicator
+                        if (currentWeapon) {
+                            officer.classList.add('weapon-drawn');
+                            officer.setAttribute('data-weapon', currentWeapon);
+                        } else {
+                            officer.classList.remove('weapon-drawn');
+                            officer.removeAttribute('data-weapon');
+                        }
                     }
                 }
 
@@ -8205,6 +8333,152 @@
             initDifficultyGrid();
             updateProgress('select');
 
+            // ========== PATROL CAR ROTATION ==========
+            var carRotations = {}; // Track rotation for each car
+
+            function initPatrolCarRotation() {
+                var patrolCars = document.querySelectorAll('.patrol-car.draggable');
+                patrolCars.forEach(function(car) {
+                    // Add rotate button if not exists
+                    if (!car.querySelector('.rotate-btn')) {
+                        var rotateBtn = document.createElement('div');
+                        rotateBtn.className = 'rotate-btn';
+                        rotateBtn.innerHTML = '↻';
+                        rotateBtn.title = 'Click to rotate 45°';
+
+                        // Prevent drag when clicking rotate button
+                        rotateBtn.addEventListener('mousedown', function(e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        });
+
+                        rotateBtn.addEventListener('touchstart', function(e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        });
+
+                        // Rotate car on click
+                        rotateBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+
+                            var carId = car.id || 'car-default';
+                            var currentAngle = carRotations[carId] || 0;
+                            var newAngle = (currentAngle + 45) % 360;
+
+                            car.style.transform = 'rotate(' + newAngle + 'deg)';
+                            carRotations[carId] = newAngle;
+
+                            console.log('Car rotated to', newAngle, 'degrees');
+                        });
+
+                        car.appendChild(rotateBtn);
+                    }
+
+                    // Initialize rotation
+                    var carId = car.id || 'car-' + Math.random().toString(36).substr(2, 9);
+                    if (!car.id) car.id = carId;
+                    carRotations[carId] = 0;
+                    car.style.transform = 'rotate(0deg)';
+                });
+
+                console.log('Patrol car rotation initialized for', patrolCars.length, 'cars');
+            }
+
+            // ========== POSITION OFFICER AT PATROL CAR ==========
+            function positionOfficerAtPatrolCar() {
+                var officer = document.getElementById('officer-pos');
+                var patrolCar = document.querySelector('.patrol-car:not(.backup-car)');
+                var scene = document.getElementById('position-scene');
+
+                if (!officer || !patrolCar || !scene) return;
+
+                // Get patrol car position
+                var carRect = patrolCar.getBoundingClientRect();
+                var sceneRect = scene.getBoundingClientRect();
+
+                // Position officer just outside driver door of patrol car
+                var carLeft = patrolCar.offsetLeft || parseInt(patrolCar.style.left) || 50;
+                var carBottom = patrolCar.offsetTop + patrolCar.offsetHeight;
+
+                // Set officer position near patrol car (driver side, slightly behind)
+                officer.style.left = (carLeft + 60) + 'px';
+                officer.style.top = 'auto';
+                officer.style.bottom = '45px';
+                officer.style.right = 'auto';
+                officer.style.transform = 'translateX(-50%)';
+            }
+
+            // ========== SECOND PERSON STEPPING OUT ==========
+            var secondPersonInside = false;
+            var secondPersonOut = false;
+
+            function initSecondPersonInside(scenarioType) {
+                // Scenarios where second person starts inside
+                var insideScenarios = ['domestic', 'domestic_weapons'];
+                if (insideScenarios.indexOf(scenarioType) !== -1) {
+                    secondPersonInside = true;
+                    secondPersonOut = false;
+
+                    var subject2 = document.getElementById('subject2-pos');
+                    if (subject2) {
+                        subject2.classList.add('inside-building');
+                        subject2.classList.remove('stepping-out');
+                    }
+
+                    // Add indicator that someone is inside
+                    var scene = document.getElementById('position-scene');
+                    if (scene && !document.getElementById('inside-indicator')) {
+                        var indicator = document.createElement('div');
+                        indicator.className = 'inside-indicator';
+                        indicator.id = 'inside-indicator';
+                        indicator.innerHTML = '👤 Someone inside';
+                        indicator.title = 'Ask them to step out';
+                        scene.appendChild(indicator);
+                    }
+                }
+            }
+
+            function checkForStepOutCommand(message) {
+                if (!secondPersonInside || secondPersonOut) return false;
+
+                var stepOutKeywords = [
+                    'step out', 'come out', 'come outside', 'step outside',
+                    'who else', 'anyone else', 'is anyone', 'other person',
+                    'bring them out', 'get them out', 'have them come',
+                    'partner', 'spouse', 'wife', 'husband', 'boyfriend', 'girlfriend',
+                    'other party', 'second person', 'the other'
+                ];
+
+                var lowerMsg = message.toLowerCase();
+                for (var i = 0; i < stepOutKeywords.length; i++) {
+                    if (lowerMsg.indexOf(stepOutKeywords[i]) !== -1) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function makeSecondPersonStepOut() {
+                if (secondPersonOut) return;
+                secondPersonOut = true;
+
+                var subject2 = document.getElementById('subject2-pos');
+                if (subject2) {
+                    subject2.classList.remove('inside-building');
+                    subject2.classList.add('stepping-out');
+                }
+
+                // Remove inside indicator
+                var indicator = document.getElementById('inside-indicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+
+                // Add system message
+                addMessage('system', '👤 A second person has stepped out of the residence.');
+            }
+
             // ========== PASS/FAIL RESULT OVERLAY ==========
             function showResultOverlay(passed, score) {
                 var overlay = document.createElement('div');
@@ -8213,7 +8487,7 @@
 
                 var icon = document.createElement('div');
                 icon.className = 'result-icon';
-                icon.textContent = passed ? '☕🍩' : '🔒';
+                icon.textContent = passed ? '☕🍩' : '❌';
 
                 var title = document.createElement('div');
                 title.className = 'result-title';
@@ -8227,7 +8501,7 @@
                 message.className = 'result-message';
                 message.textContent = passed
                     ? 'Great work, Officer! Enjoy your coffee and donuts!'
-                    : 'Congrats, you failed. Have a good trip to jail!';
+                    : 'Sorry, you failed. You got it next time!';
 
                 var btn = document.createElement('button');
                 btn.className = 'result-continue-btn';
