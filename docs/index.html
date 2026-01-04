@@ -1755,17 +1755,34 @@
         }
 
         @media (max-width: 600px) {
-            /* Prevent horizontal scroll */
+            /* Prevent horizontal scroll - aggressive fix */
             html, body {
-                overflow-x: hidden;
+                overflow-x: hidden !important;
+                max-width: 100vw !important;
+                width: 100% !important;
+            }
+
+            *, *::before, *::after {
                 max-width: 100vw;
+                box-sizing: border-box;
+            }
+
+            .grid-bg {
+                display: none;
             }
 
             .content-wrapper,
             .modal,
-            .modal-overlay {
-                overflow-x: hidden;
-                max-width: 100vw;
+            .modal-overlay,
+            section,
+            .demo-chat,
+            .fi-card-form,
+            .fi-card-panel,
+            .scenario-selection,
+            .split-input-area {
+                overflow-x: hidden !important;
+                max-width: 100vw !important;
+                width: 100% !important;
             }
 
             .hero {
@@ -1897,9 +1914,64 @@
             }
 
             /* Chat area mobile */
+            .chat-window {
+                border-radius: 8px;
+                max-width: 100%;
+            }
+
+            .chat-header {
+                padding: 0.5rem 0.75rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .chat-scenario {
+                gap: 0.5rem;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .scenario-icon {
+                width: 28px;
+                height: 28px;
+                flex-shrink: 0;
+            }
+
+            .scenario-icon svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .scenario-info {
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .scenario-info h3 {
+                font-size: 0.75rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .scenario-info span {
+                font-size: 0.65rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: block;
+            }
+
+            .mode-badge {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.6rem;
+                flex-shrink: 0;
+            }
+
             .demo-chat {
                 min-height: auto;
-                overflow-x: hidden;
+                overflow-x: hidden !important;
+                max-width: 100% !important;
             }
 
             .chat-messages {
@@ -1911,6 +1983,13 @@
                 max-width: 90%;
                 padding: 0.5rem 0.6rem;
                 font-size: 0.8rem;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .message-content {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
             }
 
             /* Observation panel mobile */
