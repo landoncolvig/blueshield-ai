@@ -526,14 +526,16 @@
             position: fixed;
             bottom: 160px;
             right: 20px;
-            width: 280px;
+            width: 320px;
+            max-height: 60vh;
             background: var(--navy-mid);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 0;
             z-index: 999;
             display: none;
             box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            overflow: hidden;
         }
 
         .help-panel.visible {
@@ -546,17 +548,84 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .help-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--navy-deep);
+        }
+
+        .help-tab {
+            flex: 1;
+            padding: 0.75rem 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .help-tab:hover {
+            background: rgba(201, 162, 39, 0.1);
+            color: var(--text-primary);
+        }
+
+        .help-tab.active {
+            background: var(--navy-mid);
+            color: var(--accent-gold);
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .help-content {
+            padding: 1rem;
+            max-height: 45vh;
+            overflow-y: auto;
+        }
+
+        .help-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .help-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
         .help-panel h4 {
             color: var(--accent-gold);
             margin-bottom: 0.75rem;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .help-panel p {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--text-secondary);
             margin-bottom: 0.5rem;
             line-height: 1.4;
+        }
+
+        .help-panel ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .help-panel li {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.4;
+        }
+
+        .help-panel li:last-child {
+            border-bottom: none;
+        }
+
+        .help-panel li::before {
+            content: '•';
+            color: var(--accent-gold);
+            margin-right: 0.5rem;
         }
 
         .help-hint {
@@ -8724,31 +8793,301 @@
             // ========== HELP TOGGLE SYSTEM ==========
             var helpVisible = false;
 
+            // Scenario-specific advice database
+            var SCENARIO_ADVICE = {
+                dui: {
+                    legal: [
+                        'ARS 28-1381: DUI - impaired to slightest degree OR BAC ≥ 0.08%',
+                        'ARS 28-1321: Implied consent - license suspension for refusal',
+                        'SFSTs are VOLUNTARY - note if refused',
+                        'Need PC for arrest: failed SFSTs, odor, slurred speech, bloodshot eyes',
+                        'PBT is preliminary only - not admissible, but builds PC'
+                    ],
+                    safety: [
+                        'Approach from rear on driver side - watch for sudden movements',
+                        'Request license with engine OFF, keys on dash',
+                        'Stand behind B-pillar during document check',
+                        'Impaired subjects may have delayed reactions or sudden aggression',
+                        'Have subject exit vehicle for SFSTs on safe surface'
+                    ]
+                },
+                traffic_warrant: {
+                    legal: [
+                        'Confirm warrant is ACTIVE and EXTRADITABLE',
+                        'Verify identity before arrest - dont rely on name alone',
+                        'Felony warrant = mandatory arrest',
+                        'Misdemeanor warrant = verify if in-county',
+                        'Search incident to arrest is lawful'
+                    ],
+                    safety: [
+                        'HIGH RISK - warrant subjects may flee or fight',
+                        'Request backup BEFORE contact if possible',
+                        'Control hands immediately - felons often armed',
+                        'Remove from vehicle at gunpoint if felony warrant',
+                        'Pat down for weapons during detention'
+                    ]
+                },
+                traffic_drugs: {
+                    legal: [
+                        'Marijuana odor = PC to search vehicle (AZ law)',
+                        'Medical card does NOT allow impaired driving',
+                        'ARS 28-1381(A)(3): Driving with drugs in system',
+                        'Consent search is voluntary - document refusal',
+                        'Inventory vehicle if towed'
+                    ],
+                    safety: [
+                        'Drug users may be unpredictable',
+                        'Watch for hidden compartments and needles',
+                        'Wear gloves during any search',
+                        'Fentanyl exposure risk - dont touch unknown substances',
+                        'Multiple occupants = multiple threats'
+                    ]
+                },
+                traffic_suspended: {
+                    legal: [
+                        'ARS 28-3473: Driving on suspended license - Class 1 Misd',
+                        'Verify suspension through dispatch/MVD',
+                        'May cite and release OR arrest',
+                        'Vehicle may be impounded (30 day hold possible)',
+                        'False identity = additional charge'
+                    ],
+                    safety: [
+                        'Subjects may give false names - verify through dispatch',
+                        'Suspended drivers often have warrants',
+                        'May attempt to flee to avoid arrest',
+                        'Standard traffic stop positioning applies'
+                    ]
+                },
+                domestic: {
+                    legal: [
+                        'ARS 13-3601: Domestic violence - relationship required',
+                        'MANDATORY ARREST if probable cause exists',
+                        'Determine PRIMARY AGGRESSOR - not mutual combat',
+                        'Victim cannot "drop charges" - state prosecutes',
+                        'Provide victims rights information',
+                        'Emergency protective order available'
+                    ],
+                    safety: [
+                        'MOST DANGEROUS call type - stay alert',
+                        'Separate parties immediately',
+                        'Clear residence for other occupants/weapons',
+                        'Both parties may turn on officers',
+                        'Request backup before entry if possible',
+                        'Watch windows and doorways'
+                    ]
+                },
+                domestic_weapons: {
+                    legal: [
+                        'ARS 13-1204: Aggravated assault with deadly weapon',
+                        'ARS 13-1202: Threatening/intimidating',
+                        'Seize all weapons as evidence',
+                        'Emergency protective order - remove firearms',
+                        'Felony arrest mandatory'
+                    ],
+                    safety: [
+                        'EXTREME CAUTION - weapon confirmed',
+                        'Stage and wait for backup',
+                        'Announce police and give commands from cover',
+                        'Do NOT enter until weapon secured',
+                        'Have less-lethal ready',
+                        'Clear every room systematically'
+                    ]
+                },
+                assault: {
+                    legal: [
+                        'ARS 13-1203: Assault - intentionally causing injury',
+                        'ARS 13-1204: Aggravated if serious injury or weapon',
+                        'Self-defense is affirmative defense',
+                        'Document all injuries with photos',
+                        'Get witness statements'
+                    ],
+                    safety: [
+                        'Separate combatants immediately',
+                        'Watch for concealed weapons',
+                        'Crowd control may be needed',
+                        'Medical attention for injured parties',
+                        'Both parties may be hostile to police'
+                    ]
+                },
+                shoplifting: {
+                    legal: [
+                        'ARS 13-1805: Shoplifting - value determines charge',
+                        'Under $1000 = Misdemeanor, Over $1000 = Felony',
+                        'Store must have witnessed concealment',
+                        'LP can detain - verify their observations',
+                        'Civil demand separate from criminal charges'
+                    ],
+                    safety: [
+                        'LP has already detained - lower risk',
+                        'Verify subject is not armed',
+                        'Professional shoplifters may have tools/weapons',
+                        'Watch for accomplices still in store'
+                    ]
+                },
+                burglary: {
+                    legal: [
+                        'ARS 13-1506/1507/1508: Burglary degrees',
+                        'Entry + intent to commit crime inside',
+                        'Occupied structure = more serious',
+                        'Document entry point and damage',
+                        'Preserve crime scene for detectives'
+                    ],
+                    safety: [
+                        'Building search is HIGH RISK',
+                        'Wait for backup - minimum 2 officers',
+                        'Clear systematically - room by room',
+                        'Suspect may be hiding or armed',
+                        'Watch for ambush points',
+                        'Announce police presence loudly'
+                    ]
+                },
+                trespass: {
+                    legal: [
+                        'ARS 13-1502/1503/1504: Criminal trespass degrees',
+                        'Must have notice - signs, verbal, or fencing',
+                        'Property owner/agent must want prosecution',
+                        'Issue trespass warning for future enforcement',
+                        'Residential vs commercial matters'
+                    ],
+                    safety: [
+                        'Homeless individuals may have mental health issues',
+                        'Check for weapons during contact',
+                        'Be aware of environmental hazards',
+                        'Maintain reactionary gap'
+                    ]
+                },
+                mental_crisis: {
+                    legal: [
+                        'ARS 36-525: Emergency petition for evaluation',
+                        'Danger to self, others, or grave disability',
+                        'Not a crime - civil commitment',
+                        'Transport to designated facility',
+                        'Document specific behaviors observed'
+                    ],
+                    safety: [
+                        'Unpredictable behavior - maintain distance',
+                        'Speak calmly and slowly',
+                        'Avoid direct eye contact if agitated',
+                        'Time is on your side - dont rush',
+                        'CIT training techniques apply',
+                        'Remove audience if possible'
+                    ]
+                },
+                suicide_threat: {
+                    legal: [
+                        'ARS 36-525: Emergency mental health evaluation',
+                        'Welfare check authority to enter if exigent',
+                        'Seize firearms for safekeeping',
+                        'Document all statements made',
+                        'Coordinate with mental health resources'
+                    ],
+                    safety: [
+                        'Suicidal subjects may be armed',
+                        'Suicide by cop is a real risk',
+                        'Approach with caution - announce yourself',
+                        'Keep hands visible, non-threatening posture',
+                        'Time and talk - crisis negotiation',
+                        'Backup and less-lethal ready'
+                    ]
+                },
+                civil_custody: {
+                    legal: [
+                        'CIVIL MATTER - police cannot enforce custody orders',
+                        'Review court documents if presented',
+                        'Document the situation for both parties',
+                        'Refer to family court for enforcement',
+                        'Only intervene if crime occurs (assault, etc.)'
+                    ],
+                    safety: [
+                        'Emotions run HIGH in custody disputes',
+                        'Keep parties separated',
+                        'Child safety is priority',
+                        'Both parties may become hostile',
+                        'Be prepared to disengage if no crime'
+                    ]
+                },
+                civil_property: {
+                    legal: [
+                        'CIVIL MATTER - cannot determine property ownership',
+                        'Keep the peace only',
+                        'Document incident for both parties',
+                        'Refer to civil court',
+                        'Only arrest if criminal conduct occurs'
+                    ],
+                    safety: [
+                        'Neighbor disputes can escalate quickly',
+                        'History of conflict may exist',
+                        'Maintain neutral position',
+                        'Separate parties if needed'
+                    ]
+                },
+                default: {
+                    legal: [
+                        'Identify yourself and state your purpose',
+                        'Reasonable suspicion needed for detention',
+                        'Probable cause needed for arrest',
+                        'Document everything thoroughly',
+                        'Know your use of force policy'
+                    ],
+                    safety: [
+                        'Maintain situational awareness at all times',
+                        'Keep hands visible, watch suspects hands',
+                        'Maintain reactionary gap (21 feet)',
+                        'Request backup when outnumbered',
+                        'Trust your training and instincts'
+                    ]
+                }
+            };
+
             function createHelpSystem() {
                 // Help button
                 var helpBtn = document.createElement('button');
                 helpBtn.className = 'help-toggle-btn';
                 helpBtn.id = 'help-toggle-btn';
                 helpBtn.innerHTML = '?';
-                helpBtn.title = 'Toggle Help';
+                helpBtn.title = 'Scenario Help - Legal & Safety Advice';
                 helpBtn.onclick = toggleHelp;
 
-                // Help panel
+                // Help panel with tabs
                 var helpPanel = document.createElement('div');
                 helpPanel.className = 'help-panel';
                 helpPanel.id = 'help-panel';
                 helpPanel.innerHTML = `
-                    <h4>💡 Training Tips</h4>
-                    <p><strong>Click subjects</strong> to access force options</p>
-                    <p><strong>Click officer</strong> to draw weapons or speak</p>
-                    <p><strong>Request backup</strong> via radio for assistance</p>
-                    <div class="help-hint" id="contextual-hint">
-                        Start by identifying yourself and stating your purpose.
+                    <div class="help-tabs">
+                        <button class="help-tab active" data-tab="legal">⚖️ Legal</button>
+                        <button class="help-tab" data-tab="safety">🛡️ Safety</button>
+                        <button class="help-tab" data-tab="tips">💡 Tips</button>
+                    </div>
+                    <div class="help-content" id="help-content-legal">
+                        <h4>⚖️ Legal Guidance</h4>
+                        <ul id="legal-advice-list"></ul>
+                    </div>
+                    <div class="help-content" id="help-content-safety" style="display:none;">
+                        <h4>🛡️ Officer Safety</h4>
+                        <ul id="safety-advice-list"></ul>
+                    </div>
+                    <div class="help-content" id="help-content-tips" style="display:none;">
+                        <h4>💡 Controls</h4>
+                        <p>• <strong>Click subjects</strong> for force options</p>
+                        <p>• <strong>Click officer</strong> to speak/draw weapon</p>
+                        <p>• <strong>Radio dispatch</strong> for backup</p>
+                        <p>• <strong>Ctrl+Enter</strong> to send message</p>
                     </div>
                 `;
 
                 document.body.appendChild(helpBtn);
                 document.body.appendChild(helpPanel);
+
+                // Tab switching
+                helpPanel.querySelectorAll('.help-tab').forEach(function(tab) {
+                    tab.addEventListener('click', function() {
+                        var tabName = this.dataset.tab;
+                        helpPanel.querySelectorAll('.help-tab').forEach(function(t) { t.classList.remove('active'); });
+                        helpPanel.querySelectorAll('.help-content').forEach(function(c) { c.style.display = 'none'; });
+                        this.classList.add('active');
+                        document.getElementById('help-content-' + tabName).style.display = 'block';
+                    });
+                });
             }
 
             function toggleHelp() {
@@ -8757,6 +9096,30 @@
                 var btn = document.getElementById('help-toggle-btn');
                 if (panel) panel.classList.toggle('visible', helpVisible);
                 if (btn) btn.classList.toggle('active', helpVisible);
+
+                // Update advice when opening
+                if (helpVisible) {
+                    updateScenarioAdvice();
+                }
+            }
+
+            function updateScenarioAdvice() {
+                var advice = SCENARIO_ADVICE[selectedScenario] || SCENARIO_ADVICE.default;
+
+                var legalList = document.getElementById('legal-advice-list');
+                var safetyList = document.getElementById('safety-advice-list');
+
+                if (legalList) {
+                    legalList.innerHTML = advice.legal.map(function(item) {
+                        return '<li>' + item + '</li>';
+                    }).join('');
+                }
+
+                if (safetyList) {
+                    safetyList.innerHTML = advice.safety.map(function(item) {
+                        return '<li>' + item + '</li>';
+                    }).join('');
+                }
             }
 
             function updateContextualHint(hint) {
