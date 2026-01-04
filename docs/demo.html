@@ -6067,12 +6067,13 @@
                 if (bubble) bubble.style.display = 'none';
             }
 
-            function hideSpeechBubbles() {
+            function hideSpeechBubbles(includeOfficer) {
                 var subjectBubble = document.getElementById('subject-speech');
                 var officerBubble = document.getElementById('officer-speech');
                 var backupBubble = document.getElementById('backup-speech');
                 if (subjectBubble) subjectBubble.style.display = 'none';
-                if (officerBubble) officerBubble.style.display = 'none';
+                // Only hide officer bubble if explicitly requested (e.g., on restart)
+                if (includeOfficer && officerBubble) officerBubble.style.display = 'none';
                 if (backupBubble) backupBubble.style.display = 'none';
             }
 
@@ -6648,6 +6649,7 @@
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
                 // Show officer speech bubble with all actions (Say, Do, Radio)
+                // Bubble stays visible until next message is sent
                 var bubbleText = '';
                 if (input.say) {
                     bubbleText = '💬 "' + input.say + '"';
@@ -6662,6 +6664,9 @@
                 }
                 if (bubbleText) {
                     showOfficerSpeech(bubbleText);
+                } else {
+                    // Hide bubble if nothing to show
+                    hideOfficerSpeech();
                 }
             }
 
@@ -7196,8 +7201,8 @@
                 stopTimer();
                 timerDisplay.textContent = '0.0s';
 
-                // Hide speech bubbles
-                hideSpeechBubbles();
+                // Hide ALL speech bubbles including officer on restart
+                hideSpeechBubbles(true);
 
                 // Remove backup unit
                 removeBackupUnit();
