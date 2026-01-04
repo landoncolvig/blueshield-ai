@@ -2488,6 +2488,73 @@
             border-bottom: 1px solid rgba(59, 130, 246, 0.2);
         }
 
+        .backup-command-section {
+            margin-bottom: 8px;
+        }
+
+        .backup-command-section label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .backup-command-section textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            color: white;
+            font-size: 0.8rem;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .backup-command-section textarea:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .backup-command-section textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .backup-command-send {
+            width: 100%;
+            margin-top: 6px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .backup-command-send:hover {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            transform: translateY(-1px);
+        }
+
+        .backup-menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 10px 0;
+        }
+
+        .backup-menu-section {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
         .backup-weapon-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -6914,6 +6981,13 @@
                     menu.id = 'backup-action-menu';
                     menu.innerHTML = `
                         <div class="backup-menu-header">Backup Officer</div>
+                        <div class="backup-command-section">
+                            <label>Give Command</label>
+                            <textarea id="backup-command-input" placeholder="Tell backup what to do..." rows="2"></textarea>
+                            <button class="backup-command-send" id="backup-command-send">Send Command</button>
+                        </div>
+                        <div class="backup-menu-divider"></div>
+                        <div class="backup-menu-section">Deploy Weapon</div>
                         <div class="backup-weapon-grid">
                             <button class="officer-weapon-btn pepperball" data-weapon="pepperball">
                                 <span class="weapon-icon">🔴</span>
@@ -7040,8 +7114,38 @@
                 document.addEventListener('mouseup', handleBackupPointerEnd);
                 document.addEventListener('touchend', handleBackupPointerEnd);
 
-                // Handle weapon button clicks
+                // Handle sending backup command
+                function handleBackupCommand() {
+                    var commandInput = document.getElementById('backup-command-input');
+                    var inputDo = document.getElementById('input-do');
+                    if (!commandInput || !commandInput.value.trim()) return;
+
+                    var command = commandInput.value.trim();
+                    if (inputDo) {
+                        inputDo.value = 'Tell backup officer: "' + command + '"';
+                    }
+
+                    // Visual feedback on backup officer
+                    var backupMarker = document.getElementById('backup-pos');
+                    if (backupMarker) {
+                        backupMarker.classList.add('active');
+                        setTimeout(function() { backupMarker.classList.remove('active'); }, 500);
+                    }
+
+                    // Clear input and close menu
+                    commandInput.value = '';
+                    hideBackupMenu();
+                }
+
+                // Handle weapon button clicks and command send
                 document.addEventListener('click', function(e) {
+                    // Handle send command button
+                    if (e.target.closest('.backup-command-send')) {
+                        e.preventDefault();
+                        handleBackupCommand();
+                        return;
+                    }
+
                     var weaponBtn = e.target.closest('.backup-action-menu .officer-weapon-btn');
                     if (weaponBtn) {
                         e.preventDefault();
