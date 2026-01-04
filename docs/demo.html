@@ -2280,6 +2280,36 @@
             color: #34d399;
         }
 
+        /* Selected states for force options */
+        .force-option.selected {
+            transform: scale(1.02);
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .force-option.lethal.selected {
+            background: rgba(248, 113, 113, 0.3);
+            border: 2px solid #f87171;
+            color: #f87171;
+        }
+
+        .force-option.less-lethal.selected {
+            background: rgba(251, 191, 36, 0.3);
+            border: 2px solid #fbbf24;
+            color: #fbbf24;
+        }
+
+        .force-option.control.selected {
+            background: rgba(96, 165, 250, 0.3);
+            border: 2px solid #60a5fa;
+            color: #60a5fa;
+        }
+
+        .force-option.arrest.selected {
+            background: rgba(52, 211, 153, 0.3);
+            border: 2px solid #34d399;
+            color: #34d399;
+        }
+
         .force-menu-divider {
             height: 1px;
             background: rgba(255,255,255,0.1);
@@ -7243,13 +7273,40 @@
                     var menu = getForceMenu();
                     menu.classList.remove('visible');
                     isMenuOpen = false;
+                    // Reset selection when closing
+                    selectedForceAction = null;
+                    var allBtns = document.querySelectorAll('.force-option');
+                    allBtns.forEach(function(btn) { btn.classList.remove('selected'); });
                 }
 
-                // Handle force action selection
-                function handleForceAction(action) {
+                // Track currently selected force action
+                var selectedForceAction = null;
+
+                // Handle force action selection (toggle on/off)
+                function handleForceAction(action, buttonEl) {
                     // Get the clicked subject info
                     var clickedSubject = window.lastClickedSubject || { element: document.getElementById('subject-pos'), label: 'subject' };
                     var subjectLabel = clickedSubject.label || 'subject';
+                    var inputDo = document.getElementById('input-do');
+
+                    // Get all force option buttons
+                    var allBtns = document.querySelectorAll('.force-option');
+
+                    // Toggle off if clicking same action
+                    if (selectedForceAction === action) {
+                        selectedForceAction = null;
+                        allBtns.forEach(function(btn) { btn.classList.remove('selected'); });
+                        if (inputDo) {
+                            inputDo.value = '';
+                        }
+                        return;
+                    }
+
+                    // Select this action
+                    selectedForceAction = action;
+                    allBtns.forEach(function(btn) {
+                        btn.classList.toggle('selected', btn.dataset.action === action);
+                    });
 
                     var actionTexts = {
                         'shoot': 'Draw weapon and fire at ' + subjectLabel,
@@ -7262,10 +7319,8 @@
                     var actionText = actionTexts[action] || action;
 
                     // Populate the "Do" input with the action
-                    var inputDo = document.getElementById('input-do');
                     if (inputDo) {
                         inputDo.value = actionText;
-                        inputDo.focus();
 
                         // Trigger the action update
                         if (typeof updateCurrentAction === 'function') {
@@ -7280,8 +7335,13 @@
                             clickedSubject.element.classList.remove('active');
                         }, 500);
                     }
+                }
 
-                    hideMenu();
+                // Reset force selection when menu is hidden
+                function resetForceSelection() {
+                    selectedForceAction = null;
+                    var allBtns = document.querySelectorAll('.force-option');
+                    allBtns.forEach(function(btn) { btn.classList.remove('selected'); });
                 }
 
                 // Click on any subject marker (S1, S2, etc.) or stick figure
