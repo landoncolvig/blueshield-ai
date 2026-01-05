@@ -4407,14 +4407,16 @@
             background: var(--navy-mid);
             border-left: 1px solid var(--border-color);
             z-index: 99;
-            transition: right 0.3s ease;
+            transition: right 0.3s ease, visibility 0.3s;
             overflow-y: auto;
             padding: 1rem;
             box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+            visibility: hidden;
         }
 
         .fi-card-panel.open {
             right: 0;
+            visibility: visible;
         }
 
         .fi-card-header {
@@ -4806,6 +4808,17 @@
 
         /* Mobile-specific styles for touch interaction */
         @media (max-width: 767px) {
+            /* Prevent horizontal scroll on mobile */
+            html, body {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
+            .demo-container {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
             /* Larger touch targets for markers */
             .position-marker {
                 width: 44px;
@@ -4826,11 +4839,19 @@
                 height: 36px;
             }
 
-            /* Officer action menu mobile styling */
+            /* Officer action menu mobile styling - fixed position */
             .officer-action-menu {
-                min-width: 260px;
-                max-width: calc(100vw - 20px);
-                padding: 10px;
+                position: fixed !important;
+                left: 10px !important;
+                right: 10px !important;
+                top: auto !important;
+                bottom: 80px !important;
+                width: auto !important;
+                min-width: unset;
+                max-width: none;
+                padding: 12px;
+                max-height: 60vh;
+                overflow-y: auto;
             }
 
             .officer-action-menu textarea {
@@ -4851,10 +4872,18 @@
                 font-size: 1rem;
             }
 
-            /* Backup action menu mobile styling */
+            /* Backup action menu mobile styling - fixed position */
             .backup-action-menu {
-                min-width: 220px;
-                max-width: calc(100vw - 20px);
+                position: fixed !important;
+                left: 10px !important;
+                right: 10px !important;
+                top: auto !important;
+                bottom: 80px !important;
+                width: auto !important;
+                min-width: unset;
+                max-width: none;
+                max-height: 50vh;
+                overflow-y: auto;
             }
 
             .backup-weapon-grid {
@@ -4866,9 +4895,16 @@
                 padding: 8px;
             }
 
-            /* Force options menu mobile */
+            /* Force options menu mobile - fixed position */
             .force-options-menu {
-                min-width: 140px;
+                position: fixed !important;
+                left: 50% !important;
+                right: auto !important;
+                top: auto !important;
+                bottom: 80px !important;
+                transform: translateX(-50%) !important;
+                min-width: 160px;
+                max-width: calc(100vw - 40px);
             }
 
             .force-option {
@@ -4924,6 +4960,22 @@
             .backup-car {
                 transform: scale(0.8);
                 transform-origin: bottom right;
+            }
+
+            /* FI Card mobile - full width */
+            .fi-card-panel {
+                width: 100%;
+                max-width: 100vw;
+                right: -100vw;
+            }
+
+            .fi-card-panel.open {
+                right: 0;
+            }
+
+            .fi-card-tab {
+                padding: 0.75rem 0.4rem;
+                font-size: 0.75rem;
             }
         }
 
