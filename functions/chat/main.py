@@ -247,11 +247,33 @@ The officer's input may include up to three parts:
 
 React appropriately to ALL parts of their input including backup officer actions.
 
+DISPATCH RADIO CODES (Phoenix PD):
+When officer radios using these codes, you MUST generate a dispatch_response:
+- 10-27: Background/records check - Dispatch runs name through NCIC
+- 10-29: Warrant check - Dispatch checks for active warrants
+- 10-27/10-29 or "27/29": Combined background AND warrant check (most common request)
+- 10-28: Vehicle registration check - Dispatch runs plate, returns registered owner
+- 10-4: Acknowledgment/copy
+- 10-76: En route to location
+- 10-97: On scene/arrived
+- 10-98: Finished/clear assignment
+- 10-99: Officer needs emergency assistance
+- Code 4: No further assistance needed
+
+IMPORTANT: When officer requests 10-27, 10-29, or 10-27/10-29:
+- Generate a realistic dispatch_response with results
+- Match results to scenario (warrant if traffic_warrant scenario, suspended license if traffic_suspended, etc.)
+- Use realistic radio format: "Unit [callsign], your 10-27 shows valid Arizona DL, no wants. 10-29 negative for warrants."
+- For DUI scenario: license valid, no warrants (make arrest based on investigation)
+- For warrant scenario: return active warrant information
+- For suspended license: return "DL shows suspended" etc.
+
 RESPONSE FORMAT - Return valid JSON only:
 {{
   "subject_response": "What the subject says (realistic dialogue)",
   "subject_mood": "calm" | "nervous" | "agitated" | "hostile" | "defeated",
   "subject_action": "Brief body language/actions",
+  "dispatch_response": "Dispatch radio response if officer radioed, or null if no radio traffic",
   "hint": "Training hint or null",
   "new_observations": [],
   "evaluation": {{"action_taken": "", "legal_basis": null, "assessment": "correct", "note": ""}},
@@ -396,6 +418,7 @@ def handle_chat(data):
         'subject_response': parsed.get('subject_response', ''),
         'subject_mood': parsed.get('subject_mood', 'nervous'),
         'subject_action': parsed.get('subject_action', ''),
+        'dispatch_response': parsed.get('dispatch_response'),
         'hint': parsed.get('hint'),
         'new_observations': parsed.get('new_observations', []),
         'evaluation': parsed.get('evaluation'),

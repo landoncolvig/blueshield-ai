@@ -6893,6 +6893,17 @@
                     updateSubjectMood(data.subject_mood, data.subject_action);
                     addMessage('subject', subjectResponse, data.hint);
 
+                    // Show dispatch response if present (from radio traffic)
+                    if (data.dispatch_response) {
+                        setTimeout(function() {
+                            addMessage('dispatch', data.dispatch_response);
+                            messages.push({
+                                role: 'dispatch',
+                                content: data.dispatch_response
+                            });
+                        }, 800); // Slight delay to simulate radio response time
+                    }
+
                     // Check for status effects in AI response
                     if (typeof parseResponseForStatusEffects === 'function') {
                         parseResponseForStatusEffects(subjectResponse);
