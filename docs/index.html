@@ -486,6 +486,327 @@
             }
         }
 
+        /* Simulator Preview Styles */
+        .simulator-window {
+            background: var(--navy-mid);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .sim-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: var(--navy-light);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sim-scenario-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-code {
+            background: var(--accent-gold);
+            color: var(--navy-deep);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .sim-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .sim-scene {
+            position: relative;
+            height: 300px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+        }
+
+        .road-surface {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: #2d2d2d;
+        }
+
+        .road-line {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 4px;
+            background: #fbbf24;
+            opacity: 0.8;
+        }
+
+        .road-line:first-child {
+            left: 10%;
+            width: 40px;
+        }
+
+        .road-line:last-child {
+            right: 10%;
+            width: 40px;
+        }
+
+        .sim-vehicle {
+            position: absolute;
+            font-size: 2.5rem;
+        }
+
+        .suspect-vehicle {
+            left: 25%;
+            bottom: 60px;
+            transform: scaleX(-1);
+        }
+
+        .patrol-vehicle {
+            right: 15%;
+            bottom: 60px;
+        }
+
+        .patrol-lights {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 6px;
+            background: linear-gradient(90deg, #3b82f6 50%, #ef4444 50%);
+            border-radius: 2px;
+            animation: policeLights 0.5s infinite;
+        }
+
+        @keyframes policeLights {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .sim-subject, .sim-officer {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sim-subject {
+            left: 38%;
+            bottom: 70px;
+        }
+
+        .sim-officer {
+            right: 32%;
+            bottom: 70px;
+        }
+
+        .sim-stick-figure {
+            width: 30px;
+            height: 50px;
+            position: relative;
+        }
+
+        .stick-head {
+            width: 14px;
+            height: 14px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .subject-figure .stick-head {
+            background: #f87171;
+        }
+
+        .officer-figure .stick-head {
+            background: #34d399;
+        }
+
+        .stick-body {
+            width: 3px;
+            height: 18px;
+            background: #f5f5f5;
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .subject-figure .stick-body {
+            background: #f87171;
+        }
+
+        .officer-figure .stick-body {
+            background: #34d399;
+        }
+
+        .stick-arms {
+            width: 24px;
+            height: 3px;
+            background: #f5f5f5;
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .subject-figure .stick-arms {
+            background: #f87171;
+        }
+
+        .officer-figure .stick-arms {
+            background: #34d399;
+        }
+
+        .stick-legs {
+            position: absolute;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 18px;
+            border-left: 3px solid #f5f5f5;
+            border-right: 3px solid #f5f5f5;
+        }
+
+        .subject-figure .stick-legs {
+            border-color: #f87171;
+        }
+
+        .officer-figure .stick-legs {
+            border-color: #34d399;
+        }
+
+        .figure-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .sim-speech-bubble {
+            position: absolute;
+            bottom: 60px;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            max-width: 160px;
+            line-height: 1.3;
+            animation: bubblePop 0.3s ease-out;
+        }
+
+        .sim-speech-bubble.subject-bubble {
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            right: 0;
+            transform: translateX(20%);
+        }
+
+        .sim-speech-bubble.officer-bubble {
+            background: rgba(5, 102, 68, 0.9);
+            color: white;
+            left: 0;
+            transform: translateX(-20%);
+        }
+
+        @keyframes bubblePop {
+            from { opacity: 0; transform: scale(0.8) translateX(-20%); }
+            to { opacity: 1; transform: scale(1) translateX(-20%); }
+        }
+
+        .sim-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--warning);
+        }
+
+        .sim-hint .hint-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .sim-actions {
+            background: var(--navy-light);
+            padding: 0.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-tabs {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-tab {
+            flex: 1;
+            padding: 0.4rem 0.75rem;
+            background: var(--navy-mid);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-tab.active {
+            background: var(--tactical-blue);
+            border-color: var(--tactical-blue);
+            color: white;
+        }
+
+        .action-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-input input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            background: var(--navy-mid);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+        }
+
+        .action-input .send-btn {
+            padding: 0.5rem 1rem;
+            background: var(--accent-gold);
+            border: none;
+            border-radius: 6px;
+            color: var(--navy-deep);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -2637,66 +2958,74 @@
                 </div>
 
                 <div class="demo-preview">
-                    <div class="chat-window">
-                        <div class="chat-header">
-                            <div class="chat-scenario">
-                                <div class="scenario-icon">
-                                    <svg viewBox="0 0 24 24" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <path d="M12 6v6l4 2"/>
-                                    </svg>
-                                </div>
-                                <div class="scenario-info">
-                                    <h3>Traffic Stop: Suspected DUI</h3>
-                                    <span>State Route 87, 11:42 PM</span>
-                                </div>
+                    <div class="simulator-window">
+                        <div class="sim-header">
+                            <div class="sim-scenario-info">
+                                <span class="sim-code">Code 390D</span>
+                                <span class="sim-title">Drunk Driver</span>
                             </div>
                             <span class="mode-badge">Training Mode</span>
                         </div>
-                        <div class="chat-messages">
-                            <div class="message message-system">
-                                <div class="message-content">
-                                    Vehicle pulled over. Driver shows signs of intoxication: bloodshot eyes, odor of alcohol, slurred speech.
-                                </div>
+                        <div class="sim-scene">
+                            <!-- Road markings -->
+                            <div class="road-surface">
+                                <div class="road-line"></div>
+                                <div class="road-line"></div>
                             </div>
-                            <div class="message message-subject">
-                                <div class="message-label">Subject</div>
-                                <div class="message-content">
-                                    "What's the problem, officer? I wasn't doing anything wrong. I only had a couple beers with dinner."
-                                </div>
+                            <!-- Suspect vehicle -->
+                            <div class="sim-vehicle suspect-vehicle">
+                                <div class="vehicle-body">🚗</div>
                             </div>
-                            <div class="message message-officer">
-                                <div class="message-label">You</div>
-                                <div class="message-content">
-                                    "License and registration, please. Have you been drinking tonight?"
+                            <!-- Subject with speech bubble -->
+                            <div class="sim-subject">
+                                <div class="sim-speech-bubble subject-bubble">
+                                    "I only had a couple beers... can you just give me a warning?"
                                 </div>
+                                <div class="sim-stick-figure subject-figure">
+                                    <div class="stick-head"></div>
+                                    <div class="stick-body"></div>
+                                    <div class="stick-arms"></div>
+                                    <div class="stick-legs"></div>
+                                </div>
+                                <span class="figure-label">SUBJECT</span>
                             </div>
-                            <div class="message message-subject">
-                                <div class="message-label">Subject</div>
-                                <div class="message-content">
-                                    "Yeah, like I said, just a couple beers. Look, can you just give me a warning? I'm almost home."
+                            <!-- Officer with speech bubble -->
+                            <div class="sim-officer">
+                                <div class="sim-speech-bubble officer-bubble">
+                                    "Step out of the vehicle, please."
                                 </div>
+                                <div class="sim-stick-figure officer-figure">
+                                    <div class="stick-head"></div>
+                                    <div class="stick-body"></div>
+                                    <div class="stick-arms"></div>
+                                    <div class="stick-legs"></div>
+                                </div>
+                                <span class="figure-label">YOU</span>
                             </div>
-                            <div class="hint-panel">
-                                <div class="hint-box">
-                                    <svg class="hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <path d="M12 16v-4M12 8h.01"/>
-                                    </svg>
-                                    <div class="hint-content">
-                                        <strong>Training Hint</strong>
-                                        Consider requesting field sobriety tests. Under ARS 28-1321, you have implied consent authority. Document all observations.
-                                    </div>
-                                </div>
+                            <!-- Patrol car -->
+                            <div class="sim-vehicle patrol-vehicle">
+                                <div class="vehicle-body">🚔</div>
+                                <div class="patrol-lights"></div>
+                            </div>
+                            <!-- Training hint overlay -->
+                            <div class="sim-hint">
+                                <svg class="hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 16v-4M12 8h.01"/>
+                                </svg>
+                                <span>Under ARS 28-1321, you have implied consent authority for sobriety tests.</span>
                             </div>
                         </div>
-                        <div class="chat-input">
-                            <input type="text" placeholder="Type your response..." disabled>
-                            <button class="send-btn" disabled>
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
-                                </svg>
-                            </button>
+                        <div class="sim-actions">
+                            <div class="action-tabs">
+                                <button class="action-tab active">SAY</button>
+                                <button class="action-tab">DO</button>
+                                <button class="action-tab">RADIO</button>
+                            </div>
+                            <div class="action-input">
+                                <input type="text" placeholder="What do you say to the subject?" disabled>
+                                <button class="send-btn" disabled>→</button>
+                            </div>
                         </div>
                     </div>
                 </div>
