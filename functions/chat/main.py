@@ -249,15 +249,18 @@ React appropriately to ALL parts of their input including backup officer actions
 
 DISPATCH RADIO CODES (Phoenix PD):
 When officer radios using these codes, you MUST generate a dispatch_response:
+
+Standard 10-codes:
 - 10-27: Background/records check - Dispatch runs name through NCIC
 - 10-29: Warrant check - Dispatch checks for active warrants
 - 10-27/10-29 or "27/29": Combined background AND warrant check (most common request)
 - 10-28: Vehicle registration check - Dispatch runs plate, returns registered owner
 - 10-4: Acknowledgment/copy
-- 10-76: En route to location
-- 10-97: On scene/arrived
-- 10-98: Finished/clear assignment
-- 10-99: Officer needs emergency assistance
+- 10-1: Unable to copy/say again
+
+Phoenix Signal Codes (from sheet):
+- 999: Officer Needs Help Urgently
+- 998: Officer Involved Shooting
 - Code 4: No further assistance needed
 
 IMPORTANT: When officer requests 10-27, 10-29, or 10-27/10-29:
