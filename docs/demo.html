@@ -2130,40 +2130,6 @@
         .patrol-car.rotate-270 { transform: rotate(270deg); }
         .patrol-car.rotate-315 { transform: rotate(315deg); }
 
-        /* Rotate button on patrol car */
-        .patrol-car .rotate-btn {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent-gold);
-            color: var(--navy-deep);
-            font-size: 18px;
-            font-weight: bold;
-            width: 50px;
-            height: 30px;
-            border-radius: 15px;
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-            cursor: pointer;
-            user-select: none;
-            border: 2px solid var(--navy-deep);
-            transition: all 0.2s ease;
-        }
-
-        .patrol-car .rotate-btn:hover {
-            background: #FFD700;
-            transform: translateX(-50%) scale(1.1);
-        }
-
-        .patrol-car .rotate-btn:active {
-            transform: translateX(-50%) scale(0.95);
-            background: #FFA500;
-        }
-
         .patrol-car.backup-car {
             animation: backupCarArrive 0.6s ease-out;
         }
@@ -7193,9 +7159,6 @@
                 // Position officer at patrol car at start
                 positionOfficerAtPatrolCar();
 
-                // Initialize patrol car rotation
-                initPatrolCarRotation();
-
                 // Update header
                 document.getElementById('chat-scenario-title').textContent = scenario.title;
                 document.getElementById('chat-scenario-location').textContent = scenario.location;
@@ -8686,58 +8649,6 @@
             initScenarioGrid();
             initDifficultyGrid();
             updateProgress('select');
-
-            // ========== PATROL CAR ROTATION ==========
-            var carRotations = {}; // Track rotation for each car
-
-            function initPatrolCarRotation() {
-                var patrolCars = document.querySelectorAll('.patrol-car.draggable');
-                patrolCars.forEach(function(car) {
-                    // Add rotate button if not exists
-                    if (!car.querySelector('.rotate-btn')) {
-                        var rotateBtn = document.createElement('div');
-                        rotateBtn.className = 'rotate-btn';
-                        rotateBtn.innerHTML = '↻';
-                        rotateBtn.title = 'Click to rotate 45°';
-
-                        // Prevent drag when clicking rotate button
-                        rotateBtn.addEventListener('mousedown', function(e) {
-                            e.stopPropagation();
-                            e.preventDefault();
-                        });
-
-                        rotateBtn.addEventListener('touchstart', function(e) {
-                            e.stopPropagation();
-                            e.preventDefault();
-                        });
-
-                        // Rotate car on click
-                        rotateBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            e.preventDefault();
-
-                            var carId = car.id || 'car-default';
-                            var currentAngle = carRotations[carId] || 0;
-                            var newAngle = (currentAngle + 45) % 360;
-
-                            car.style.transform = 'rotate(' + newAngle + 'deg)';
-                            carRotations[carId] = newAngle;
-
-                            console.log('Car rotated to', newAngle, 'degrees');
-                        });
-
-                        car.appendChild(rotateBtn);
-                    }
-
-                    // Initialize rotation
-                    var carId = car.id || 'car-' + Math.random().toString(36).substr(2, 9);
-                    if (!car.id) car.id = carId;
-                    carRotations[carId] = 0;
-                    car.style.transform = 'rotate(0deg)';
-                });
-
-                console.log('Patrol car rotation initialized for', patrolCars.length, 'cars');
-            }
 
             // ========== POSITION OFFICER AT PATROL CAR ==========
             function positionOfficerAtPatrolCar() {
