@@ -208,18 +208,30 @@
 
         /* ========== SUBJECT STATUS INDICATORS ========== */
 
-        /* Status badge base style */
-        .subject-status-badge {
+        /* Status badge container - holds all badges in a row */
+        .status-badge-container {
             position: absolute;
-            top: -35px;
+            top: -40px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 11px;
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+            z-index: 150;
+            white-space: nowrap;
+        }
+
+        /* Status badge base style */
+        .subject-status-badge {
+            position: relative;
+            top: auto;
+            left: auto;
+            transform: none;
+            font-size: 10px;
             font-weight: bold;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
             white-space: nowrap;
-            z-index: 150;
             animation: statusPulse 2s ease-in-out infinite;
         }
 
@@ -413,10 +425,6 @@
             0%, 100% { transform: translateX(-50%); }
             50% { transform: translateX(-45%); }
         }
-
-        /* Multiple status stacking - offset badges vertically */
-        .position-marker.subject .subject-status-badge:nth-of-type(2) { top: -55px; }
-        .position-marker.subject .subject-status-badge:nth-of-type(3) { top: -75px; }
 
         /* Weapon drawn indicator for officer */
         .position-marker.officer.weapon-drawn::before,
@@ -4973,6 +4981,17 @@
                 min-height: 180px;
             }
 
+            /* Status badges mobile - smaller and tighter */
+            .status-badge-container {
+                top: -32px;
+                gap: 2px;
+            }
+
+            .subject-status-badge {
+                font-size: 8px;
+                padding: 2px 4px;
+            }
+
             /* Dispatcher bubble mobile */
             .dispatcher-bubble {
                 max-width: 140px;
@@ -9511,23 +9530,31 @@
 
             // ========== FORCE EFFECT INDICATORS ==========
             function ensureStatusBadges(subject) {
+                // Create or get the badge container
+                var container = subject.querySelector('.status-badge-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'status-badge-container';
+                    subject.appendChild(container);
+                }
+
                 // Add all status badge elements if they don't exist
                 var badges = ['cuffed', 'tazed', 'oc', 'shot', 'prone', 'fleeing'];
                 var labels = {
-                    'cuffed': '🔗 HANDCUFFED',
+                    'cuffed': '🔗 CUFFED',
                     'tazed': '⚡ TAZED',
-                    'oc': '🌶️ OC SPRAYED',
+                    'oc': '🌶️ OC',
                     'shot': '🩸 SHOT',
-                    'prone': '✓ COMPLIANT',
-                    'fleeing': '🏃 FLEEING'
+                    'prone': '✓ DOWN',
+                    'fleeing': '🏃 FLEE'
                 };
 
                 badges.forEach(function(badge) {
-                    if (!subject.querySelector('.subject-status-badge.' + badge + '-badge')) {
+                    if (!container.querySelector('.subject-status-badge.' + badge + '-badge')) {
                         var badgeEl = document.createElement('div');
                         badgeEl.className = 'subject-status-badge ' + badge + '-badge';
                         badgeEl.textContent = labels[badge];
-                        subject.appendChild(badgeEl);
+                        container.appendChild(badgeEl);
                     }
                 });
             }
