@@ -8568,7 +8568,7 @@
                                 applyForceEffect(selectedForceAction, targetId);
                             }
 
-                            // Also populate the Do input for the chat
+                            // Populate the Do input for the chat
                             var inputDo = document.getElementById('input-do');
                             var subjectLabel = clickedSubject.label || 'subject';
                             var actionTexts = {
@@ -8590,6 +8590,13 @@
 
                             // Close the menu
                             hideMenu();
+
+                            // Send the message to the AI so the scenario reacts
+                            setTimeout(function() {
+                                if (typeof sendMessage === 'function') {
+                                    sendMessage();
+                                }
+                            }, 100);
                         }
                         return;
                     }
