@@ -6356,8 +6356,8 @@
             function initScenarioGrid() {
                 var grid = document.getElementById('scenario-grid');
 
-                // Demo mode: only show DUI scenario
-                var scenarioOrder = IS_DEMO ? ['dui'] : ['tutorial', 'random', 'dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended', 'domestic', 'domestic_weapons', 'assault', 'threats', 'shoplifting', 'burglary', 'theft', 'vehicle_theft', 'trespass', 'disturbance', 'noise', 'loitering', 'civil_property', 'civil_custody', 'civil_landlord', 'civil_repo', 'civil_business', 'mental_crisis', 'welfare_check', 'suicide_threat', 'intoxicated', 'suspicious', 'alarm', 'harassment', 'stalking'];
+                // Demo mode: show select scenarios (paywall after completing 1)
+                var scenarioOrder = IS_DEMO ? ['dui', 'domestic', 'shoplifting', 'traffic_warrant', 'mental_crisis'] : ['tutorial', 'random', 'dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended', 'domestic', 'domestic_weapons', 'assault', 'threats', 'shoplifting', 'burglary', 'theft', 'vehicle_theft', 'trespass', 'disturbance', 'noise', 'loitering', 'civil_property', 'civil_custody', 'civil_landlord', 'civil_repo', 'civil_business', 'mental_crisis', 'welfare_check', 'suicide_threat', 'intoxicated', 'suspicious', 'alarm', 'harassment', 'stalking'];
 
                 scenarioOrder.forEach(function(id) {
                     var scenario = SCENARIOS[id];
