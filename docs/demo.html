@@ -3029,6 +3029,37 @@
             letter-spacing: 0.5px;
         }
 
+        .force-submit-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            background: linear-gradient(135deg, var(--success), #22c55e);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .force-submit-btn:hover {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            transform: scale(1.02);
+        }
+
+        .force-submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .force-submit-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
         /* Officer Action Menu */
         .officer-action-menu {
             position: absolute;
@@ -4910,6 +4941,11 @@
             .force-option {
                 min-height: 44px;
                 padding: 10px 12px;
+            }
+
+            .force-submit-btn {
+                min-height: 48px;
+                font-size: 1.1rem;
             }
 
             /* Chat input area */
@@ -8357,6 +8393,7 @@
                             <span class="force-icon">🔗</span>
                             <span>Cuff</span>
                         </button>
+                        <button class="force-submit-btn" id="force-submit-btn">Submit</button>
                     `;
                     document.body.appendChild(menu);
                     return menu;
@@ -8498,6 +8535,48 @@
                         e.preventDefault();
                         var action = forceOption.dataset.action;
                         handleForceAction(action);
+                        return;
+                    }
+
+                    // Click on force submit button
+                    var submitBtn = e.target.closest('.force-submit-btn');
+                    if (submitBtn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Only submit if an action is selected
+                        if (selectedForceAction) {
+                            var clickedSubject = window.lastClickedSubject || { element: document.getElementById('subject-pos'), label: 'subject' };
+                            var targetId = clickedSubject.element ? clickedSubject.element.id : 'subject-pos';
+
+                            // Apply the force effect immediately
+                            if (typeof applyForceEffect === 'function') {
+                                applyForceEffect(selectedForceAction, targetId);
+                            }
+
+                            // Also populate the Do input for the chat
+                            var inputDo = document.getElementById('input-do');
+                            var subjectLabel = clickedSubject.label || 'subject';
+                            var actionTexts = {
+                                'shoot': 'Draw weapon and fire at ' + subjectLabel,
+                                'taze': 'Deploy taser on ' + subjectLabel,
+                                'oc-spray': 'Deploy OC spray on ' + subjectLabel,
+                                'fight': 'Engage ' + subjectLabel + ' with physical control techniques',
+                                'cuff': 'Place ' + subjectLabel + ' in handcuffs'
+                            };
+                            if (inputDo) {
+                                inputDo.value = actionTexts[selectedForceAction] || selectedForceAction;
+                                if (typeof updateCurrentAction === 'function') {
+                                    updateCurrentAction();
+                                }
+                            }
+
+                            // Clear pending action since we've applied it
+                            window.pendingForceAction = null;
+
+                            // Close the menu
+                            hideMenu();
+                        }
                         return;
                     }
 
