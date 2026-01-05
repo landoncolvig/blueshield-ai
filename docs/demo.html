@@ -5200,9 +5200,148 @@
                 bottom: -14px;
             }
         }
+
+        /* ========== TUTORIAL SYSTEM ========== */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            display: none;
+        }
+
+        .tutorial-overlay.active {
+            display: block;
+        }
+
+        .tutorial-box {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--navy-mid), var(--navy-deep));
+            border: 2px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 20px 24px;
+            max-width: 400px;
+            width: 90%;
+            z-index: 9999;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(201, 162, 39, 0.3);
+            display: none;
+        }
+
+        .tutorial-box.active {
+            display: block;
+            animation: tutorialPop 0.3s ease-out;
+        }
+
+        @keyframes tutorialPop {
+            0% { transform: translateX(-50%) scale(0.9); opacity: 0; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        .tutorial-step-indicator {
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .tutorial-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .tutorial-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .tutorial-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .tutorial-btn.skip {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+        }
+
+        .tutorial-btn.skip:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        .tutorial-btn.next {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-bright));
+            color: var(--navy-deep);
+        }
+
+        .tutorial-btn.next:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(201, 162, 39, 0.4);
+        }
+
+        .tutorial-highlight {
+            position: relative;
+            z-index: 9999 !important;
+            animation: tutorialPulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.5), 0 0 20px rgba(201, 162, 39, 0.3) !important;
+        }
+
+        @keyframes tutorialPulse {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.5), 0 0 20px rgba(201, 162, 39, 0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(201, 162, 39, 0.3), 0 0 30px rgba(201, 162, 39, 0.5); }
+        }
+
+        .tutorial-arrow {
+            position: fixed;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            z-index: 9999;
+            animation: tutorialBounce 1s ease-in-out infinite;
+        }
+
+        @keyframes tutorialBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
+    <!-- Tutorial System -->
+    <div class="tutorial-overlay" id="tutorial-overlay"></div>
+    <div class="tutorial-box" id="tutorial-box">
+        <div class="tutorial-step-indicator" id="tutorial-step-indicator">Step 1 of 10</div>
+        <div class="tutorial-title" id="tutorial-title">Welcome!</div>
+        <div class="tutorial-text" id="tutorial-text">Tutorial text here</div>
+        <div class="tutorial-buttons">
+            <button class="tutorial-btn skip" id="tutorial-skip">Skip Tutorial</button>
+            <button class="tutorial-btn next" id="tutorial-next">Next →</button>
+        </div>
+    </div>
+
     <div class="demo-container">
         <!-- Header -->
         <div class="demo-header">
@@ -5713,6 +5852,7 @@
             var timerStart = 0;
 
             var SCENARIOS = {
+                tutorial: { title: '📚 TUTORIAL: Learn the Basics', code: 'TRAINING', location: 'Training Academy', icon: '📚', dispatch: 'Welcome to BlueShield AI Training. This tutorial will guide you through all the features.', intro: 'This is a guided tutorial. Follow the instructions to learn how to use the training simulator.', observations: ['Follow the prompts', 'Take your time', 'Learn each feature'], isTutorial: true },
                 random: { title: 'Unknown Scenario', code: '', location: 'Dispatched Location', icon: '🎲', dispatch: 'Unit, respond to call. Details pending.', intro: 'Respond to the call. Details will be revealed upon arrival.', observations: ['Awaiting details', 'Stay alert', 'Assess on arrival'] },
                 dui: { title: 'Code 390D: Drunk Driver', code: '390D', location: 'State Route 87, 11:42 PM', icon: '🚗', dispatch: 'Unit, 390D, drunk driver. Vehicle weaving, SR-87 northbound.', intro: 'Vehicle pulled over for weaving between lanes. Driver shows signs of intoxication.', observations: ['Bloodshot eyes', 'Strong odor of alcohol', 'Slurred speech', 'Weaving between lanes'] },
                 traffic_warrant: { title: 'Code 511P: Vehicle Stop', code: '511P', location: 'Main St & 7th Ave, 2:30 PM', icon: '🚨', dispatch: 'Unit, 511P, vehicle stop. Be advised, registered owner shows active warrant. Main and 7th.', intro: 'Routine traffic stop. Dispatch advises driver has active felony warrant.', observations: ['Expired registration', 'Active warrant on file', 'Driver nervous'] },
@@ -9723,7 +9863,129 @@
                 }
             }
 
-            // Initialize help system when chat starts
+            // ========== TUTORIAL SYSTEM ==========
+            var tutorialActive = false;
+            var tutorialStep = 0;
+            var tutorialSteps = [
+                {
+                    title: "Welcome to BlueShield AI! 👋",
+                    text: "This tutorial will teach you how to use the law enforcement training simulator. You'll learn all the controls and features step by step.",
+                    highlight: null
+                },
+                {
+                    title: "Your Position 🚔",
+                    text: "You start in your patrol car. The 'YOU' marker shows your position. You can DRAG it anywhere on the scene to move around.",
+                    highlight: 'officer-pos'
+                },
+                {
+                    title: "The Subject 👤",
+                    text: "The 'S' marker is the subject/suspect. TAP on them to open the Force Options menu where you can cuff, taze, or use other force options.",
+                    highlight: 'subject-pos'
+                },
+                {
+                    title: "Officer Actions Menu 💬",
+                    text: "TAP on YOUR marker (the 'YOU' badge) to open the Officer Actions menu. Here you can: SAY something to the subject, use your RADIO to dispatch, give commands to your BACKUP officer, and draw your weapon.",
+                    highlight: 'officer-pos'
+                },
+                {
+                    title: "Speaking to Subjects 🗣️",
+                    text: "In the Officer Actions menu, type what you want to SAY in the 'Say' box. For example: 'License and registration please' or 'Step out of the vehicle slowly.'",
+                    highlight: null
+                },
+                {
+                    title: "Using Your Radio 📻",
+                    text: "Use the RADIO box to communicate with dispatch. Example: '10-4, one detained' or 'Requesting backup'. Dispatch will respond to your radio calls.",
+                    highlight: null
+                },
+                {
+                    title: "Force Options ⚡",
+                    text: "TAP on the SUBJECT to see force options: Shoot (lethal), Taze, OC Spray (less lethal), Fight (physical control), and Cuff. Select an option and hit SUBMIT to use it.",
+                    highlight: null
+                },
+                {
+                    title: "FI Card 📋",
+                    text: "The FI CARD tab on the right side lets you document information about the subject - name, DOB, address, etc. Use it during your investigation.",
+                    highlight: 'fi-card-tab'
+                },
+                {
+                    title: "Backup Officer 👮",
+                    text: "On harder difficulties, you'll have a backup officer. They act autonomously but you can give them specific commands through the Officer Actions menu.",
+                    highlight: null
+                },
+                {
+                    title: "You're Ready! 🎯",
+                    text: "That's everything! The subject will react to your actions realistically. Make good decisions, communicate clearly, and use force appropriately. Good luck, Officer!",
+                    highlight: null
+                }
+            ];
+
+            function startTutorial() {
+                tutorialActive = true;
+                tutorialStep = 0;
+                showTutorialStep();
+            }
+
+            function showTutorialStep() {
+                var step = tutorialSteps[tutorialStep];
+                var overlay = document.getElementById('tutorial-overlay');
+                var box = document.getElementById('tutorial-box');
+                var stepIndicator = document.getElementById('tutorial-step-indicator');
+                var title = document.getElementById('tutorial-title');
+                var text = document.getElementById('tutorial-text');
+                var nextBtn = document.getElementById('tutorial-next');
+
+                // Remove previous highlights
+                document.querySelectorAll('.tutorial-highlight').forEach(function(el) {
+                    el.classList.remove('tutorial-highlight');
+                });
+
+                // Update content
+                stepIndicator.textContent = 'Step ' + (tutorialStep + 1) + ' of ' + tutorialSteps.length;
+                title.textContent = step.title;
+                text.textContent = step.text;
+                nextBtn.textContent = tutorialStep === tutorialSteps.length - 1 ? 'Start Training!' : 'Next →';
+
+                // Show overlay and box
+                overlay.classList.add('active');
+                box.classList.add('active');
+
+                // Highlight element if specified
+                if (step.highlight) {
+                    var highlightEl = document.getElementById(step.highlight);
+                    if (highlightEl) {
+                        highlightEl.classList.add('tutorial-highlight');
+                    }
+                }
+            }
+
+            function nextTutorialStep() {
+                tutorialStep++;
+                if (tutorialStep >= tutorialSteps.length) {
+                    endTutorial();
+                } else {
+                    showTutorialStep();
+                }
+            }
+
+            function endTutorial() {
+                tutorialActive = false;
+                var overlay = document.getElementById('tutorial-overlay');
+                var box = document.getElementById('tutorial-box');
+
+                overlay.classList.remove('active');
+                box.classList.remove('active');
+
+                // Remove all highlights
+                document.querySelectorAll('.tutorial-highlight').forEach(function(el) {
+                    el.classList.remove('tutorial-highlight');
+                });
+            }
+
+            // Tutorial button handlers
+            document.getElementById('tutorial-next').addEventListener('click', nextTutorialStep);
+            document.getElementById('tutorial-skip').addEventListener('click', endTutorial);
+
+            // Initialize help system and tutorial when chat starts
             var originalStartScenario = startScenario;
             startScenario = function() {
                 originalStartScenario();
@@ -9744,8 +10006,12 @@
                 mirandaRead = false;
                 transportedToSquad = false;
                 hidePostCuffActions();
-            };
 
+                // Start tutorial if tutorial scenario selected
+                if (selectedScenario === 'tutorial') {
+                    setTimeout(startTutorial, 800);
+                }
+            };
 
         })();
     </script>
