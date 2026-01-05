@@ -2750,7 +2750,7 @@
                         <div class="check-icon">
                             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                         </div>
-                        <span>50+ training scenarios</span>
+                        <span>30+ training scenarios</span>
                     </div>
                     <div class="pricing-feature">
                         <div class="check-icon">
@@ -3482,6 +3482,9 @@
             'use strict';
 
             var API_URL = 'https://us-central1-blueshield-ai.cloudfunctions.net/blueshield-chat';
+
+            // Stripe Payment Link - update this with your actual Stripe link
+            var STRIPE_PAYMENT_URL = 'https://buy.stripe.com/YOUR_STRIPE_LINK';
 
             var modal = document.getElementById('demo-modal');
             var scenarioSelectSection = document.getElementById('scenario-select-section');
@@ -4417,7 +4420,7 @@
             });
 
             document.getElementById('checkout-btn').addEventListener('click', function() {
-                alert('Stripe checkout will be integrated here. For now, contact us to get started!');
+                window.location.href = STRIPE_PAYMENT_URL;
             });
 
             // FI Card toggle

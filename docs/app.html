@@ -5225,178 +5225,6 @@
             }
         }
 
-        /* ========== PAYWALL MODAL ========== */
-        .paywall-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .paywall-overlay.active {
-            display: flex;
-        }
-
-        .paywall-modal {
-            background: linear-gradient(145deg, #1a2744 0%, #0f172a 100%);
-            border: 2px solid var(--accent-gold);
-            border-radius: 20px;
-            padding: 2.5rem;
-            max-width: 480px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 25px 80px rgba(201, 162, 39, 0.2);
-            animation: paywallFadeIn 0.4s ease-out;
-        }
-
-        @keyframes paywallFadeIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .paywall-badge {
-            display: inline-block;
-            background: var(--accent-gold);
-            color: var(--navy-deep);
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-        }
-
-        .paywall-modal h2 {
-            font-size: 1.6rem;
-            color: #fff;
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-        }
-
-        .paywall-modal > p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-
-        .paywall-features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .paywall-feature {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255,255,255,0.05);
-            padding: 0.6rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .feature-icon {
-            font-size: 1rem;
-        }
-
-        .paywall-pricing {
-            background: rgba(201, 162, 39, 0.1);
-            border: 1px solid rgba(201, 162, 39, 0.3);
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .paywall-price-badge {
-            display: inline-block;
-            background: var(--error);
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
-        }
-
-        .paywall-price {
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .price-amount {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--accent-gold);
-        }
-
-        .price-period {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        .price-savings {
-            font-size: 0.85rem;
-            color: var(--success);
-            margin-top: 0.5rem;
-            font-weight: 600;
-        }
-
-        .paywall-cta {
-            width: 100%;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, #d4af37 100%);
-            color: var(--navy-deep);
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(201, 162, 39, 0.3);
-        }
-
-        .paywall-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
-        }
-
-        .paywall-note {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.75rem;
-        }
-
-        @media (max-width: 500px) {
-            .paywall-modal {
-                padding: 1.5rem;
-            }
-
-            .paywall-modal h2 {
-                font-size: 1.3rem;
-            }
-
-            .paywall-features {
-                grid-template-columns: 1fr;
-            }
-
-            .price-amount {
-                font-size: 2rem;
-            }
-        }
-
         /* ========== TUTORIAL SYSTEM ========== */
         .tutorial-overlay {
             position: fixed;
@@ -6034,58 +5862,14 @@
         </div>
     </div>
 
-    <!-- Demo Paywall Modal -->
-    <div class="paywall-overlay" id="paywall-overlay">
-        <div class="paywall-modal">
-            <div class="paywall-badge">DEMO COMPLETE</div>
-            <h2>Great job on your first scenario!</h2>
-            <p>You've completed the free demo. Unlock unlimited access to all 30+ training scenarios.</p>
-
-            <div class="paywall-features">
-                <div class="paywall-feature">
-                    <span class="feature-icon">🎯</span>
-                    <span>30+ Real-World Scenarios</span>
-                </div>
-                <div class="paywall-feature">
-                    <span class="feature-icon">⚖️</span>
-                    <span>Arizona ARS Statute Training</span>
-                </div>
-                <div class="paywall-feature">
-                    <span class="feature-icon">📊</span>
-                    <span>Detailed Performance Analytics</span>
-                </div>
-                <div class="paywall-feature">
-                    <span class="feature-icon">🏆</span>
-                    <span>Training & Test Modes</span>
-                </div>
-            </div>
-
-            <div class="paywall-pricing">
-                <div class="paywall-price-badge">MVP LAUNCH SPECIAL</div>
-                <div class="paywall-price">
-                    <span class="price-amount">$20</span>
-                    <span class="price-period">for 6 months</span>
-                </div>
-                <p class="price-savings">Pay for 1 month, get 5 months FREE!</p>
-            </div>
-
-            <button class="paywall-cta" id="paywall-buy-btn">
-                Get Full Access Now
-            </button>
-            <p class="paywall-note">Secure payment via Stripe</p>
-        </div>
-    </div>
-
     <script>
         (function() {
             'use strict';
 
             var API_URL = 'https://us-central1-blueshield-ai.cloudfunctions.net/blueshield-chat';
 
-            // Demo mode - limits to 1 scenario then shows paywall
-            var IS_DEMO = true;
-            var demoCompleted = false;
-            var STRIPE_PAYMENT_URL = 'https://buy.stripe.com/YOUR_STRIPE_LINK'; // Will be updated with actual Stripe link
+            // Full app mode - all features unlocked
+            var IS_DEMO = false;
 
             var selectedScenario = 'dui';
             var selectedDifficulty = 'easy';
@@ -6355,9 +6139,7 @@
             // Initialize scenario grid
             function initScenarioGrid() {
                 var grid = document.getElementById('scenario-grid');
-
-                // Demo mode: only show DUI scenario
-                var scenarioOrder = IS_DEMO ? ['dui'] : ['tutorial', 'random', 'dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended', 'domestic', 'domestic_weapons', 'assault', 'threats', 'shoplifting', 'burglary', 'theft', 'vehicle_theft', 'trespass', 'disturbance', 'noise', 'loitering', 'civil_property', 'civil_custody', 'civil_landlord', 'civil_repo', 'civil_business', 'mental_crisis', 'welfare_check', 'suicide_threat', 'intoxicated', 'suspicious', 'alarm', 'harassment', 'stalking'];
+                var scenarioOrder = ['tutorial', 'random', 'dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended', 'domestic', 'domestic_weapons', 'assault', 'threats', 'shoplifting', 'burglary', 'theft', 'vehicle_theft', 'trespass', 'disturbance', 'noise', 'loitering', 'civil_property', 'civil_custody', 'civil_landlord', 'civil_repo', 'civil_business', 'mental_crisis', 'welfare_check', 'suicide_threat', 'intoxicated', 'suspicious', 'alarm', 'harassment', 'stalking'];
 
                 scenarioOrder.forEach(function(id) {
                     var scenario = SCENARIOS[id];
@@ -7573,11 +7355,6 @@
                 reportSection.classList.remove('active');
                 chatSection.style.display = 'none';
 
-                // Mark demo as completed (for paywall)
-                if (IS_DEMO) {
-                    demoCompleted = true;
-                }
-
                 // Calculate overall score
                 var overallScore = (typeof data.overall_score === 'number') ? data.overall_score :
                                    (typeof data.scenario_score === 'number') ? data.scenario_score : 0;
@@ -7933,19 +7710,8 @@
                 sendToAPI(fullMessage);
             }
 
-            // Show paywall modal
-            function showPaywall() {
-                document.getElementById('paywall-overlay').classList.add('active');
-            }
-
             // Restart
             function restart() {
-                // In demo mode, show paywall instead of allowing restart
-                if (IS_DEMO && demoCompleted) {
-                    showPaywall();
-                    return;
-                }
-
                 scenarioSelectSection.style.display = 'block';
                 chatSection.style.display = 'none';
                 reportSection.classList.remove('active');
@@ -8008,11 +7774,6 @@
                 requestDebrief();
             });
             document.getElementById('debrief-restart-btn').addEventListener('click', restart);
-
-            // Paywall buy button - redirect to Stripe
-            document.getElementById('paywall-buy-btn').addEventListener('click', function() {
-                window.location.href = STRIPE_PAYMENT_URL;
-            });
 
             // FI Card toggle
             var fiCardTab = document.getElementById('fi-card-tab');
