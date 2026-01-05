@@ -426,6 +426,39 @@
             50% { transform: translateX(-45%); }
         }
 
+        /* FIGHTING - Purple/Red with shake */
+        .stick-figure.fighting .subject-status-badge.fight-badge,
+        .position-marker.subject.fighting .subject-status-badge.fight-badge {
+            display: block;
+        }
+
+        .subject-status-badge.fight-badge {
+            display: none;
+            background: linear-gradient(135deg, #9333EA, #DC2626);
+            color: white;
+            border: 2px solid #7C3AED;
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.7);
+            animation: fightPulse 0.3s ease-in-out infinite;
+        }
+
+        @keyframes fightPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(220, 38, 38, 0.9); }
+        }
+
+        /* Fighting body effect - shake */
+        .stick-figure.fighting,
+        .position-marker.subject.fighting,
+        .position-marker.officer.fighting {
+            animation: fightShake 0.2s ease-in-out infinite;
+        }
+
+        @keyframes fightShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px) rotate(-1deg); }
+            75% { transform: translateX(2px) rotate(1deg); }
+        }
+
         /* Weapon drawn indicator for officer */
         .position-marker.officer.weapon-drawn::before,
         .position-marker.backup.weapon-drawn::before {
@@ -9541,14 +9574,15 @@
                 }
 
                 // Add all status badge elements if they don't exist
-                var badges = ['cuffed', 'tazed', 'oc', 'shot', 'prone', 'fleeing'];
+                var badges = ['cuffed', 'tazed', 'oc', 'shot', 'prone', 'fleeing', 'fight'];
                 var labels = {
                     'cuffed': '🔗 CUFFED',
                     'tazed': '⚡ TAZED',
                     'oc': '🌶️ OC',
                     'shot': '🩸 SHOT',
                     'prone': '✓ DOWN',
-                    'fleeing': '🏃 FLEE'
+                    'fleeing': '🏃 FLEE',
+                    'fight': '👊 FIGHT'
                 };
 
                 badges.forEach(function(badge) {
@@ -9601,6 +9635,34 @@
                 } else if (action === 'flee' || action === 'run' || action === 'fleeing') {
                     subject.classList.add('fleeing');
                     console.log('Subject FLEEING - status applied');
+
+                } else if (action === 'fight' || action === 'fighting' || action === 'physical') {
+                    subject.classList.add('fighting');
+                    console.log('Subject FIGHTING - status applied');
+
+                    // Move officer to the subject position
+                    var officer = document.getElementById('officer-pos');
+                    if (officer && subject) {
+                        var subjectRect = subject.getBoundingClientRect();
+                        var sceneEl = document.getElementById('position-scene');
+                        if (sceneEl) {
+                            var sceneRect = sceneEl.getBoundingClientRect();
+                            // Position officer right next to subject (offset slightly)
+                            var newLeft = ((subjectRect.left - sceneRect.left + 30) / sceneRect.width * 100);
+                            var newTop = ((subjectRect.top - sceneRect.top) / sceneRect.height * 100);
+
+                            // Animate officer movement
+                            officer.style.transition = 'all 0.3s ease-out';
+                            officer.style.left = Math.min(Math.max(newLeft, 5), 85) + '%';
+                            officer.style.top = Math.min(Math.max(newTop, 5), 85) + '%';
+                            officer.style.bottom = 'auto';
+                            officer.style.right = 'auto';
+                            officer.classList.remove('in-patrol');
+
+                            // Add fighting class to officer too for visual effect
+                            officer.classList.add('fighting');
+                        }
+                    }
                 }
             }
 
@@ -9609,7 +9671,7 @@
                 if (!subject) subject = document.getElementById('subject-pos');
                 if (!subject) return;
 
-                var statuses = ['cuffed', 'tazed', 'tazed-status', 'oc-sprayed', 'oc-status', 'shot', 'prone', 'fleeing'];
+                var statuses = ['cuffed', 'tazed', 'tazed-status', 'oc-sprayed', 'oc-status', 'shot', 'prone', 'fleeing', 'fighting'];
                 statuses.forEach(function(status) {
                     subject.classList.remove(status);
                 });
