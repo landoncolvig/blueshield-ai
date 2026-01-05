@@ -1384,6 +1384,22 @@
             color: var(--success);
         }
 
+        .message-backup {
+            align-self: flex-start;
+        }
+
+        .message-backup .message-content {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.6rem 1rem;
+            border-radius: 4px 12px 12px 12px;
+            font-style: italic;
+        }
+
+        .message-backup .message-label {
+            color: #3B82F6;
+        }
+
         .message-label {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -3086,6 +3102,36 @@
         .officer-menu-input input::placeholder,
         .officer-menu-input textarea::placeholder {
             color: var(--text-muted);
+        }
+
+        .backup-task-input {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+
+        .backup-task-input label {
+            color: #3B82F6 !important;
+            font-weight: 600;
+        }
+
+        .backup-task-input textarea {
+            background: rgba(0,0,0,0.3) !important;
+            border-color: rgba(59, 130, 246, 0.3) !important;
+        }
+
+        .backup-task-input textarea:focus {
+            border-color: #3B82F6 !important;
+        }
+
+        .backup-hint {
+            font-size: 0.6rem;
+            color: #3B82F6;
+            margin-top: 4px;
+            font-style: italic;
+            opacity: 0.7;
         }
 
         .officer-menu-divider {
@@ -5182,6 +5228,7 @@
                 <input type="hidden" id="input-say">
                 <input type="hidden" id="input-radio">
                 <input type="hidden" id="input-do">
+                <input type="hidden" id="input-backup">
 
                 <!-- Minimal bottom bar -->
                 <div class="chat-input" style="padding: 0.4rem 0; display: flex; justify-content: space-between; align-items: center;">
@@ -5782,6 +5829,7 @@
             var inputSay = document.getElementById('input-say');
             var inputDo = document.getElementById('input-do');
             var inputRadio = document.getElementById('input-radio');
+            var inputBackup = document.getElementById('input-backup');
             var sendBtn = document.getElementById('send-btn');
             var endBtn = document.getElementById('end-scenario-btn');
             var timerDisplay = document.getElementById('timer-display');
@@ -6702,6 +6750,10 @@
                     messageDiv.className = 'message message-dispatch';
                     messageDiv.appendChild(createElement('div', 'message-label', '📻 Dispatch'));
                     messageDiv.appendChild(createElement('div', 'message-content', text));
+                } else if (type === 'backup') {
+                    messageDiv.className = 'message message-backup';
+                    messageDiv.appendChild(createElement('div', 'message-label', '👮 Backup Officer'));
+                    messageDiv.appendChild(createElement('div', 'message-content', text));
                 }
 
                 messagesContainer.appendChild(messageDiv);
@@ -6826,6 +6878,7 @@
                 inputSay.disabled = loading;
                 inputDo.disabled = loading;
                 inputRadio.disabled = loading;
+                inputBackup.disabled = loading;
                 sendBtn.disabled = loading;
                 endBtn.disabled = loading;
                 if (loading) {
@@ -6902,6 +6955,17 @@
                                 content: data.dispatch_response
                             });
                         }, 800); // Slight delay to simulate radio response time
+                    }
+
+                    // Show backup officer report if present
+                    if (data.backup_report) {
+                        setTimeout(function() {
+                            addMessage('backup', data.backup_report);
+                            messages.push({
+                                role: 'backup',
+                                content: data.backup_report
+                            });
+                        }, 1200); // Slight delay to simulate backup officer reporting back
                     }
 
                     // Check for status effects in AI response
@@ -7213,17 +7277,30 @@
                 var say = inputSay.value.trim();
                 var doAction = inputDo.value.trim();
                 var radio = inputRadio.value.trim();
+                var backup = inputBackup.value.trim();
 
                 var parts = [];
                 if (say) parts.push('[SAYS]: "' + say + '"');
                 if (doAction) parts.push('[DOES]: ' + doAction);
                 if (radio) parts.push('[RADIOS]: "' + radio + '"');
 
+                // If there's a backup task, add it to the SAYS section naturally
+                if (backup) {
+                    // If there's already something in SAY, append the backup task
+                    if (say) {
+                        parts[0] = '[SAYS]: "' + say + ' ' + backup + '"';
+                    } else {
+                        // If no SAY content, just use the backup task
+                        parts.unshift('[SAYS]: "' + backup + '"');
+                    }
+                }
+
                 return {
                     combined: parts.join('\n'),
                     say: say,
                     do: doAction,
-                    radio: radio
+                    radio: radio,
+                    backup: backup
                 };
             }
 
@@ -7311,6 +7388,7 @@
                 inputSay.value = '';
                 inputDo.value = '';
                 inputRadio.value = '';
+                inputBackup.value = '';
                 addOfficerMessage(input);
 
                 // Generate autonomous backup action if backup is on scene
@@ -8407,6 +8485,11 @@
                             <label>Radio</label>
                             <textarea id="officer-menu-radio" placeholder="Dispatch..." rows="2"></textarea>
                         </div>
+                        <div class="officer-menu-input backup-task-input">
+                            <label>👮 Backup Officer Task</label>
+                            <textarea id="officer-menu-backup" placeholder="Martinez, go check the garage..." rows="2"></textarea>
+                            <div class="backup-hint">Tell your backup what to do - they'll execute automatically</div>
+                        </div>
                         <div class="officer-menu-divider"></div>
                         <div class="officer-menu-section">Draw & Ready</div>
                         <div class="officer-weapon-btns">
@@ -8515,8 +8598,10 @@
                 function handleOfficerSend() {
                     var sayInput = document.getElementById('officer-menu-say');
                     var radioInput = document.getElementById('officer-menu-radio');
+                    var backupInput = document.getElementById('officer-menu-backup');
                     var mainSayInput = document.getElementById('input-say');
                     var mainRadioInput = document.getElementById('input-radio');
+                    var mainBackupInput = document.getElementById('input-backup');
 
                     // Transfer values to main inputs
                     if (sayInput && mainSayInput) {
@@ -8525,10 +8610,14 @@
                     if (radioInput && mainRadioInput) {
                         mainRadioInput.value = radioInput.value;
                     }
+                    if (backupInput && mainBackupInput) {
+                        mainBackupInput.value = backupInput.value;
+                    }
 
                     // Clear menu inputs
                     if (sayInput) sayInput.value = '';
                     if (radioInput) radioInput.value = '';
+                    if (backupInput) backupInput.value = '';
 
                     hideOfficerMenu();
 
@@ -9181,8 +9270,14 @@
             }
 
             function toggleHelp() {
-                helpVisible = !helpVisible;
+                // Create help system if it doesn't exist yet
                 var panel = document.getElementById('help-panel');
+                if (!panel) {
+                    createHelpSystem();
+                    panel = document.getElementById('help-panel');
+                }
+
+                helpVisible = !helpVisible;
                 var btn = document.getElementById('scenario-help-btn');
                 if (panel) panel.classList.toggle('visible', helpVisible);
                 if (btn) btn.classList.toggle('active', helpVisible);
