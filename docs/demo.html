@@ -968,6 +968,21 @@
             font-weight: bold;
         }
 
+        .scenario-card.tutorial-card {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.15), rgba(34, 197, 94, 0.1));
+            grid-column: 1 / -1;
+        }
+
+        .scenario-card.tutorial-card:hover {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.25), rgba(34, 197, 94, 0.15));
+        }
+
+        .scenario-card.tutorial-card .scenario-icon-box {
+            background: linear-gradient(135deg, var(--success), #22c55e);
+        }
+
         .scenario-icon-box {
             width: 40px;
             height: 40px;
@@ -6112,14 +6127,14 @@
             // Initialize scenario grid
             function initScenarioGrid() {
                 var grid = document.getElementById('scenario-grid');
-                var scenarioOrder = ['random', 'dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended', 'domestic', 'domestic_weapons', 'assault', 'threats', 'shoplifting', 'burglary', 'theft', 'vehicle_theft', 'trespass', 'disturbance', 'noise', 'loitering', 'civil_property', 'civil_custody', 'civil_landlord', 'civil_repo', 'civil_business', 'mental_crisis', 'welfare_check', 'suicide_threat', 'intoxicated', 'suspicious', 'alarm', 'harassment', 'stalking'];
+                var scenarioOrder = ['tutorial', 'random', 'dui', 'traffic_warrant', 'traffic_drugs', 'traffic_suspended', 'domestic', 'domestic_weapons', 'assault', 'threats', 'shoplifting', 'burglary', 'theft', 'vehicle_theft', 'trespass', 'disturbance', 'noise', 'loitering', 'civil_property', 'civil_custody', 'civil_landlord', 'civil_repo', 'civil_business', 'mental_crisis', 'welfare_check', 'suicide_threat', 'intoxicated', 'suspicious', 'alarm', 'harassment', 'stalking'];
 
                 scenarioOrder.forEach(function(id) {
                     var scenario = SCENARIOS[id];
                     if (!scenario) return;
 
                     var card = document.createElement('div');
-                    card.className = 'scenario-card' + (id === 'dui' ? ' selected' : '') + (id === 'random' ? ' random-card' : '');
+                    card.className = 'scenario-card' + (id === 'dui' ? ' selected' : '') + (id === 'random' ? ' random-card' : '') + (id === 'tutorial' ? ' tutorial-card' : '');
                     card.dataset.scenario = id;
 
                     var iconBox = document.createElement('div');
