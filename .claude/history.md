@@ -1,11 +1,6 @@
 # Project History
 
 
-## 2026-01-04 20:30 - Session Summary
-Session in jack-leo-training-tool - no detailed summary available
-
----
-
 ## 2026-01-04 20:32 - Session Summary
 Session in jack-leo-training-tool - no detailed summary available
 
@@ -97,6 +92,11 @@ Session in jack-leo-training-tool - no detailed summary available
 ---
 
 ## 2026-01-04 22:37 - Session Summary
+Session in jack-leo-training-tool - no detailed summary available
+
+---
+
+## 2026-01-04 22:38 - Session Summary
 Session in jack-leo-training-tool - no detailed summary available
 
 ---
